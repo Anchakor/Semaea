@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Made with hands</title>
+  <!--<link rel="stylesheet" href="style.css">-->
+  <!--<script src="node_modules/plastiq/plastiq.js"></script>-->
+  <script src="plastiq/plastiq.js"></script>
+  <script src="140medley.js"></script>
+  <script>
+	var h = plastiq.html;
+	var bind = plastiq.bind;
+
+	function partial(fn /*, args...*/) {
+		// A reference to the Array#slice method.
+		var slice = Array.prototype.slice;
+		// Convert arguments object to an array, removing the first argument.
+		var args = slice.call(arguments, 1);
+
+		return function() {
+			// Invoke the originally-specified function, passing in all originally-
+			// specified arguments, followed by any just-specified arguments.
+			return fn.apply(this, args.concat(slice.call(arguments, 0)));
+		};
+ 	}
+
+	var componentArray = new Array();
+
+	function hc(component, componentArray) {
+		var comp = h.component(component);
+		componentArray.push(comp);
+		return comp;
+	}
+
+
+	function newCC(component) {
+		var componentContainer = { _instances: new Array() };
+		componentContainer._function = partial(component, componentContainer._instances);
+		return componentContainer;
+	}
+
+	function useCC(componentContainer) {
+		var component = h.component(componentContainer._function);
+		componentContainer._instances.push(component);
+		return component;
+	}
+
+	function democomp(instances, model) {
+		return h('button', {onclick: function () { 
+					model.counter++;
+					return instances; 
+				}}, 'refresh components');
+	}
+
+	function objectCheck(model) {
+		if (typeof model !== 'function' && typeof model !== 'object') {
+			throw 'Error: attempting to create a component with model of a primitive type';
+		}
+	}
+
+	function renderT(model) {
+	  var component1 = h.component(function () {
+		return h('div', 'component 1 counter: ', model.counter);
+	  });
+	  var component2 = h.component(function () {
+		return h('div', 'component 2 counter: ', model.counter);
+	  });
+
+	  
+
+	  return h('div',
+	    component1,
+		component2,
+		h('div', 'page counter: ', model.counter),
+		h('div',
+		  h('button', {onclick: function () { model.counter++; return component1; }}, 'refresh component 1')
+		),
+		h('div',
+		  h('button', {onclick: function () { 
+model.counter++; return [component1, component2]; 
+}}, 'refresh components')
+		),
+		h('div',
+		  h('button', {onclick: function () { model.counter++; }}, 'refresh	page')
+		)
+	  );
+	}
+
+	function render(model) {
+	  objectCheck(model);
+	  return h('div',
+		renderT(model.m2),
+		h('label', "what's your name?"), ' ',
+		h('input', {type: 'text', binding: [model, 'name']}),
+		h('div', 'hi ', model.name),
+		h.component(function () {
+			return h('div', 'component counter: ', model.counter2);
+		}),
+		hc(function () {
+			return h('div', 'component counter: ', model.counter2);
+		}, componentArray)
+	  );
+	}
+
+
+	function hashSetHasKey(hashSet, key) {
+		return hashSet.hasOwnProperty(key);
+	}
+	
+	function renderTriples(triples) {
+		var componentContainerDict = {};
+
+		function renderLevel(triples, componentContainerDict, depth) {
+		    function renderEntity(triple, position, componentContainerDict) {
+				var entity = triple[position];
+				if(hashSetHasKey(componentContainerDict, entity)) {
+					return useCC(componentContainerDict[entity]);
+				} else {
+					var cc = newCC(function (instances) {
+						return h('span', {onclick: function () { 
+									triple[position] = triple[position] + 'a';
+									return instances; 
+								}}, triple[position]);
+						});
+					componentContainerDict[entity] = cc;
+					return useCC(cc);
+				}
+			}
+
+		    function renderEntitySimple(entity, componentContainerDict) {
+				return h('div', entity);
+			}
+
+			return h('div', triples.map(function (triple) {
+				return h('div',
+					renderEntity(triple, 's', componentContainerDict), ' ',
+					renderEntity(triple, 'p', componentContainerDict), ' ',
+					renderEntity(triple, 'o', componentContainerDict)
+					);
+		  	}));
+		}
+
+		return renderLevel(triples, componentContainerDict, 0);
+	}
+
+	var defaultTriples = [ { s: "testS", p: "testP", o: "testO" }, { s: "testS", p: "testP2", o: "testO" }, { s: "testO", p: "testP3", o: "testO3" } ];
+
+    window.onload = function () {
+		var k = function (e) {
+		  $('#t').textContent = e.keyCode;
+		  return false;
+		};
+		$('#h').onkeydown = k;
+	
+		//plastiq.append(document.body, render, {name: '', m2: {counter: 0}, counter2: 0});
+		plastiq.append(document.body, function (model) { return renderTriples(model.triples); }, { triples: defaultTriples });
+    };
+  </script>
+</head>
+<body>
+
+  <h1 id="h" tabindex="0">Semaea</h1>
+  <p tabindex="0">
+    asd
+  </p>
+
+  <textarea id="t">asdasda</textarea>
+  
+  <p>Make something <strong>amazing</strong> with the web!</p>
+
+</body>
+</html>
+
