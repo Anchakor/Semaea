@@ -13,6 +13,7 @@
   <script>
 	var h = plastiq.html;
 	var bind = plastiq.bind;
+    var refresh = plastiq.html.refresh;
 
 	function partial(fn /*, args...*/) {
 		// A reference to the Array#slice method.
@@ -70,7 +71,7 @@
 	function entityController(model, triple, position) {
         var controllerEventHandler = function (handler, model, triple, position, e) {
             return function (e) {
-                partial(handler, model, triple, position).call(this, arguments);
+                partial(handler, model, triple, position).apply(this, arguments);
                 if (e.preventDefault) {
                     e.preventDefault();
                 } else {
@@ -86,17 +87,27 @@
 				style: style,
 				tabIndex: 0,
 				onkeydown: controllerEventHandler(controllerKeydown, model, triple, position),
-				onclick: controllerEventHandler(controllerClick, model, triple, position) 
+				onclick: controllerEventHandler(controllerClick, model, triple, position),
+                onfocus: refreshMeta
 			}, triple[position]);
 	}
     
-    function controllerClick(model, triple, position) { 
+    function refreshMeta(model, triple, position) {
+        if (model.meta.currentNode != triple[position]) {
+            model.meta.previousNode = model.meta.currentNode;
+            model.meta.currentNode = triple[position];
+        }
+    }
+    
+    function controllerClick(model, triple, position, e) { 
         //triple[position] = triple[position] + 'a';
-        model.graph.replaceNode(triple[position], triple[position] + 'a')
+        model.graph.replaceNode(triple, position, triple[position] + 'a');
+        refreshMeta(model, triple, position);
     }
     
     function controllerKeydown(model, triple, position, e) {
-        k(e);
+        $('#t').textContent = e.keyCode;
+        refreshMeta(model, triple, position);
     }
 
 	function renderLevelPositionSimple(entity, componentContainerDict) {
@@ -120,7 +131,7 @@
 	
 		//plastiq.append(document.body, render, {name: '', m2: {counter: 0}, counter2: 0});
 		var model0 = { graph: graph, // defaultTriples, 
-		  	meta: { currentNode: "testO" } };
+		  	meta: { currentNode: "testO", previousNode: null } };
 		plastiq.append(document.body, function (model) { return renderTriples(model); }, model0);
 
 		setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
