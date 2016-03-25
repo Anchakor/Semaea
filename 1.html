@@ -59,19 +59,19 @@
 
 		return h('div', model.graph._graph.map(function (triple) {
 			return h('div',
-				renderLevelPosition(model, triple, 's'), ' ',
-				renderLevelPosition(model, triple, 'p'), ' ',
-				renderLevelPosition(model, triple, 'o')
+				renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
+				renderLevelPosition(model, new GraphNode(triple, 'p')), ' ',
+				renderLevelPosition(model, new GraphNode(triple, 'o'))
 				);
 		}));
 	}
-	function renderLevelPosition(model, triple, position) {
-		return entityController(model, triple, position);
+	function renderLevelPosition(model, graphNode) {
+        return entityController(model, graphNode);   
 	}
-	function entityController(model, triple, position) {
-        var controllerEventHandler = function (handler, model, triple, position, e) {
+	function entityController(model, graphNode) {
+        var controllerEventHandler = function (handler, model, graphNode, e) {
             return function (e) {
-                if (partial(handler, model, triple, position).apply(this, arguments)) {
+                if (partial(handler, model, graphNode).apply(this, arguments)) {
                     if (e.preventDefault) {
                         e.preventDefault();
                     } else {
@@ -81,35 +81,45 @@
             }
         }
 		var style = {};
-		if (model.meta.currentNode == triple[position]) {
+		if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
 			style.color = 'red';
 		}
 		return h('span', {
 				style: style,
 				tabIndex: 0,
-				onkeydown: controllerEventHandler(controllerKeydown, model, triple, position),
-				onclick: controllerEventHandler(controllerClick, model, triple, position),
-                onfocus: partial(refreshMeta, model, triple, position)
-			}, triple[position]);
+				onkeydown: controllerEventHandler(controllerKeydown, model, graphNode),
+				onclick: controllerEventHandler(controllerClick, model, graphNode),
+                onfocus: partial(refreshMeta, model, graphNode)
+			}, graphNode.getValue());
 	}
     
-    function refreshMeta(model, triple, position) {
-        if (model.meta.currentNode != triple[position]) {
-            model.meta.previousNode = model.meta.currentNode;
-            model.meta.currentNode = triple[position];
+    function refreshMeta(model, graphNode) {
+        if (!graphNode) { return; }
+        if (model.meta.currentNode) {
+            if (model.meta.currentNode.getValue() != graphNode.getValue()) {
+                model.meta.previousNode = model.meta.currentNode;
+                if (model.meta.previousNode.position != 'p') {
+                    model.meta.previousNodeNonPredicate = model.meta.previousNode
+                } else {
+                    model.meta.previousNodePredicate = model.meta.previousNode
+                }
+                model.meta.currentNode = graphNode;
+            }
+        } else {
+            model.meta.currentNode = graphNode;
         }
     }
     
-    function controllerClick(model, triple, position, e) { 
+    function controllerClick(model, graphNode, e) { 
         //triple[position] = triple[position] + 'a';
-        model.graph.replaceNode(triple, position, triple[position] + 'a');
-        refreshMeta(model, triple, position);
+        model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
+        refreshMeta(model, graphNode);
         return true;
     }
     
-    function controllerKeydown(model, triple, position, e) {
+    function controllerKeydown(model, graphNode, e) {
         $('#t').textContent = e.keyCode + ' ' + e.key;
-        refreshMeta(model, triple, position);
+        refreshMeta(model, graphNode);
         return !(e.keyCode == 9);
     }
 
@@ -134,7 +144,8 @@
 	
 		//plastiq.append(document.body, render, {name: '', m2: {counter: 0}, counter2: 0});
 		var model0 = { graph: graph, // defaultTriples, 
-		  	meta: { currentNode: "testO", previousNode: null } };
+		  	meta: { currentNode: null, previousNode: null, 
+              previousNodeNonPredicate: null, previousNodePredicate: null } };
 		plastiq.append(document.body, function (model) { return renderTriples(model); }, model0);
 
 		setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
