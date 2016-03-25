@@ -7,7 +7,9 @@
   <!--<link rel="stylesheet" href="style.css">-->
   <!--<script src="node_modules/plastiq/plastiq.js"></script>-->
   <script src="plastiq/plastiq.js"></script>
+  <script src="plastiq.js"></script>
   <script src="140medley.js"></script>
+  <script src="graph.js"></script>
   <script>
 	var h = plastiq.html;
 	var bind = plastiq.bind;
@@ -25,87 +27,101 @@
 		};
  	}
 
-	function newCC(component) {
-		var componentContainer = { _instances: new Array() };
-		componentContainer._function = partial(component, componentContainer._instances);
-		return componentContainer;
-	}
+	//function newCC(component) {
+	//	var componentContainer = { _instances: new Array() };
+	//	componentContainer._function = partial(component, componentContainer._instances);
+	//	return componentContainer;
+	//}
 
-	function useCC(componentContainer) {
-		var component = h.component(componentContainer._function);
-		componentContainer._instances.push(component);
-		return component;
-	}
+	//function useCC(componentContainer) {
+	//	var component = h.component(componentContainer._function);
+	//	componentContainer._instances.push(component);
+	//	return component;
+	//}
 
-	function democomp(instances, model) {
-		return h('button', {onclick: function () { 
-					model.counter++;
-					return instances; 
-				}}, 'refresh components');
-	}
+	//function democomp(instances, model) {
+	//	return h('button', {onclick: function () { 
+	//				model.counter++;
+	//				return instances; 
+	//			}}, 'refresh components');
+	//}
 
 
 	function hashSetHasKey(hashSet, key) {
 		return hashSet.hasOwnProperty(key);
 	}
 	
-	function renderTriples(triples, meta) {
-		var componentContainerDict = {};
-		return renderLevel(triples, meta, componentContainerDict, 0);
+	function renderTriples(model) {
+		return renderLevel(model, 0);
 	}
-	function renderLevel(triples, meta, componentContainerDict, depth) {
+	function renderLevel(model, depth) {
 
-		return h('div', triples.map(function (triple) {
+		return h('div', model.graph._graph.map(function (triple) {
 			return h('div',
-				renderLevelPosition(meta, triple, 's', componentContainerDict), ' ',
-				renderLevelPosition(meta, triple, 'p', componentContainerDict), ' ',
-				renderLevelPosition(meta, triple, 'o', componentContainerDict)
+				renderLevelPosition(model, triple, 's'), ' ',
+				renderLevelPosition(model, triple, 'p'), ' ',
+				renderLevelPosition(model, triple, 'o')
 				);
 		}));
 	}
-	function renderLevelPosition(meta, triple, position, componentContainerDict) {
-		var entity = triple[position];
-		if(hashSetHasKey(componentContainerDict, entity)) {
-			return useCC(componentContainerDict[entity]);
-		} else {
-			var cc = newCC(partial(entityController, meta, triple, position));
-			componentContainerDict[entity] = cc;
-			return useCC(cc);
-		}
+	function renderLevelPosition(model, triple, position) {
+		return entityController(model, triple, position);
 	}
-	function entityController(meta, triple, position, instances) {
+	function entityController(model, triple, position) {
+        var controllerEventHandler = function (handler, model, triple, position, e) {
+            return function (e) {
+                partial(handler, model, triple, position).call(this, arguments);
+                if (e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    e.returnValue = false;
+                }
+            }
+        }
 		var style = {};
-		if (meta.currentNode == triple[position]) {
+		if (model.meta.currentNode == triple[position]) {
 			style.color = 'red';
 		}
 		return h('span', {
 				style: style,
 				tabIndex: 0,
-				onkeydown: k,
-				onclick: function () { 
-					triple[position] = triple[position] + 'a';
-					return instances; 
-				}
+				onkeydown: controllerEventHandler(controllerKeydown, model, triple, position),
+				onclick: controllerEventHandler(controllerClick, model, triple, position) 
 			}, triple[position]);
 	}
+    
+    function controllerClick(model, triple, position) { 
+        //triple[position] = triple[position] + 'a';
+        model.graph.replaceNode(triple[position], triple[position] + 'a')
+    }
+    
+    function controllerKeydown(model, triple, position, e) {
+        k(e);
+    }
 
 	function renderLevelPositionSimple(entity, componentContainerDict) {
 		return h('div', entity);
 	}
 
+	var graph = new Graph();
+	graph.addTriple(Graph.makeTriple("testS", "testP", "testO"));
+	graph.addTriple(Graph.makeTriple("testS", "testP2", "testO"));
+	graph.addTriple(Graph.makeTriple("testO", "testP3", "testO3"));
 
-	var defaultTriples = [ { s: "testS", p: "testP", o: "testO" }, { s: "testS", p: "testP2", o: "testO" }, { s: "testO", p: "testP3", o: "testO3" } ];
+	//var defaultTriples = [ { s: "testS", p: "testP", o: "testO" }, { s: "testS", p: "testP2", o: "testO" }, { s: "testO", p: "testP3", o: "testO3" } ];
 
-		var k = function (e) {
-		  $('#t').textContent = e.keyCode;
-		  return false;
-		};
+	var k = function (e) {
+	  $('#t').textContent = e.keyCode;
+      e.preventDefault();
+	  return false;
+	};
     window.onload = function () {
-		$('#h').onkeydown = k;
+		//$('#h').onkeydown = k;
 	
 		//plastiq.append(document.body, render, {name: '', m2: {counter: 0}, counter2: 0});
-		var model0 = { triples: defaultTriples, meta: { currentNode: "testO" } };
-		plastiq.append(document.body, function (model) { return renderTriples(model.triples, model.meta); }, model0);
+		var model0 = { graph: graph, // defaultTriples, 
+		  	meta: { currentNode: "testO" } };
+		plastiq.append(document.body, function (model) { return renderTriples(model); }, model0);
 
 		setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
     };
