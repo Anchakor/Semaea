@@ -88,7 +88,7 @@
 				tabIndex: 0,
 				onkeydown: controllerEventHandler(controllerKeydown, model, triple, position),
 				onclick: controllerEventHandler(controllerClick, model, triple, position),
-                onfocus: refreshMeta
+                onfocus: partial(refreshMeta, model, triple, position)
 			}, triple[position]);
 	}
     
