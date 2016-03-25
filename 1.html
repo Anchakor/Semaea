@@ -71,11 +71,12 @@
 	function entityController(model, triple, position) {
         var controllerEventHandler = function (handler, model, triple, position, e) {
             return function (e) {
-                partial(handler, model, triple, position).apply(this, arguments);
-                if (e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    e.returnValue = false;
+                if (partial(handler, model, triple, position).apply(this, arguments)) {
+                    if (e.preventDefault) {
+                        e.preventDefault();
+                    } else {
+                        e.returnValue = false;
+                    }
                 }
             }
         }
@@ -103,11 +104,13 @@
         //triple[position] = triple[position] + 'a';
         model.graph.replaceNode(triple, position, triple[position] + 'a');
         refreshMeta(model, triple, position);
+        return true;
     }
     
     function controllerKeydown(model, triple, position, e) {
-        $('#t').textContent = e.keyCode;
+        $('#t').textContent = e.keyCode + ' ' + e.key;
         refreshMeta(model, triple, position);
+        return !(e.keyCode == 9);
     }
 
 	function renderLevelPositionSimple(entity, componentContainerDict) {
