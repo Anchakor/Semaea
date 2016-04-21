@@ -2,6 +2,18 @@ class Graph {
     constructor() {
         this._graph = [];
     }
+    
+    count() {
+        return this._graph.length;
+    }
+    
+    get(s, p, o) {
+        return this._graph.filter(function (val, ix, array) {
+            return !(typeof s == "string" && val.s != s)
+                && !(typeof p == "string" && val.p != p)
+                && !(typeof o == "string" && val.o != o) 
+        });
+    }
 
     addTriple(triple) {
         this._graph.push(triple);

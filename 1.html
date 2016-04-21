@@ -4,12 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Made with hands</title>
-  <!--<link rel="stylesheet" href="style.css">-->
-  <!--<script src="node_modules/plastiq/plastiq.js"></script>-->
+  
+  <link rel="stylesheet" href="qunit-1.23.1.css">
+  <script src="qunit-1.23.1.js"></script>
+  <script>
+  	var testlib = QUnit;
+  </script>
+  
   <script src="plastiq/plastiq.js"></script>
   <script src="plastiq.js"></script>
   <script src="140medley.js"></script>
+  
   <script src="graph.js"></script>
+  <script src="graph-tests.js"></script>
   <script>
 	var h = plastiq.html;
 	var bind = plastiq.bind;
@@ -146,7 +153,7 @@
 		var model0 = { graph: graph, // defaultTriples, 
 		  	meta: { currentNode: null, previousNode: null, 
               previousNodeNonPredicate: null, previousNodePredicate: null } };
-		plastiq.append(document.body, function (model) { return renderTriples(model); }, model0);
+		plastiq.append($('#plastiq'), function (model) { return renderTriples(model); }, model0);
 
 		setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
     };
@@ -162,7 +169,11 @@
   <textarea id="t" tabindex="-1" disabled="disabled">asdasda</textarea>
 
   <p id="graph">graph<p>
+	  
+  <p id="plastiq"></p>
 
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
 </body>
 </html>
 
