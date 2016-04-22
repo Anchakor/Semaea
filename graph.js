@@ -25,11 +25,11 @@ class Graph {
 
     replaceNode(graphNode, replacement) {
         var node = graphNode.getValue();
-        this._graph = this._graph.map(function (triple2) {
-            return { s: (triple2.s == node) ? replacement : triple2.s,
-                p: (triple2.p == node) ? replacement : triple2.p,
-                o: (triple2.o == node) ? replacement : triple2.o };
-        });
+        for (var i = 0; i < this._graph.length; i++) {
+            if (this._graph[i].s == node) { this._graph[i].s = replacement; }
+            if (this._graph[i].p == node) { this._graph[i].p = replacement; }
+            if (this._graph[i].o == node) { this._graph[i].o = replacement; }
+        }
         graphNode.setValue(replacement);
     }
 }

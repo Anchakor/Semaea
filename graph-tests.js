@@ -46,8 +46,18 @@ testlib.test("GraphNode", function( assert ) {
     assert.strictEqual(gn2.getValue(), "o4b");
     assert.strictEqual(g.get("s4", "p4")[0].o, "o4b");
     
-    var gn3 = new GraphNode(g.get("s", "p3"), "o");
+    var gn2b = new GraphNode(Graph.makeTriple("s4", "p4", "o4b"), "o");
+    g.replaceNode(gn2b, "o4bb");
+    assert.strictEqual(gn2b.getValue(), "o4bb");
+    assert.strictEqual(g.get("s4", "p4")[0].o, "o4bb");
+    
+    var gn3 = new GraphNode(g.get("s", "p3")[0], "o");
     g.replaceNode(gn3, "o3b");
     assert.strictEqual(gn3.getValue(), "o3b");
     assert.strictEqual(g.get("s", "p3")[0].o, "o3b");
+    
+    var gn4 = new GraphNode(g.get("s", "p3")[0], "o");
+    g.replaceNode(gn4, "o3bb");
+    assert.strictEqual(gn4.getValue(), "o3bb");
+    assert.strictEqual(g.get("s", "p3")[0].o, "o3bb");
 });
