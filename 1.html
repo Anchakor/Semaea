@@ -15,6 +15,14 @@
   <script src="plastiq.js"></script>
   <script src="140medley.js"></script>
   
+  <style>
+	  body {
+		  background-color: #202020;
+		  color: #eee;
+		  font: 0.8em sans-serif;
+	  }
+  </style>
+  
   <script src="graph.js"></script>
   <script src="graph-tests.js"></script>
   <script>
@@ -22,15 +30,10 @@
 	var bind = plastiq.bind;
     var refresh = plastiq.html.refresh;
 
-	function partial(fn /*, args...*/) {
-		// A reference to the Array#slice method.
+	function partial(fn /*, ...*/) {
 		var slice = Array.prototype.slice;
-		// Convert arguments object to an array, removing the first argument.
 		var args = slice.call(arguments, 1);
-
 		return function() {
-			// Invoke the originally-specified function, passing in all originally-
-			// specified arguments, followed by any just-specified arguments.
 			return fn.apply(this, args.concat(slice.call(arguments, 0)));
 		};
  	}
@@ -89,7 +92,11 @@
         }
 		var style = {};
 		if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
-			style.color = 'red';
+			style.color = '#4af';
+		}
+		if (model.meta.currentNode && model.meta.currentNode.toString() == graphNode.toString()) {
+			style.color = '#5bf';
+			style.fontWeight = 'bold';
 		}
 		return h('span', {
 				style: style,
@@ -110,11 +117,9 @@
                 } else {
                     model.meta.previousNodePredicate = model.meta.previousNode
                 }
-                model.meta.currentNode = graphNode;
             }
-        } else {
-            model.meta.currentNode = graphNode;
         }
+		model.meta.currentNode = graphNode;
     }
     
     function controllerClick(model, graphNode, e) { 

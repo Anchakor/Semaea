@@ -50,4 +50,8 @@ class GraphNode {
     setValue(value) {
         this.triple[this.position] = value;
     }
+    
+    toString() {
+        return this.position + '$' + this.triple.s + '|' + this.triple.p + '|' + this.triple.o;
+    }
 }
