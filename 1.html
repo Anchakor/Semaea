@@ -22,9 +22,29 @@
       font: 0.8em sans-serif;
     }
     
-    body.modalBlur > *:not(.modal) {
-      filter: blur(8px);
+    .modal {
+      background-color: #225;
+      border: 3px solid #fff;
+      display: inline-block;
+      left: 50%;
+      padding: 0.5em;
+      position: fixed;
+      text-align: justify;
+      top: 40%;
     }
+    
+    .modal-top {
+      z-index: 11;
+    }
+    
+    .modalBackground {
+      background-color: #000;
+      opacity: 0.6;
+      position: fixed;
+      left: 0; top: 0; width: 100%; height: 100%;
+      z-index: 10;
+    }
+
   </style>
   
   <script src="graph.js"></script>
@@ -134,12 +154,35 @@
   
   function controllerKeydown(model, graphNode, e) {
     $('#t').textContent = e.keyCode + ' ' + e.key;
+    if (e.keyCode == 77 /*m*/) {
+      model.modals.push("m");
+    }
     refreshMeta(model, graphNode);
     return !(e.keyCode == 9);
   }
 
   function renderLevelPositionSimple(entity, componentContainerDict) {
     return h('div', entity);
+  }
+
+  function renderModals(model) {
+    return h('div', {
+        class: "modals"
+      }, model.modals.map(function (modal, i, a) {
+        return h('div', {
+          class: "modal" + ((i + 1 == a.length) ? " modal-top" : "")
+        }, modal);
+      }),
+      h('div', {
+        class: (model.modals.length > 0) ? "modalBackground" : ""
+      }));
+  }
+  
+  function renderMain(model) {
+    return h('div',
+      renderTriples(model),
+      renderModals(model)
+      );
   }
 
   var graph = new Graph();
@@ -150,8 +193,9 @@
   window.onload = function () {
     var model0 = { graph: graph, 
       meta: { currentNode: null, previousNode: null, 
-        previousNodeNonPredicate: null, previousNodePredicate: null } };
-    plastiq.append($('#plastiq'), function (model) { return renderTriples(model); }, model0);
+        previousNodeNonPredicate: null, previousNodePredicate: null },
+      modals: [ "testModal"] };
+    plastiq.append($('#plastiq'), function (model) { return renderMain(model); }, model0);
 
     setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
   };
@@ -169,8 +213,6 @@
   <p id="graph">graph<p>
     
   <p id="plastiq"></p>
-  
-  <p id="plastiq-modals"></p>
 
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
