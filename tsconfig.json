@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": false
+  },
+  "files": [
+    "typings/plastiq.d.ts",
+    "graph.ts",
+    "main.ts"
+  ]
+}

@@ -49,12 +49,13 @@
   
   <script src="graph.js"></script>
   <script src="graph-tests.js"></script>
+  <script src="main.js"></script>
   <script>
-  var h = plastiq.html;
+  /*var h = plastiq.html;
   var bind = plastiq.bind;
   var refresh = plastiq.html.refresh;
 
-  function partial(fn /*, ...*/) {
+  function partial(fn     ) {
     var slice = Array.prototype.slice;
     var args = slice.call(arguments, 1);
     return function() {
@@ -154,7 +155,7 @@
   
   function controllerKeydown(model, graphNode, e) {
     $('#t').textContent = e.keyCode + ' ' + e.key;
-    if (e.keyCode == 77 /*m*/) {
+    if (e.keyCode == 77) {
       model.modals.push("m");
     }
     refreshMeta(model, graphNode);
@@ -186,19 +187,19 @@
   }
 
   var graph = new Graph();
-  graph.addTriple(Graph.makeTriple("testS", "testP", "testO"));
-  graph.addTriple(Graph.makeTriple("testS", "testP2", "testO"));
-  graph.addTriple(Graph.makeTriple("testO", "testP3", "testO3"));
+  graph.addTriple(new Triple("testS", "testP", "testO"));
+  graph.addTriple(new Triple("testS", "testP2", "testO"));
+  graph.addTriple(new Triple("testO", "testP3", "testO3"));
 
   window.onload = function () {
     var model0 = { graph: graph, 
       meta: { currentNode: null, previousNode: null, 
         previousNodeNonPredicate: null, previousNodePredicate: null },
-      modals: [ "testModal"] };
+      modals: [] };
     plastiq.append($('#plastiq'), function (model) { return renderMain(model); }, model0);
 
     setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
-  };
+  };*/
   </script>
 </head>
 <body>

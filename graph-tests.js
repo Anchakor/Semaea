@@ -1,5 +1,5 @@
 testlib.test("Triple", function(assert) {
-  var triple = Graph.makeTriple("s", "p", "o");
+  var triple = new Triple("s", "p", "o");
   assert.strictEqual(triple.s, "s");
   assert.strictEqual(triple.p, "p");
   assert.strictEqual(triple.o, "o");
@@ -7,10 +7,10 @@ testlib.test("Triple", function(assert) {
 
 var setupTestGraph = function () {
   var g = new Graph();
-  var triple = Graph.makeTriple("s", "p", "o");
-  var triple2 = Graph.makeTriple("s", "p", "o2");
-  var triple3 = Graph.makeTriple("s", "p3", "o3");
-  var triple4 = Graph.makeTriple("s4", "p4", "o4");
+  var triple = new Triple("s", "p", "o");
+  var triple2 = new Triple("s", "p", "o2");
+  var triple3 = new Triple("s", "p3", "o3");
+  var triple4 = new Triple("s4", "p4", "o4");
   g.addTriple(triple);
   g.addTriple(triple2);
   g.addTriple(triple3);
@@ -37,7 +37,7 @@ testlib.test("Graph", function(assert) {
 
 testlib.test("GraphNode", function(assert) {   
   var g = setupTestGraph();
-  var gn = new GraphNode(Graph.makeTriple("sx", "px", "ox"), "o");
+  var gn = new GraphNode(new Triple("sx", "px", "ox"), "o");
   assert.strictEqual(gn.getValue(), "ox");
   
   assert.strictEqual(gn.toString(), "o$sx|px|ox");
@@ -45,12 +45,12 @@ testlib.test("GraphNode", function(assert) {
   gn.setValue("ox2");
   assert.strictEqual(gn.getValue(), "ox2");
   
-  var gn2 = new GraphNode(Graph.makeTriple("s4", "p4", "o4"), "o");
+  var gn2 = new GraphNode(new Triple("s4", "p4", "o4"), "o");
   g.replaceNode(gn2, "o4b");
   assert.strictEqual(gn2.getValue(), "o4b");
   assert.strictEqual(g.get("s4", "p4")[0].o, "o4b");
   
-  var gn2b = new GraphNode(Graph.makeTriple("s4", "p4", "o4b"), "o");
+  var gn2b = new GraphNode(new Triple("s4", "p4", "o4b"), "o");
   g.replaceNode(gn2b, "o4bb");
   assert.strictEqual(gn2b.getValue(), "o4bb");
   assert.strictEqual(g.get("s4", "p4")[0].o, "o4bb");

@@ -1,13 +1,27 @@
+class Triple {
+  s: string
+  p: string
+  o: string
+  
+  constructor(s: string, p: string, o: string) {
+    this.s = s;
+    this.p = p;
+    this.o = o;
+  }
+}
+
 class Graph {
+  protected _graph: Array<Triple>
+  
   constructor() {
     this._graph = [];
   }
   
-  count() {
+  count(): number {
     return this._graph.length;
   }
   
-  get(s, p, o) {
+  get(s: string, p: string, o: string) {
     return this._graph.filter(function (val, ix, array) {
       return !(typeof s == "string" && val.s != s)
         && !(typeof p == "string" && val.p != p)
@@ -15,15 +29,11 @@ class Graph {
     });
   }
 
-  addTriple(triple) {
+  addTriple(triple: Triple) {
     this._graph.push(triple);
   }
 
-  static makeTriple(s, p, o) {
-    return {s: s, p: p, o: o};
-  }
-
-  replaceNode(graphNode, replacement) {
+  replaceNode(graphNode: GraphNode, replacement: string) {
     var node = graphNode.getValue();
     for (var i = 0; i < this._graph.length; i++) {
       if (this._graph[i].s == node) { this._graph[i].s = replacement; }
@@ -35,23 +45,26 @@ class Graph {
 }
 
 class GraphNode {
-  constructor(triple, position) {
+  protected triple: Triple
+  protected position: string
+  
+  constructor(triple: Triple, position: string) {
     this.triple = triple;
     this.position = position;
   }
   
-  getValue() {
+  getValue(): string {
     if (!this.triple || !this.position) {
       return null;
     }
     return this.triple[this.position];
   }
   
-  setValue(value) {
+  setValue(value: string) {
     this.triple[this.position] = value;
   }
   
-  toString() {
+  toString(): string {
     return this.position + '$' + this.triple.s + '|' + this.triple.p + '|' + this.triple.o;
   }
 }
