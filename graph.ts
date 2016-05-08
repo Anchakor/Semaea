@@ -21,7 +21,7 @@ class Graph {
     return this._graph.length;
   }
   
-  get(s: string, p: string, o: string) {
+  get(s: string = null, p: string = null, o: string = null) {
     return this._graph.filter(function (val, ix, array) {
       return !(typeof s == "string" && val.s != s)
         && !(typeof p == "string" && val.p != p)

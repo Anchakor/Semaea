@@ -1,6 +1,7 @@
 
 
 declare var $: any;
+declare var testlib: QUnitStatic;
 
 var h = plastiq.html;
 var bind = plastiq.bind;
