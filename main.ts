@@ -5,7 +5,6 @@ declare var testlib: QUnitStatic;
 
 var h = plastiq.html;
 var bind = plastiq.bind;
-var refresh = plastiq.html.refresh;
 
 function partial(fn, ...a) {
   var slice = Array.prototype.slice;
@@ -105,13 +104,56 @@ function controllerClick(model, graphNode, e) {
   return true;
 }
 
-function controllerKeydown(model, graphNode, e) {
+function formGetString(model) {
+  var pastFocus = document.activeElement;
+  var p = new Promise<string>(function (resolve, reject) {
+    var position = model.modals.length;
+    var form = h('div', 
+      h('input', {
+        type: 'text', id: 'modal'+position,
+        onkeydown: function (e: KeyboardEvent) {
+          if (e.keyCode == 13 /*enter*/) {
+            closeModal(model, form);
+            (<HTMLElement>pastFocus).focus();
+            resolve((<HTMLInputElement>e.target).value)
+            return false;
+          }
+          return true;
+        }
+      })
+    );
+    model.modals.push(form);
+    model.elemIdToFocus = 'modal'+position;
+  }); 
+  //plastiq.html.refreshAfter(p);
+  return p;
+}
+
+function closeModal(model, modal) {
+  model.modals = (<Array<any>>model.modals).filter(function (val, ix) {
+      return val != modal;
+    });
+  model.refresh();
+}
+
+function modalTest(model) {
+  return h('div', 'asdasd');
+}
+
+function keyPressedM(model) {
+  formGetString(model).then(function (value) {
+    window.alert('WOOOO '+value);
+  });
+  //model.modals.push(modalTest(model));
+}
+
+function controllerKeydown(model, graphNode: GraphNode, e: KeyboardEvent) {
   $('#t').textContent = e.keyCode + ' ' + e.key;
   if (e.keyCode == 77 /*m*/) {
-    model.modals.push("m");
+    keyPressedM(model);
   }
   refreshMeta(model, graphNode);
-  return !(e.keyCode == 9);
+  return !(e.keyCode == 9 /*tab*/);
 }
 
 function renderLevelPositionSimple(entity, componentContainerDict) {
@@ -132,10 +174,22 @@ function renderModals(model) {
 }
 
 function renderMain(model) {
+  model.refresh = plastiq.html.refresh;
+  focusElemIdToFocus(model);
+  
   return h('div',
     renderTriples(model),
     renderModals(model)
     );
+}
+
+function focusElemIdToFocus(model) {
+  setTimeout(function () {
+    if (model.elemIdToFocus != null && model.elemIdToFocus != '') {
+      var elem = $('#'+model.elemIdToFocus)
+      if (elem != null) { elem.focus(); }
+    }
+  }, 0);
 }
 
 var graph = new Graph();
@@ -144,7 +198,8 @@ graph.addTriple(new Triple("testS", "testP2", "testO"));
 graph.addTriple(new Triple("testO", "testP3", "testO3"));
 
 window.onload = function () {
-  var model0 = { graph: graph, 
+  var model0 = { elemIdToFocus: null,
+    graph: graph, 
     meta: { currentNode: null, previousNode: null, 
       previousNodeNonPredicate: null, previousNodePredicate: null },
     modals: [] };
