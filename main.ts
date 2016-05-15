@@ -14,36 +14,15 @@ function partial(fn, ...a) {
   };
 }
 
-//function newCC(component) {
-//	var componentContainer = { _instances: new Array() };
-//	componentContainer._function = partial(component, componentContainer._instances);
-//	return componentContainer;
-//}
-
-//function useCC(componentContainer) {
-//	var component = h.component(componentContainer._function);
-//	componentContainer._instances.push(component);
-//	return component;
-//}
-
-//function democomp(instances, model) {
-//	return h('button', {onclick: function () { 
-//				model.counter++;
-//				return instances; 
-//			}}, 'refresh components');
-//}
-
-
 function hashSetHasKey(hashSet, key) {
   return hashSet.hasOwnProperty(key);
 }
 
-function renderTriples(model) {
+function renderTriples(model: Model) {
   return renderLevel(model, 0);
 }
-function renderLevel(model, depth) {
-
-  return h('div', model.graph._graph.map(function (triple) {
+function renderLevel(model: Model, depth) {
+  return h('div', model.graph.get().map(function (triple: Triple) {
     return h('div',
       renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
       renderLevelPosition(model, new GraphNode(triple, 'p')), ' ',
@@ -54,8 +33,8 @@ function renderLevel(model, depth) {
 function renderLevelPosition(model, graphNode) {
   return entityController(model, graphNode);   
 }
-function entityController(model, graphNode) {
-  var controllerEventHandler = function (handler, model, graphNode) {
+function entityController(model: Model, graphNode: GraphNode) {
+  var controllerEventHandler = function (handler, model: Model, graphNode: GraphNode) {
     return function (e) {
       if (partial(handler, model, graphNode).apply(this, arguments)) {
         if (e.preventDefault) {
@@ -83,7 +62,7 @@ function entityController(model, graphNode) {
     }, graphNode.getValue());
 }
 
-function refreshMeta(model, graphNode) {
+function refreshMeta(model: Model, graphNode: GraphNode) {
   if (!graphNode) { return; }
   if (model.meta.currentNode) {
     if (model.meta.currentNode.getValue() != graphNode.getValue()) {
@@ -98,13 +77,13 @@ function refreshMeta(model, graphNode) {
   model.meta.currentNode = graphNode;
 }
 
-function controllerClick(model, graphNode, e) { 
+function controllerClick(model: Model, graphNode: GraphNode, e: MouseEvent) { 
   model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
   refreshMeta(model, graphNode);
   return true;
 }
 
-function formGetString(model) {
+function formGetString(model: Model) {
   var pastFocus = document.activeElement;
   var p = new Promise<string>(function (resolve, reject) {
     var position = model.modals.length;
@@ -129,25 +108,25 @@ function formGetString(model) {
   return p;
 }
 
-function closeModal(model, modal) {
-  model.modals = (<Array<any>>model.modals).filter(function (val, ix) {
+function closeModal(model: Model, modal) {
+  model.modals = (model.modals).filter(function (val, ix) {
       return val != modal;
     });
   model.refresh();
 }
 
-function modalTest(model) {
+function modalTest(model: Model) {
   return h('div', 'asdasd');
 }
 
-function keyPressedM(model) {
+function keyPressedM(model: Model) {
   formGetString(model).then(function (value) {
     window.alert('WOOOO '+value);
   });
   //model.modals.push(modalTest(model));
 }
 
-function controllerKeydown(model, graphNode: GraphNode, e: KeyboardEvent) {
+function controllerKeydown(model: Model, graphNode: GraphNode, e: KeyboardEvent) {
   $('#t').textContent = e.keyCode + ' ' + e.key;
   if (e.keyCode == 77 /*m*/) {
     keyPressedM(model);
@@ -160,7 +139,7 @@ function renderLevelPositionSimple(entity, componentContainerDict) {
   return h('div', entity);
 }
 
-function renderModals(model) {
+function renderModals(model: Model) {
   return h('div', {
       class: "modals"
     }, model.modals.map(function (modal, i, a) {
@@ -173,7 +152,7 @@ function renderModals(model) {
     }));
 }
 
-function renderMain(model) {
+function renderMain(model: Model) {
   model.refresh = plastiq.html.refresh;
   focusElemIdToFocus(model);
   
@@ -183,7 +162,7 @@ function renderMain(model) {
     );
 }
 
-function focusElemIdToFocus(model) {
+function focusElemIdToFocus(model: Model) {
   setTimeout(function () {
     if (model.elemIdToFocus != null && model.elemIdToFocus != '') {
       var elem = $('#'+model.elemIdToFocus)
@@ -197,13 +176,22 @@ graph.addTriple(new Triple("testS", "testP", "testO"));
 graph.addTriple(new Triple("testS", "testP2", "testO"));
 graph.addTriple(new Triple("testO", "testP3", "testO3"));
 
+interface Model {
+  refresh: () => void
+  elemIdToFocus: string
+  graph: Graph
+  meta: any
+  modals: Array<any>
+}
+
 window.onload = function () {
-  var model0 = { elemIdToFocus: null,
+  var model0: Model = { refresh: null,
+    elemIdToFocus: null,
     graph: graph, 
     meta: { currentNode: null, previousNode: null, 
       previousNodeNonPredicate: null, previousNodePredicate: null },
     modals: [] };
-  plastiq.append($('#plastiq'), function (model) { return renderMain(model); }, model0);
+  plastiq.append($('#plastiq'), function (model: Model) { return renderMain(model); }, model0);
 
   setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
 };
