@@ -2,13 +2,14 @@
   "compilerOptions": {
     "target": "ES6",
     "allowSyntheticDefaultImports": true,
-    "allowJs": false
+    "allowJs": false,
+    "outDir": "output"
   },
   "files": [
     "typings/plastiq.d.ts",
     "typings/qunit.d.ts",
-    "graph.ts",
-    "graph-tests.ts",
-    "main.ts"
+    "src/graph.ts",
+    "src/graph-tests.ts",
+    "src/main.ts"
   ]
 }
