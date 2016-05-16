@@ -1,2 +1,4 @@
 #/bin/sh
-tsc -p . ; cat output/* > semaea.js
+rm output/*
+tsc -p .
+cat output/* > semaea.js
