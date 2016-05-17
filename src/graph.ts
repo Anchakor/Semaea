@@ -34,8 +34,8 @@ class Graph {
   }
 
   replaceNode(graphNode: GraphNode, replacement: string) {
-    var node = graphNode.getValue();
-    for (var i = 0; i < this._graph.length; i++) {
+    const node = graphNode.getValue();
+    for (let i = 0; i < this._graph.length; i++) {
       if (this._graph[i].s == node) { this._graph[i].s = replacement; }
       if (this._graph[i].p == node) { this._graph[i].p = replacement; }
       if (this._graph[i].o == node) { this._graph[i].o = replacement; }

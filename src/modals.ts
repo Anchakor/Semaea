@@ -2,7 +2,7 @@ class Modals {
   static render(model: Model) {
     return h('div', {
         class: "modals"
-      }, model.modals.map(function (modal, i, a) {
+      }, model.modals.map((modal, i, a) => {
         return h('div', {
           class: "modal" + ((i + 1 == a.length) ? " modal-top" : "")
         }, modal);
@@ -13,17 +13,17 @@ class Modals {
   }
   
   static closeModal(model: Model, modal) {
-    model.modals = (model.modals).filter(function (val, ix) {
+    model.modals = (model.modals).filter((val, ix) => {
         return val != modal;
       });
     model.refresh();
   }
   
   static formGetString(model: Model) {
-    var pastFocus = document.activeElement;
-    var p = new Promise<string>(function (resolve, reject) {
-      var position = model.modals.length;
-      var form = h('div', 
+    const pastFocus = document.activeElement;
+    const p = new Promise<string>((resolve, reject) => {
+      const position = model.modals.length;
+      const form = h('div', 
         h('input', {
           type: 'text', id: 'modal'+position,
           onkeydown: function (e: KeyboardEvent) {

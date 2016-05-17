@@ -4,7 +4,7 @@ class TripleView {
   }
   
   static renderLevel(model: Model, depth) {
-    return h('div', model.graph.get().map(function (triple: Triple) {
+    return h('div', model.graph.get().map((triple: Triple) => {
       return h('div',
         TripleView.renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
         TripleView.renderLevelPosition(model, new GraphNode(triple, 'p')), ' ',

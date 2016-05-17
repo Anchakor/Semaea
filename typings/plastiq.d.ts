@@ -4,7 +4,7 @@ interface Plastiq {
   append(element: Element, renderFn: (model) => any, model: any): void
 }
 
-declare var plastiq: Plastiq
+declare const plastiq: Plastiq
 
 declare module "plastiq" {
   export = plastiq

@@ -1,10 +1,10 @@
 
 
-declare var $: any;
-declare var testlib: QUnitStatic;
+declare const $: any;
+declare const testlib: QUnitStatic;
 
-var h = plastiq.html;
-var bind = plastiq.bind;
+const h = plastiq.html;
+const bind = plastiq.bind;
 
 function renderMain(model: Model) {
   model.refresh = plastiq.html.refresh;
@@ -17,15 +17,15 @@ function renderMain(model: Model) {
 }
 
 function focusElemIdToFocus(model: Model) {
-  setTimeout(function () {
+  setTimeout(() => {
     if (model.elemIdToFocus != null && model.elemIdToFocus != '') {
-      var elem = $('#'+model.elemIdToFocus)
+      const elem = $('#'+model.elemIdToFocus)
       if (elem != null) { elem.focus(); }
     }
   }, 0);
 }
 
-var graph = new Graph();
+const graph = new Graph();
 graph.addTriple(new Triple("testS", "testP", "testO"));
 graph.addTriple(new Triple("testS", "testP2", "testO"));
 graph.addTriple(new Triple("testO", "testP3", "testO3"));
@@ -39,13 +39,13 @@ interface Model {
 }
 
 window.onload = function () {
-  var model0: Model = { refresh: null,
+  const model0: Model = { refresh: null,
     elemIdToFocus: null,
     graph: graph, 
     meta: { currentNode: null, previousNode: null, 
       previousNodeNonPredicate: null, previousNodePredicate: null },
     modals: [] };
-  plastiq.append($('#plastiq'), function (model: Model) { return renderMain(model); }, model0);
+  plastiq.append($('#plastiq'), (model: Model) => { return renderMain(model); }, model0);
 
-  setInterval(function() { $('#graph').textContent = JSON.stringify(model0); }, 1000);
+  setInterval(() => { $('#graph').textContent = JSON.stringify(model0); }, 1000);
 };
