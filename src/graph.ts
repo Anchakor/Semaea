@@ -45,26 +45,30 @@ class Graph {
 }
 
 class GraphNode {
-  protected triple: Triple
-  protected position: string
+  protected _triple: Triple
+  protected _position: string
+  
+  public get position() : string {
+    return this._position;
+  }
   
   constructor(triple: Triple, position: string) {
-    this.triple = triple;
-    this.position = position;
+    this._triple = triple;
+    this._position = position;
   }
   
   getValue(): string {
-    if (!this.triple || !this.position) {
+    if (!this._triple || !this._position) {
       return null;
     }
-    return this.triple[this.position];
+    return this._triple[this._position];
   }
   
   setValue(value: string) {
-    this.triple[this.position] = value;
+    this._triple[this._position] = value;
   }
   
   toString(): string {
-    return this.position + '$' + this.triple.s + '|' + this.triple.p + '|' + this.triple.o;
+    return this._position + '$' + this._triple.s + '|' + this._triple.p + '|' + this._triple.o;
   }
 }

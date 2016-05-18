@@ -10,11 +10,13 @@
     "typings/qunit.d.ts",
     "src/graph.ts",
     "src/graph-tests.ts",
+    "src/model.ts",
     "src/main.ts",
     "src/utils.ts",
-    "src/entityController.ts",
+    "src/mainView.ts",
     "src/graphView.ts",
-    "src/tripleView.ts",
+    "src/entityView.ts",
+    "src/modalsView.ts",
     "src/modals.ts"
   ]
 }
