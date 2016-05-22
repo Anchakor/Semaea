@@ -3,9 +3,6 @@ node_modules_rmd/*
 plastiq-master/*
 output/*
 semaea.js
-140medley.js
-plastiq*
-qunit*
 build-plastiq.sh
 .vscode/launch.json
 .vscode/settings.json
