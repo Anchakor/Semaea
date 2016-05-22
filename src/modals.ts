@@ -1,13 +1,17 @@
 namespace Modals {
   
-  type CloseFormFunction<T> = (form: any, isResolved: boolean, resolveRejectValue: T) => void
-  type FormFunction<T> = (closeForm: CloseFormFunction<T>, elementIdToBeFocused: string) => any
+  interface ICloseFormFunction<T> {
+    (form: any, isResolved: boolean, resolveRejectValue: T): void
+  }
+  interface IFormFunction<T> {
+    (closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string): any
+  }
   
-  function makeForm<T>(model: Model, formFunction: FormFunction<T>) {
+  function makeForm<T>(model: Model, formFunction: IFormFunction<T>) {
     const pastFocus = document.activeElement;
     const p = new Promise<T>((resolve, reject) => {
       const modalPosition = model.modals.length;
-      const closeForm = (formToClose: any, isResolved: boolean, resolveRejectValue: T) => {
+      const closeForm: ICloseFormFunction<T> = (formToClose: any, isResolved: boolean, resolveRejectValue: T) => {
         ModalsView.closeModal(model, formToClose);
         (<HTMLElement>pastFocus).focus();
         if (isResolved) {
@@ -25,7 +29,7 @@ namespace Modals {
   }
   
   export function formGetString(model: Model) {
-    const formFunction = function (closeForm: CloseFormFunction<string>, elementIdToBeFocused: string) {
+    const formFunction: IFormFunction<string> = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
       const form = h('div', 
         h('input', {
           type: 'text', id: elementIdToBeFocused,
