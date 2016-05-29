@@ -41,11 +41,11 @@ namespace EntityView {
 
   function controllerKeydown(model: Model, graphNode: GraphNode, e: KeyboardEvent) {
     $('#t').textContent = e.keyCode + ' ' + e.key;
-    if (e.keyCode == 77 /*m*/) {
+    if (Key.isM(e)) {
       keyPressedM(model);
     }
     GraphView.changeCurrentNode(model, graphNode);
-    return !(e.keyCode == 9 /*tab*/);
+    return !(Key.isTab(e));
   }
 
   function keyPressedM(model: Model) {

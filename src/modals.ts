@@ -34,7 +34,7 @@ namespace Modals {
         h('input', {
           type: 'text', id: elementIdToBeFocused,
           onkeydown: function (e: KeyboardEvent) {
-            if (e.keyCode == 13 /*enter*/) {
+            if (Key.isEnter(e)) {
               closeForm(form, true, (<HTMLInputElement>e.target).value);
               return false;
             }
