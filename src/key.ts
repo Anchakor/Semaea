@@ -1,13 +1,13 @@
 /** Check for keys pressed by like: Key.isUpArrow(e) */
 namespace Key {
-	export function isBackspace(e: KeyboardEvent) { return (e.keyCode == 8); }
+  export function isBackspace(e: KeyboardEvent) { return (e.keyCode == 8); }
   export function isTab(e: KeyboardEvent) { return (e.keyCode == 9); }
   export function isEnter(e: KeyboardEvent) { return (e.keyCode == 13); }
-	/** use like: if (e.shiftKey && Key.isUpArrow(e)) */
+  /** alternative: if (e.shiftKey && Key.isUpArrow(e)) */
   export function isShift(e: KeyboardEvent) { return (e.keyCode == 16); }
-	/** use like: if (e.ctrlKey && Key.isUpArrow(e)) */
+  /** alternative: if (e.ctrlKey && Key.isUpArrow(e)) */
   export function isCtrl(e: KeyboardEvent) { return (e.keyCode == 17); }
-	/** use like: if (e.altKey && Key.isUpArrow(e)) */
+  /** alternative: if (e.altKey && Key.isUpArrow(e)) */
   export function isAlt(e: KeyboardEvent) { return (e.keyCode == 18); }
   export function isPauseBreak(e: KeyboardEvent) { return (e.keyCode == 19); }
   export function isCapsLock(e: KeyboardEvent) { return (e.keyCode == 20); }
