@@ -29,7 +29,7 @@ namespace Modals {
   }
   
   export function formGetString(model: Model) {
-    const formFunction: IFormFunction<string> = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
+    const formFunction = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
       const form = h('div', 
         h('input', {
           type: 'text', id: elementIdToBeFocused,
@@ -45,5 +45,36 @@ namespace Modals {
       return form;
     }
     return makeForm(model, formFunction);
+  }
+  
+  export function getGetStringAutocomplete(model: Model, entries: Array<any>) {
+    const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
+      const form = h('div', 
+        h('input', {
+          type: 'text', id: elementIdToBeFocused,
+          onkeydown: function (e: KeyboardEvent) {
+            if (Key.isEnter(e)) {
+              closeForm(form, true, (<HTMLInputElement>e.target).value);
+              return false;
+            }
+            return true;
+          }
+        }),
+        entries.map((val, ix, arr) => {
+          return menuEntryView(entries, ix, false);
+        })
+      );
+      return form;
+    }
+    return makeForm(model, Utils.partial(formFunction, entries));
+  }
+  
+  function menuEntryView(menuList: Array<any>, entryId: number, selected: boolean = false) {
+    return h('div',
+      {
+        class: 'menuEntry' + (selected) ? '-selected' : ''
+      },
+      menuList[entryId]
+    );
   }
 }
