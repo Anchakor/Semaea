@@ -1,11 +1,17 @@
-interface Plastiq {
-  html: any
-  bind: any
-  append(element: Element, renderFn: (model) => any, model: any): void
-}
+declare const plastiq: Plastiq.Plastiq
 
-declare const plastiq: Plastiq
+declare namespace Plastiq {
+  interface Plastiq {
+    html: HtmlModule
+    bind: any
+    append(element: Element, renderFn: (model) => any, model: any): void
+  }
+  
+  interface HtmlModule {
+    (...a): VNode
+    refresh: () => void
+  }
 
-declare module "plastiq" {
-  export = plastiq
+  interface VNode {
+  }
 }

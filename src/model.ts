@@ -3,7 +3,7 @@ class Model {
   elemIdToFocus: string
   graph: Graph = null
   meta: ModelMeta = new ModelMeta()
-  modals: Array<any> = []
+  modals: Array<IComponent> = []
   
   constructor(graph: Graph) {
     this.graph = graph;
@@ -15,4 +15,9 @@ class ModelMeta {
   previousNode: GraphNode = null
   previousNodeNonPredicate: GraphNode = null
   previousNodePredicate: GraphNode = null
+}
+  
+interface IComponent {
+  render: (IComponent) => Plastiq.VNode
+  [others: string]: any
 }
