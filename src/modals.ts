@@ -49,44 +49,74 @@ namespace Modals {
   }
   
   export namespace Autocomplete {
+    class Form implements IComponent {
+      render: (form: Form) => Plastiq.VNode
+      currentText = 'default'
+      writtenText = 'default'
+      selectedIdx = -1
+      entries: Array<any> = []
+    }
+    
+    function selectionChange(form: Form, change: number) {
+      const naiveNewIdx = form.selectedIdx + change;
+      const totalLength = form.entries.length + 1;
+      const newIdx = ((totalLength + (naiveNewIdx + 1)) % totalLength) - 1;
+      if (newIdx == -1) {
+        form.currentText = form.writtenText;
+      } else {
+        form.currentText = form.entries[newIdx];
+      }
+      form.selectedIdx = newIdx;
+    }
+    
     export function getGetStringAutocomplete(model: Model, entries: Array<any>) {
       const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
-        const form = { 
-          selectedIdx: 0,
-          render: (formArg) => { return h('div', 
+        const form = new Form();
+        form.entries = entries;
+        form.render = (thisForm) => { return h('div', 
             h('input', {
-              type: 'text', id: elementIdToBeFocused,
+              type: 'text', 
+              id: elementIdToBeFocused,
+              binding: { 
+                get: () => { return thisForm.currentText; },
+                set: (value) => { 
+                    thisForm.writtenText = value;
+                    thisForm.currentText = value;
+                  }
+              },
+              value: thisForm.currentText,
               onkeydown: function (e: KeyboardEvent) {
                 if (Key.isEnter(e)) {
-                  closeForm(formArg, true, (<HTMLInputElement>e.target).value);
+                  closeForm(thisForm, true, (<HTMLInputElement>e.target).value);
                   return false;
                 }
                 else if (Key.isDownArrow(e)) {
-                  formArg.selectedIdx++;
+                  selectionChange(thisForm, 1);
                   //model.refresh();
                 }
                 else if (Key.isUpArrow(e)) {
-                  formArg.selectedIdx--;
+                  selectionChange(thisForm, -1);
                   //model.refresh();
                 }
                 return true;
               }
             }),
-            entries.map((val, ix, arr) => {
-              return menuEntryView(entries, ix, (ix == formArg.selectedIdx));
+            thisForm.currentText, // TODO remove
+            thisForm.entries.map((val, ix, arr) => {
+              return menuEntryView(thisForm, ix, (ix == thisForm.selectedIdx));
             })
-          )}};
+          )};
         return form;
       }
       return makeForm(model, Utils.partial(formFunction, entries));
     }
     
-    function menuEntryView(menuList: Array<any>, entryId: number, selected: boolean = false) {
+    function menuEntryView(form: Form, entryId: number, selected: boolean = false) {
       return h('div',
         {
           class: 'menuEntry' + ((selected) ? '-selected' : '')
         },
-        menuList[entryId]
+        form.entries[entryId]
       );
     }
   }
