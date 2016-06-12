@@ -59,8 +59,12 @@ namespace Modals {
     
     function selectionChange(form: Form, change: number) {
       const naiveNewIdx = form.selectedIdx + change;
+      setSelection(form, naiveNewIdx);
+    }
+
+    function setSelection(form: Form, index: number) {
       const totalLength = form.entries.length + 1;
-      const newIdx = ((totalLength + (naiveNewIdx + 1)) % totalLength) - 1;
+      const newIdx = ((totalLength + (index + 1)) % totalLength) - 1;
       if (newIdx == -1) {
         form.currentText = form.writtenText;
       } else {
@@ -73,8 +77,8 @@ namespace Modals {
       const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
         const form = new Form();
         form.entries = entries;
-        form.render = (thisForm) => { return h('div', 
-            h('input', {
+        form.render = (thisForm) => { 
+          const inputBox = h('input', {
               type: 'text', 
               id: elementIdToBeFocused,
               binding: { 
@@ -86,26 +90,38 @@ namespace Modals {
               },
               value: thisForm.currentText,
               onkeydown: function (e: KeyboardEvent) {
-                if (Key.isEnter(e)) {
+                if (Key.isEscape(e)) {
+                  closeForm(thisForm, true, '');
+                  return false;
+                }
+                else if (Key.isEnter(e)) {
                   closeForm(thisForm, true, (<HTMLInputElement>e.target).value);
                   return false;
                 }
                 else if (Key.isDownArrow(e)) {
                   selectionChange(thisForm, 1);
-                  //model.refresh();
                 }
                 else if (Key.isUpArrow(e)) {
                   selectionChange(thisForm, -1);
-                  //model.refresh();
                 }
                 return true;
               }
-            }),
-            thisForm.currentText, // TODO remove
-            thisForm.entries.map((val, ix, arr) => {
+            });
+          const submitButton = h('button', {
+              onclick: function (e: MouseEvent) {
+                closeForm(thisForm, true, $('#'+elementIdToBeFocused).value);
+              }
+            }, "O");
+          const cancelButton = h('button', {
+              onclick: function (e: MouseEvent) {
+                closeForm(thisForm, true, '');
+              }
+            }, "X");
+          const menuEntries = thisForm.entries.map((val, ix, arr) => {
               return menuEntryView(thisForm, ix, (ix == thisForm.selectedIdx));
-            })
-          )};
+            });
+          return h('div', inputBox, submitButton, cancelButton, menuEntries)
+        };
         return form;
       }
       return makeForm(model, Utils.partial(formFunction, entries));
@@ -114,7 +130,10 @@ namespace Modals {
     function menuEntryView(form: Form, entryId: number, selected: boolean = false) {
       return h('div',
         {
-          class: 'menuEntry' + ((selected) ? '-selected' : '')
+          class: 'menuEntry' + ((selected) ? '-selected' : ''),
+          onclick: function (e: MouseEvent) {
+            setSelection(form, entryId);
+          }
         },
         form.entries[entryId]
       );
