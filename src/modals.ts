@@ -51,92 +51,103 @@ namespace Modals {
   export namespace Autocomplete {
     class Form implements IComponent {
       render: (form: Form) => Plastiq.VNode
+      submit: () => void
+      close: () => void
+
       currentText = 'default'
       writtenText = 'default'
+      setWrittenText = (value: string) => {
+        this.writtenText = value;
+        this.currentText = value;
+      }
       selectedIdx = -1
       entries: Array<any> = []
-    }
-    
-    function selectionChange(form: Form, change: number) {
-      const naiveNewIdx = form.selectedIdx + change;
-      setSelection(form, naiveNewIdx);
-    }
-
-    function setSelection(form: Form, index: number) {
-      const totalLength = form.entries.length + 1;
-      const newIdx = ((totalLength + (index + 1)) % totalLength) - 1;
-      if (newIdx == -1) {
-        form.currentText = form.writtenText;
-      } else {
-        form.currentText = form.entries[newIdx];
+      selectionChange = (change: number) => {
+        const naiveNewIdx = this.selectedIdx + change;
+        this.setSelection(naiveNewIdx);
       }
-      form.selectedIdx = newIdx;
+      setSelection = (index: number) => {
+        const totalLength = this.entries.length + 1;
+        const newIdx = ((totalLength + (index + 1)) % totalLength) - 1;
+        if (newIdx == -1) {
+          this.currentText = this.writtenText;
+        } else {
+          this.currentText = this.entries[newIdx];
+        }
+        this.selectedIdx = newIdx;
+      }
     }
     
     export function getGetStringAutocomplete(model: Model, entries: Array<any>) {
       const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
         const form = new Form();
         form.entries = entries;
+        form.close = function() {
+          closeForm(this, true, '');
+        };
+        form.submit = function() {
+          closeForm(this, true, $('#'+elementIdToBeFocused).value);
+        };
         form.render = (thisForm) => { 
           const inputBox = h('input', {
               type: 'text', 
               id: elementIdToBeFocused,
               binding: { 
                 get: () => { return thisForm.currentText; },
-                set: (value) => { 
-                    thisForm.writtenText = value;
-                    thisForm.currentText = value;
-                  }
+                set: (value) => { thisForm.setWrittenText(value); }
               },
               value: thisForm.currentText,
               onkeydown: function (e: KeyboardEvent) {
                 if (Key.isEscape(e)) {
-                  closeForm(thisForm, true, '');
+                  thisForm.close();
                   return false;
                 }
                 else if (Key.isEnter(e)) {
-                  closeForm(thisForm, true, (<HTMLInputElement>e.target).value);
+                  thisForm.submit();
                   return false;
                 }
                 else if (Key.isDownArrow(e)) {
-                  selectionChange(thisForm, 1);
+                  thisForm.selectionChange(1);
                 }
                 else if (Key.isUpArrow(e)) {
-                  selectionChange(thisForm, -1);
+                  thisForm.selectionChange(-1);
                 }
                 return true;
               }
             });
           const submitButton = h('button', {
               onclick: function (e: MouseEvent) {
-                closeForm(thisForm, true, $('#'+elementIdToBeFocused).value);
+                thisForm.submit();
               }
             }, "O");
           const cancelButton = h('button', {
               onclick: function (e: MouseEvent) {
-                closeForm(thisForm, true, '');
+                thisForm.close();
               }
             }, "X");
+          const menuEntryView = (entryId: number, selected: boolean) => {
+            return h('div',
+              {
+                class: 'menuEntry' + ((selected) ? '-selected' : ''),
+                onclick: function (e: MouseEvent) {
+                  if (!selected) {
+                    thisForm.setSelection(entryId);
+                  } else {
+                    thisForm.submit();
+                  }
+                }
+              },
+              thisForm.entries[entryId]
+            );
+          };
           const menuEntries = thisForm.entries.map((val, ix, arr) => {
-              return menuEntryView(thisForm, ix, (ix == thisForm.selectedIdx));
+              return menuEntryView(ix, (ix == thisForm.selectedIdx));
             });
           return h('div', inputBox, submitButton, cancelButton, menuEntries)
         };
         return form;
       }
       return makeForm(model, Utils.partial(formFunction, entries));
-    }
-    
-    function menuEntryView(form: Form, entryId: number, selected: boolean = false) {
-      return h('div',
-        {
-          class: 'menuEntry' + ((selected) ? '-selected' : ''),
-          onclick: function (e: MouseEvent) {
-            setSelection(form, entryId);
-          }
-        },
-        form.entries[entryId]
-      );
     }
   }
 }
