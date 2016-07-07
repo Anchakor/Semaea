@@ -31,22 +31,28 @@ namespace Modals {
         this.selectedIdx = newIdx;
       }
     }
+
+    export class Result<T> {
+      constructor(text: string, value: T) {
+        this.text = text;
+        this.value = value;
+      }
+
+      text: string
+      value: T
+    }
     
     export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '') {
-      const formFunction = function (label: string, entries: Array<T>, closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string) {
+      const formFunction = function (label: string, entries: Array<T>, closeForm: ICloseFormFunction<Result<T>>, elementIdToBeFocused: string) {
         const form = new Form();
         form.textElementId = elementIdToBeFocused;
         form.label = label
         form.entries = entries;
         form.close = function() {
-          closeForm(this, true, null);
+          closeForm(this, true, new Result<T>('', null));
         };
         form.submit = function() {
-          if (form.selectedIdx == -1) {
-            closeForm(this, true, $('#'+form.textElementId).value);
-          } else {
-            closeForm(this, true, <T>form.entries[form.selectedIdx]);
-          }
+          closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]));
         };
         form.render = (thisForm: Form) => { 
           const inputBox = h('input', {
@@ -108,7 +114,7 @@ namespace Modals {
         };
         return form;
       }
-      return makeForm<T>(model, Utils.partial(formFunction, label, entries));
+      return makeForm<Result<T>>(model, Utils.partial(formFunction, label, entries));
     }
   }
 }
