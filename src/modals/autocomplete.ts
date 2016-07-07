@@ -6,6 +6,7 @@ namespace Modals {
       submit: () => void
       close: () => void
 
+      label = ''
       textElementId = ''
       currentText = 'default'
       writtenText = 'default'
@@ -31,10 +32,11 @@ namespace Modals {
       }
     }
     
-    export function getGetStringAutocomplete(model: Model, entries: Array<any>) {
-      const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
+    export function getGetStringAutocomplete(model: Model, entries: Array<any>, label: string = '') {
+      const formFunction = function (label: string, entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
         const form = new Form();
         form.textElementId = elementIdToBeFocused;
+        form.label = label
         form.entries = entries;
         form.close = function() {
           closeForm(this, true, '');
@@ -97,11 +99,12 @@ namespace Modals {
           const menuEntries = thisForm.entries.map((val, ix, arr) => {
               return menuEntryView(ix, (ix == thisForm.selectedIdx));
             });
-          return h('div', inputBox, submitButton, cancelButton, menuEntries)
+          const label = h('p', { style: 'margin: 0; margin-bottom: 0.3em;'}, thisForm.label);
+          return h('div', label, inputBox, submitButton, cancelButton, menuEntries)
         };
         return form;
       }
-      return makeForm(model, Utils.partial(formFunction, entries));
+      return makeForm(model, Utils.partial(formFunction, label, entries));
     }
   }
 }
