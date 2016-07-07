@@ -49,7 +49,7 @@ namespace Modals {
         form.label = label
         form.entries = entries;
         form.close = function() {
-          closeForm(this, true, new Result<T>('', null));
+          closeForm(this, false, new Result<T>('', null));
         };
         form.submit = function() {
           closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]));
