@@ -10,4 +10,8 @@ namespace Utils {
   export function hashSetHasKey(hashSet: Object, key: string) {
     return hashSet.hasOwnProperty(key);
   }
+
+  export function filterArray<T,U>(array: T[], comparer: (arrayValue: T, otherValue: U) => boolean, otherValue: U = null) {
+    return array.filter((value) => { return comparer(value, otherValue); });
+  }
 }

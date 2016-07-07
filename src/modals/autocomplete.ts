@@ -5,6 +5,7 @@ namespace Modals {
       render: (form: Form) => Plastiq.VNode
       submit: () => void
       close: () => void
+      entryComparer: (text: string, entryText: string) => boolean = containsEntryComparer
 
       label = ''
       textElementId = ''
@@ -13,8 +14,11 @@ namespace Modals {
       setWrittenText = (value: string) => {
         this.writtenText = value;
         this.currentText = value;
+        this.entries = Utils.filterArray(this.initialEntries, this.entryComparer, this.writtenText);
+        this.setSelection(-1);
       }
       selectedIdx = -1
+      initialEntries: Array<IString> = []
       entries: Array<IString> = []
       selectionChange = (change: number) => {
         const naiveNewIdx = this.selectedIdx + change;
@@ -41,6 +45,10 @@ namespace Modals {
       text: string
       value: T
     }
+
+    function containsEntryComparer(entry: IString, text: string) {
+      return entry.toString().indexOf(text) >= 0;
+    }
     
     export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '') {
       const formFunction = function (label: string, entries: Array<T>, closeForm: ICloseFormFunction<Result<T>>, elementIdToBeFocused: string) {
@@ -48,6 +56,8 @@ namespace Modals {
         form.textElementId = elementIdToBeFocused;
         form.label = label
         form.entries = entries;
+        form.initialEntries = entries;
+        form.entryComparer = containsEntryComparer;
         form.close = function() {
           closeForm(this, false, new Result<T>('', null));
         };
