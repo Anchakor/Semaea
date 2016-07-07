@@ -49,6 +49,9 @@ namespace EntityView {
         window.alert('HOHOOO '+value);
       });
     }
+    if (Key.isEnter(e)) {
+      Actions.showActionsMenuForGraphNode(model, graphNode);
+    }
     GraphView.changeCurrentNode(model, graphNode);
     return !(Key.isTab(e));
   }

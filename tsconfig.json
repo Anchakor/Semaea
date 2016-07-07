@@ -19,6 +19,7 @@
     "src/entityView.ts",
     "src/modalsView.ts",
     "src/modals/modals.ts",
-    "src/modals/autocomplete.ts"
+    "src/modals/autocomplete.ts",
+    "src/actions/actions.ts"
   ]
 }
