@@ -45,7 +45,7 @@ namespace EntityView {
       keyPressedM(model);
     }
     if (Key.isN(e)) {
-      Modals.Autocomplete.getGetStringAutocomplete(model, ['aaa', 'bbb', 'ccc'], 'test label').then((value) => {
+      Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'test label').then((value) => {
         window.alert('HOHOOO '+value);
       });
     }

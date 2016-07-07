@@ -15,7 +15,7 @@ namespace Modals {
         this.currentText = value;
       }
       selectedIdx = -1
-      entries: Array<any> = []
+      entries: Array<IString> = []
       selectionChange = (change: number) => {
         const naiveNewIdx = this.selectedIdx + change;
         this.setSelection(naiveNewIdx);
@@ -26,25 +26,29 @@ namespace Modals {
         if (newIdx == -1) {
           this.currentText = this.writtenText;
         } else {
-          this.currentText = this.entries[newIdx];
+          this.currentText = this.entries[newIdx].toString();
         }
         this.selectedIdx = newIdx;
       }
     }
     
-    export function getGetStringAutocomplete(model: Model, entries: Array<any>, label: string = '') {
-      const formFunction = function (label: string, entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
+    export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '') {
+      const formFunction = function (label: string, entries: Array<T>, closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string) {
         const form = new Form();
         form.textElementId = elementIdToBeFocused;
         form.label = label
         form.entries = entries;
         form.close = function() {
-          closeForm(this, true, '');
+          closeForm(this, true, null);
         };
         form.submit = function() {
-          closeForm(this, true, $('#'+form.textElementId).value);
+          if (form.selectedIdx == -1) {
+            closeForm(this, true, $('#'+form.textElementId).value);
+          } else {
+            closeForm(this, true, <T>form.entries[form.selectedIdx]);
+          }
         };
-        form.render = (thisForm) => { 
+        form.render = (thisForm: Form) => { 
           const inputBox = h('input', {
               type: 'text', 
               id: thisForm.textElementId,
@@ -93,7 +97,7 @@ namespace Modals {
                   }
                 }
               },
-              thisForm.entries[entryId]
+              thisForm.entries[entryId].toString()
             );
           };
           const menuEntries = thisForm.entries.map((val, ix, arr) => {
@@ -104,7 +108,7 @@ namespace Modals {
         };
         return form;
       }
-      return makeForm(model, Utils.partial(formFunction, label, entries));
+      return makeForm<T>(model, Utils.partial(formFunction, label, entries));
     }
   }
 }

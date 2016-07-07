@@ -1,0 +1,3 @@
+interface IString {
+  toString(): string
+}

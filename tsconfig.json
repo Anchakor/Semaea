@@ -9,6 +9,7 @@
     "typings/plastiq.d.ts",
     "typings/qunit.d.ts",
     "src/key.ts",
+    "src/common.ts",
     "src/graph.ts",
     "src/graph-tests.ts",
     "src/model.ts",
