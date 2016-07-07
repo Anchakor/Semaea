@@ -54,6 +54,7 @@ namespace Modals {
       submit: () => void
       close: () => void
 
+      textElementId = ''
       currentText = 'default'
       writtenText = 'default'
       setWrittenText = (value: string) => {
@@ -81,17 +82,18 @@ namespace Modals {
     export function getGetStringAutocomplete(model: Model, entries: Array<any>) {
       const formFunction = function (entries: Array<any>, closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
         const form = new Form();
+        form.textElementId = elementIdToBeFocused;
         form.entries = entries;
         form.close = function() {
           closeForm(this, true, '');
         };
         form.submit = function() {
-          closeForm(this, true, $('#'+elementIdToBeFocused).value);
+          closeForm(this, true, $('#'+form.textElementId).value);
         };
         form.render = (thisForm) => { 
           const inputBox = h('input', {
               type: 'text', 
-              id: elementIdToBeFocused,
+              id: thisForm.textElementId,
               binding: { 
                 get: () => { return thisForm.currentText; },
                 set: (value) => { thisForm.setWrittenText(value); }
