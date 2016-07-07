@@ -1,3 +1,4 @@
+
 testlib.test("Triple", function(assert) {
   const triple = new Triple("s", "p", "o");
   assert.strictEqual(triple.s, "s");

@@ -60,7 +60,7 @@ namespace Modals {
               id: thisForm.textElementId,
               binding: { 
                 get: () => { return thisForm.currentText; },
-                set: (value) => { thisForm.setWrittenText(value); }
+                set: (value: string) => { thisForm.setWrittenText(value); }
               },
               value: thisForm.currentText,
               onkeydown: function (e: KeyboardEvent) {

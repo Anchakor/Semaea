@@ -3,7 +3,11 @@
     "target": "ES6",
     "allowSyntheticDefaultImports": true,
     "allowJs": false,
-    "outDir": "output"
+    "outDir": "output",
+    //"strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "outFile": "semaea.js"
   },
   "files": [
     "typings/plastiq.d.ts",

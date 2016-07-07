@@ -22,7 +22,7 @@ namespace EntityView {
       model: Model, 
       graphNode: GraphNode)
       {
-      return function (e: Event, ...a) {
+      return function (e: Event, ...a: any[]) {
         if (Utils.partial(handler, model, graphNode).apply(this, arguments)) {
           if (e.preventDefault) {
             e.preventDefault();

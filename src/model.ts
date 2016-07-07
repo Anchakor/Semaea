@@ -18,6 +18,6 @@ class ModelMeta {
 }
   
 interface IComponent {
-  render: (IComponent) => Plastiq.VNode
+  render(component: IComponent): Plastiq.VNode
   [others: string]: any
 }

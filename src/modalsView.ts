@@ -12,7 +12,7 @@ namespace ModalsView {
       }));
   }
   
-  export function closeModal(model: Model, modal) {
+  export function closeModal(model: Model, modal: IComponent) {
     model.modals = (model.modals).filter((val, ix) => {
         return val != modal;
       });

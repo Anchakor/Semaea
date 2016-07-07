@@ -31,7 +31,7 @@ namespace Modals {
   export function formGetString(model: Model) {
     const formFunction = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
       const form = { 
-        render: (formArg) => { return h('div', 
+        render: (formArg: any) => { return h('div', 
           h('input', {
             type: 'text', id: elementIdToBeFocused,
             onkeydown: function (e: KeyboardEvent) {

@@ -3,7 +3,7 @@ namespace GraphView {
     return renderLevel(model, 0);
   }
   
-  function renderLevel(model: Model, depth) {
+  function renderLevel(model: Model, depth: number) {
     return h('div', model.graph.get().map((triple: Triple) => {
       return h('div',
         renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
@@ -13,12 +13,8 @@ namespace GraphView {
     }));
   }
   
-  function renderLevelPosition(model, graphNode) {
+  function renderLevelPosition(model: Model, graphNode: GraphNode) {
     return EntityView.render(model, graphNode);   
-  }
-
-  function renderLevelPositionSimple(entity, componentContainerDict) {
-    return h('div', entity);
   }
   
   export function changeCurrentNode(model: Model, graphNode: GraphNode) {

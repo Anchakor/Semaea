@@ -8,6 +8,8 @@ class Triple {
     this.p = p;
     this.o = o;
   }
+
+  [key: string]: string;
 }
 
 class Graph {

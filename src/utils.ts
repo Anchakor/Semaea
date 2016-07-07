@@ -1,5 +1,5 @@
 namespace Utils {
-  export function partial(fn, ...a) {
+  export function partial(fn: any, ...a: any[]) {
     const slice = Array.prototype.slice;
     const args = slice.call(arguments, 1);
     return function () {
@@ -7,7 +7,7 @@ namespace Utils {
     };
   }
 
-  export function hashSetHasKey(hashSet, key) {
+  export function hashSetHasKey(hashSet: Object, key: string) {
     return hashSet.hasOwnProperty(key);
   }
 }
