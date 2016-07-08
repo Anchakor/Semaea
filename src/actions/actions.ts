@@ -12,7 +12,7 @@ namespace Actions {
   export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
     const actions: Action[] = [];
     const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
-    Modals.Autocomplete.showAutocompleteForm(model, [new AddTripleAction], label, false).then((result) => {
+    Modals.Autocomplete.showAutocompleteForm(model, [new AddTripleAction, new RemoveTripleAction], label, false).then((result) => {
       if (result.value != null) {
         result.value.execute(model, graphNode);
       }
@@ -35,6 +35,13 @@ namespace Actions {
         model.graph.addTriple(triple);
         GraphView.changeCurrentNodeCurry(model, new GraphNode(triple, 'o'))();
       });
+    }
+  }
+
+  class RemoveTripleAction extends Action {
+    label = 'Remove the triple';
+    execute = (model: Model, graphNode: GraphNode) => {
+      model.graph.removeTriple(graphNode.getTriple());
     }
   }
 

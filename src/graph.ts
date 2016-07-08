@@ -9,6 +9,10 @@ class Triple {
     this.o = o;
   }
 
+  equals(other: Triple): boolean {
+    return (this.s == other.s && this.p == other.p && this.o == other.o);
+  }
+
   getNodeAtPosition(position: string): string {
     if (position == 's') return this.s;
     if (position == 'p') return this.p;
@@ -58,6 +62,10 @@ class Graph {
       if (this._graph[i].o == node) { this._graph[i].o = replacement; }
     }
     graphNode.setValue(replacement);
+  }
+
+  removeTriple(triple: Triple) {
+    this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
   }
 }
 
