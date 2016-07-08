@@ -3,7 +3,7 @@ namespace Modals {
   export interface ICloseFormFunction<T> {
     (form: any, isResolved: boolean, resolveRejectValue: T): void
   }
-  interface IFormFunction<T> {
+  export interface IFormFunction<T> {
     (closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string): IComponent
   }
   

@@ -17,7 +17,7 @@ namespace GraphView {
     return EntityView.render(model, graphNode);   
   }
   
-  export function changeCurrentNode(model: Model, graphNode: GraphNode) {
+  export const changeCurrentNodeCurry = (model: Model, graphNode: GraphNode) => () => {
     if (!graphNode) { return; }
     if (model.meta.currentNode) {
       if (model.meta.currentNode.getValue() != graphNode.getValue()) {

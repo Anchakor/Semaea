@@ -11,35 +11,31 @@ namespace EntityView {
     return h('span', {
         style: style,
         tabIndex: 0,
-        onkeydown: controllerEventHandler(controllerKeydown, model, graphNode),
-        onclick: controllerEventHandler(controllerClick, model, graphNode),
-        onfocus: Utils.partial(GraphView.changeCurrentNode, model, graphNode)
+        onkeydown: controllerEventHandler(controllerKeydown(model, graphNode)),
+        onclick: controllerEventHandler(controllerClick(model, graphNode)),
+        onfocus: GraphView.changeCurrentNodeCurry(model, graphNode)
       }, graphNode.getValue());
   }
   
-  function controllerEventHandler (
-      handler: ((model: Model, graphNode: GraphNode, e: Event) => any), 
-      model: Model, 
-      graphNode: GraphNode)
-      {
-      return function (e: Event, ...a: any[]) {
-        if (Utils.partial(handler, model, graphNode).apply(this, arguments)) {
-          if (e.preventDefault) {
-            e.preventDefault();
-          } else {
-            e.returnValue = false;
-          }
+  function controllerEventHandler(handler: (e: Event) => any) {
+    return function (e: Event, ...a: any[]) {
+      if (handler.apply(this, arguments)) {
+        if (e.preventDefault) {
+          e.preventDefault();
+        } else {
+          e.returnValue = false;
         }
       }
     }
+  }
 
-  function controllerClick(model: Model, graphNode: GraphNode, e: MouseEvent) { 
+  const controllerClick = (model: Model, graphNode: GraphNode) => (e: MouseEvent) => { 
     model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
-    GraphView.changeCurrentNode(model, graphNode);
+    GraphView.changeCurrentNodeCurry(model, graphNode)();
     return true;
   }
 
-  function controllerKeydown(model: Model, graphNode: GraphNode, e: KeyboardEvent) {
+  const controllerKeydown = (model: Model, graphNode: GraphNode) => (e: KeyboardEvent) => {
     $('#t').textContent = e.keyCode + ' ' + e.key;
     if (Key.isM(e)) {
       keyPressedM(model);
@@ -52,7 +48,7 @@ namespace EntityView {
     if (Key.isEnter(e)) {
       Actions.showActionsMenuForGraphNode(model, graphNode);
     }
-    GraphView.changeCurrentNode(model, graphNode);
+    GraphView.changeCurrentNodeCurry(model, graphNode)();
     return !(Key.isTab(e));
   }
 
