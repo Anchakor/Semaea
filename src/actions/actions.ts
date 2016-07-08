@@ -11,7 +11,7 @@ namespace Actions {
 
   export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
     const actions: Action[] = [];
-    Modals.Autocomplete.showAutocompleteForm(model, [new AddTripleAction], 'Choose action for '+graphNode.getValue()).then((result) => {
+    Modals.Autocomplete.showAutocompleteForm(model, [new AddTripleAction], 'Choose action for '+graphNode.getValue(), false).then((result) => {
       if (result.value != null) {
         result.value.execute(model, graphNode);
       }
@@ -21,12 +21,16 @@ namespace Actions {
   class AddTripleAction extends Action {
     label = 'Add triple'
     execute = (model: Model, graphNode: GraphNode) => {
-      Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'Choose predicate for '+graphNode.getValue()).then((result) => {
-        const predicate = result.text;
-        Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'Choose object for '+graphNode.getValue()).then((result) => {
-          const triple = new Triple(graphNode.getValue(), predicate, result.text);
-          model.graph.addTriple(triple);
-        });
+      let predicate: string
+      Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'Choose predicate for '+graphNode.getValue())
+      .then((result) => {
+        predicate = result.text;
+        return Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'Choose object for '+graphNode.getValue()); 
+      }).then((result) => {
+        const object = result.text;
+        const triple = new Triple(graphNode.getValue(), predicate, object);
+        model.graph.addTriple(triple);
+        GraphView.changeCurrentNodeCurry(model, new GraphNode(triple, 'o'))();
       });
     }
   }

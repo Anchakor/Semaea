@@ -50,7 +50,7 @@ namespace Modals {
       return entry.toString().indexOf(text) >= 0;
     }
 
-    const formFunctionCurry = <T>(label: string, entries: Array<T>): IFormFunction<Result<T>> => 
+    const formFunctionCurry = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true): IFormFunction<Result<T>> => 
     (closeForm: ICloseFormFunction<Result<T>>, elementIdToBeFocused: string): IComponent => {
       const form = new Form();
       form.textElementId = elementIdToBeFocused;
@@ -59,10 +59,10 @@ namespace Modals {
       form.initialEntries = entries;
       form.entryComparer = containsEntryComparer;
       form.close = function() {
-        closeForm(this, false, new Result<T>('', null));
+        closeForm(this, false, new Result<T>('', null), returnFocusOnResolve);
       };
       form.submit = function() {
-        closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]));
+        closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]), returnFocusOnResolve);
       };
       form.render = (thisForm: Form) => { 
         const inputBox = h('input', {
@@ -125,8 +125,8 @@ namespace Modals {
       return form;
     }
     
-    export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '') {
-      return makeForm(model, formFunctionCurry(label, entries));
+    export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '', returnFocusOnResolve: boolean = true) {
+      return makeForm(model, formFunctionCurry(label, entries, returnFocusOnResolve));
     }
   }
 }

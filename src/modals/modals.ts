@@ -1,7 +1,7 @@
 namespace Modals {
   
   export interface ICloseFormFunction<T> {
-    (form: any, isResolved: boolean, resolveRejectValue: T): void
+    (form: any, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean): void
   }
   export interface IFormFunction<T> {
     (closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string): IComponent
@@ -11,12 +11,15 @@ namespace Modals {
     const pastFocus = document.activeElement;
     const p = new Promise<T>((resolve, reject) => {
       const modalPosition = model.modals.length;
-      const closeForm: ICloseFormFunction<T> = (formToClose: any, isResolved: boolean, resolveRejectValue: T) => {
+      const closeForm: ICloseFormFunction<T> = (formToClose: any, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean = true) => {
         ModalsView.closeModal(model, formToClose);
-        (<HTMLElement>pastFocus).focus();
         if (isResolved) {
+          if (returnFocusOnResolve) {
+            (<HTMLElement>pastFocus).focus();
+          }
           resolve(resolveRejectValue);
         } else {
+          (<HTMLElement>pastFocus).focus();
           reject(resolveRejectValue);
         }
       }
@@ -29,14 +32,14 @@ namespace Modals {
   }
   
   export function formGetString(model: Model) {
-    const formFunction = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
+    const formFunction: IFormFunction<string> = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
       const form = { 
         render: (formArg: any) => { return h('div', 
           h('input', {
             type: 'text', id: elementIdToBeFocused,
             onkeydown: function (e: KeyboardEvent) {
               if (Key.isEnter(e)) {
-                closeForm(formArg, true, (<HTMLInputElement>e.target).value);
+                closeForm(formArg, true, (<HTMLInputElement>e.target).value, true);
                 return false;
               }
               return true;
