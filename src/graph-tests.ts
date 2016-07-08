@@ -4,6 +4,23 @@ testlib.test("Triple", function(assert) {
   assert.strictEqual(triple.s, "s");
   assert.strictEqual(triple.p, "p");
   assert.strictEqual(triple.o, "o");
+
+  assert.strictEqual(triple.getNodeAtPosition("s"), "s");
+  assert.strictEqual(triple.getNodeAtPosition("p"), "p");
+  assert.strictEqual(triple.getNodeAtPosition("o"), "o");
+
+  assert.strictEqual(triple.toString(), "s p o");
+  
+  triple.setNodeAtPosition("s", "s2");
+  triple.setNodeAtPosition("p", "p2");
+  triple.setNodeAtPosition("o", "o2");
+  assert.strictEqual(triple.toString(), "s2 p2 o2");
+
+  const triple2 = new Triple("s2", "p2", "o2");
+  const triple3 = new Triple("s", "p", "o");
+  assert.strictEqual(triple.equals(triple2), true);
+  assert.strictEqual(triple.equals(triple3), false);
+  assert.strictEqual(triple2.equals(triple3), false);
 });
 
 const setupTestGraph = function () {
@@ -33,7 +50,12 @@ testlib.test("Graph", function(assert) {
   assert.strictEqual(g.get(null, null, "o4")[0].s, "s4");
   assert.strictEqual(g.get(null, null, "o4")[0].p, "p4");
   assert.strictEqual(g.get(null, null, "o4")[0].o, "o4");
-  assert.strictEqual(g.get("s", null, "o3")[0].p, "p3");   
+  assert.strictEqual(g.get("s", null, "o3")[0].p, "p3");
+
+  g.removeTriple(new Triple("s4", "p4", "o4"));
+  assert.strictEqual(g.get("s4").length, 0);
+  assert.strictEqual(g.get(null, "p4").length, 0);
+  assert.strictEqual(g.get(null, null, "o4").length, 0);
 });
 
 testlib.test("GraphNode", function(assert) {   
