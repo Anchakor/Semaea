@@ -10,9 +10,9 @@ namespace Actions {
   }
 
   export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
-    const actions: Action[] = [];
+    const actions: Action[] = [new AddTripleAction, new RemoveTripleAction];
     const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
-    Modals.Autocomplete.showAutocompleteForm(model, [new AddTripleAction, new RemoveTripleAction], label, false).then((result) => {
+    Modals.Autocomplete.showAutocompleteForm<Action>(model, actions, label, false).then((result) => {
       if (result.value != null) {
         result.value.execute(model, graphNode);
       }
