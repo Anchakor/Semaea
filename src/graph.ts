@@ -9,7 +9,22 @@ class Triple {
     this.o = o;
   }
 
-  [key: string]: string;
+  getNodeAtPosition(position: string): string {
+    if (position == 's') return this.s;
+    if (position == 'p') return this.p;
+    if (position == 'o') return this.o;
+    return '';
+  }
+
+  setNodeAtPosition(position: string, value: string) {
+    if (position == 's') this.s = value;
+    if (position == 'p') this.p = value;
+    if (position == 'o') this.o = value;
+  }
+
+  toString(): string {
+    return this.s+' '+this.p+' '+this.o;
+  }
 }
 
 class Graph {
@@ -63,11 +78,15 @@ class GraphNode {
     if (!this._triple || !this._position) {
       return null;
     }
-    return this._triple[this._position];
+    return this._triple.getNodeAtPosition(this._position);
   }
   
   setValue(value: string) {
-    this._triple[this._position] = value;
+    this._triple.setNodeAtPosition(this._position, value);
+  }
+
+  getTriple(): Triple {
+    return this._triple;
   }
   
   toString(): string {
