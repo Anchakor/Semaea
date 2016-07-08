@@ -2,10 +2,10 @@ namespace Modals {
 
   export namespace Autocomplete {
     class Form implements IComponent {
-      render: (form: Form) => Plastiq.VNode
+      render: () => Plastiq.VNode
       submit: () => void
       close: () => void
-      entryComparer: (text: string, entryText: string) => boolean = containsEntryComparer
+      entryComparer: (text: IString, entryText: IString) => boolean = containsEntryComparer
 
       label = ''
       textElementId = ''
@@ -46,8 +46,8 @@ namespace Modals {
       value: T
     }
 
-    function containsEntryComparer(entry: IString, text: string) {
-      return entry.toString().indexOf(text) >= 0;
+    function containsEntryComparer(entry: IString, text: IString) {
+      return entry.toString().indexOf(text.toString()) >= 0;
     }
 
     const formFunctionCurry = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true): IFormFunction<Result<T>> => 
@@ -64,41 +64,41 @@ namespace Modals {
       form.submit = function() {
         closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]), returnFocusOnResolve);
       };
-      form.render = (thisForm: Form) => { 
+      form.render = () => { 
         const inputBox = h('input', {
             type: 'text', 
-            id: thisForm.textElementId,
+            id: form.textElementId,
             binding: { 
-              get: (): string => { return thisForm.currentText; },
-              set: (value: string) => { thisForm.setWrittenText(value); }
+              get: (): string => { return form.currentText; },
+              set: (value: string) => { form.setWrittenText(value); }
             },
-            value: thisForm.currentText,
+            value: form.currentText,
             onkeydown: function (e: KeyboardEvent) {
               if (Key.isEscape(e)) {
-                thisForm.close();
+                form.close();
                 return false;
               }
               else if (Key.isEnter(e)) {
-                thisForm.submit();
+                form.submit();
                 return false;
               }
               else if (Key.isDownArrow(e)) {
-                thisForm.selectionChange(1);
+                form.selectionChange(1);
               }
               else if (Key.isUpArrow(e)) {
-                thisForm.selectionChange(-1);
+                form.selectionChange(-1);
               }
               return true;
             }
           });
         const submitButton = h('button', {
             onclick: function (e: MouseEvent) {
-              thisForm.submit();
+              form.submit();
             }
           }, "O");
         const cancelButton = h('button', {
             onclick: function (e: MouseEvent) {
-              thisForm.close();
+              form.close();
             }
           }, "X");
         const menuEntryView = (entryId: number, selected: boolean) => {
@@ -107,19 +107,19 @@ namespace Modals {
               class: 'menuEntry' + ((selected) ? '-selected' : ''),
               onclick: function (e: MouseEvent) {
                 if (!selected) {
-                  thisForm.setSelection(entryId);
+                  form.setSelection(entryId);
                 } else {
-                  thisForm.submit();
+                  form.submit();
                 }
               }
             },
-            thisForm.entries[entryId].toString()
+            form.entries[entryId].toString()
           );
         };
-        const menuEntries = thisForm.entries.map((val, ix, arr) => {
-            return menuEntryView(ix, (ix == thisForm.selectedIdx));
+        const menuEntries = form.entries.map((val, ix, arr) => {
+            return menuEntryView(ix, (ix == form.selectedIdx));
           });
-        const label = h('p', { style: 'margin: 0; margin-bottom: 0.3em;'}, thisForm.label);
+        const label = h('p', { style: 'margin: 0; margin-bottom: 0.3em;'}, form.label);
         return h('div', label, inputBox, submitButton, cancelButton, menuEntries)
       };
       return form;

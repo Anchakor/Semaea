@@ -5,7 +5,7 @@ namespace ModalsView {
       }, model.modals.map((modal, i, a) => {
         return h('div', {
           class: "modal" + ((i + 1 == a.length) ? " modal-top" : "")
-        }, modal.render(modal));
+        }, modal.render());
       }),
       h('div', {
         class: (model.modals.length > 0) ? "modalBackground" : ""

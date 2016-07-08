@@ -1,7 +1,7 @@
 namespace Modals {
   
   export interface ICloseFormFunction<T> {
-    (form: any, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean): void
+    (form: IComponent, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean): void
   }
   export interface IFormFunction<T> {
     (closeForm: ICloseFormFunction<T>, elementIdToBeFocused: string): IComponent
@@ -33,13 +33,13 @@ namespace Modals {
   
   export function formGetString(model: Model) {
     const formFunction: IFormFunction<string> = function (closeForm: ICloseFormFunction<string>, elementIdToBeFocused: string) {
-      const form = { 
-        render: (formArg: any) => { return h('div', 
+      const form: IComponent = { 
+        render: () => { return h('div', 
           h('input', {
             type: 'text', id: elementIdToBeFocused,
             onkeydown: function (e: KeyboardEvent) {
               if (Key.isEnter(e)) {
-                closeForm(formArg, true, (<HTMLInputElement>e.target).value, true);
+                closeForm(form, true, (<HTMLInputElement>e.target).value, true);
                 return false;
               }
               return true;

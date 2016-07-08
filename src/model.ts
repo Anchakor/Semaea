@@ -16,8 +16,3 @@ class ModelMeta {
   previousNodeNonPredicate: GraphNode = null
   previousNodePredicate: GraphNode = null
 }
-  
-interface IComponent {
-  render(component: IComponent): Plastiq.VNode
-  [others: string]: any
-}
