@@ -6,10 +6,10 @@ declare const testlib: QUnitStatic;
 const h = plastiq.html;
 const bind = plastiq.bind;
 
-const graph = new Graph();
-graph.addTriple(new Triple("testS", "testP", "testO"));
-graph.addTriple(new Triple("testS", "testP2", "testO"));
-graph.addTriple(new Triple("testO", "testP3", "testO3"));
+const graph = new Graphs.Graph();
+graph.addTriple(new Graphs.Triple("testS", "testP", "testO"));
+graph.addTriple(new Graphs.Triple("testS", "testP2", "testO"));
+graph.addTriple(new Graphs.Triple("testO", "testP3", "testO3"));
 
 const testModelMeta = new ModelMeta();
 const model1 = new Model(graph);

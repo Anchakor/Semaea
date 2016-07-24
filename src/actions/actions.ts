@@ -1,6 +1,6 @@
 namespace Actions {
   export interface ActionFunction {
-    (model: Model, graphNode: GraphNode): void
+    (model: Model, graphNode: Graphs.GraphNode): void
   }
 
   export class Action implements IString {
@@ -9,7 +9,7 @@ namespace Actions {
     toString() { return this.label; }
   }
 
-  export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
+  export function showActionsMenuForGraphNode(model: Model, graphNode: Graphs.GraphNode) {
     const actions: Action[] = [new AddTripleAction, new RemoveTripleAction];
     const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
     Modals.Autocomplete.showAutocompleteForm<Action>(model, actions, label, false).then((result) => {
@@ -21,7 +21,7 @@ namespace Actions {
 
   class AddTripleAction extends Action {
     label = 'Add triple';
-    execute = (model: Model, graphNode: GraphNode) => {
+    execute = (model: Model, graphNode: Graphs.GraphNode) => {
       let predicate: string
       const label = 'Choose predicate for '+graphNode.getValue();
       Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], label)
@@ -31,16 +31,16 @@ namespace Actions {
         return Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], label); 
       }).then((result) => {
         const object = result.text;
-        const triple = new Triple(graphNode.getValue(), predicate, object);
+        const triple = new Graphs.Triple(graphNode.getValue(), predicate, object);
         model.graph.addTriple(triple);
-        GraphView.changeCurrentNodeCurry(model, new GraphNode(triple, 'o'))();
+        GraphView.changeCurrentNodeCurry(model, new Graphs.GraphNode(triple, 'o'))();
       });
     }
   }
 
   class RemoveTripleAction extends Action {
     label = 'Remove the triple';
-    execute = (model: Model, graphNode: GraphNode) => {
+    execute = (model: Model, graphNode: Graphs.GraphNode) => {
       model.graph.removeTriple(graphNode.getTriple());
     }
   }

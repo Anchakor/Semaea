@@ -1,5 +1,5 @@
 namespace EntityView {
-  export function render(model: Model, graphNode: GraphNode) {
+  export function render(model: Model, graphNode: Graphs.GraphNode) {
     const style: any = {};
     if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
       style.color = '#4af';
@@ -29,13 +29,13 @@ namespace EntityView {
     }
   }
 
-  const controllerClick = (model: Model, graphNode: GraphNode) => (e: MouseEvent) => { 
+  const controllerClick = (model: Model, graphNode: Graphs.GraphNode) => (e: MouseEvent) => { 
     model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
     GraphView.changeCurrentNodeCurry(model, graphNode)();
     return true;
   }
 
-  const controllerKeydown = (model: Model, graphNode: GraphNode) => (e: KeyboardEvent) => {
+  const controllerKeydown = (model: Model, graphNode: Graphs.GraphNode) => (e: KeyboardEvent) => {
     $('#t').textContent = e.keyCode + ' ' + e.key;
     if (Key.isM(e)) {
       keyPressedM(model);

@@ -4,20 +4,20 @@ namespace GraphView {
   }
   
   function renderLevel(model: Model, depth: number) {
-    return h('div', model.graph.get().map((triple: Triple) => {
+    return h('div', model.graph.get().map((triple: Graphs.Triple) => {
       return h('div',
-        renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
-        renderLevelPosition(model, new GraphNode(triple, 'p')), ' ',
-        renderLevelPosition(model, new GraphNode(triple, 'o'))
+        renderLevelPosition(model, new Graphs.GraphNode(triple, 's')), ' ',
+        renderLevelPosition(model, new Graphs.GraphNode(triple, 'p')), ' ',
+        renderLevelPosition(model, new Graphs.GraphNode(triple, 'o'))
         );
     }));
   }
   
-  function renderLevelPosition(model: Model, graphNode: GraphNode) {
+  function renderLevelPosition(model: Model, graphNode: Graphs.GraphNode) {
     return EntityView.render(model, graphNode);   
   }
   
-  export const changeCurrentNodeCurry = (model: Model, graphNode: GraphNode) => () => {
+  export const changeCurrentNodeCurry = (model: Model, graphNode: Graphs.GraphNode) => () => {
     if (!graphNode) { return; }
     if (model.meta.currentNode) {
       if (model.meta.currentNode.getValue() != graphNode.getValue()) {
