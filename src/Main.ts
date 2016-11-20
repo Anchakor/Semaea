@@ -3,6 +3,7 @@ import * as MainView from "./MainView";
 import { Triple } from "./Graphs/Triple";
 import { Graph } from "./Graphs/Graph";
 import { Model, ModelMeta } from "./Model";
+import * as GraphTests from "./Graphs/GraphTests";
 
 const graph = new Graph();
 graph.addTriple(new Triple("testS", "testP", "testO"));
@@ -16,4 +17,6 @@ window.onload = function () {
   plastiq.append($('#plastiq'), (model: Model) => { return MainView.render(model); }, model1);
   
   setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
+
+  GraphTests.run();
 }
