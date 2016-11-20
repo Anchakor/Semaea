@@ -1,8 +1,8 @@
-import { h } from "./external";
-import * as EntityView from "./entityView";
-import { Model } from "./model";
-import { GraphNode } from "./graphs/graphNode";
-import { Triple } from "./graphs/triple";
+import { h } from "./External";
+import * as EntityView from "./EntityView";
+import { Model } from "./Model";
+import { GraphNode } from "./Graphs/GraphNode";
+import { Triple } from "./Graphs/Triple";
 
 
 export function render(model: Model) {

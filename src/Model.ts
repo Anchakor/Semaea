@@ -1,6 +1,6 @@
-import { IComponent } from "./common";
-import { GraphNode } from "./graphs/graphNode";
-import { Graph } from "./graphs/graph";
+import { IComponent } from "./Common";
+import { GraphNode } from "./Graphs/GraphNode";
+import { Graph } from "./Graphs/Graph";
 
 export class Model {
   refresh: () => void

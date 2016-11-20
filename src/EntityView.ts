@@ -1,11 +1,11 @@
-import { h, $ } from "./external";
-import * as GraphViewMethods from "./graphViewMethods";
-import * as Modals_Autocomplete from "./modals/autocomplete";
-import * as Modals from "./modals/modals";
-import * as Actions from "./actions/actions";
-import { Model } from "./model";
-import { GraphNode } from "./graphs/graphNode";
-import * as Key from "./key";
+import { h, $ } from "./External";
+import * as GraphViewMethods from "./GraphViewMethods";
+import * as Modals_Autocomplete from "./Modals/Autocomplete";
+import * as Modals from "./Modals/Modals";
+import * as Actions from "./Actions/Actions";
+import { Model } from "./Model";
+import { GraphNode } from "./Graphs/GraphNode";
+import * as Key from "./Key";
 
 export function render(model: Model, graphNode: GraphNode) {
   const style: any = {};

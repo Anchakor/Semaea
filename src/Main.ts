@@ -1,8 +1,8 @@
-import { plastiq, $ } from "./external";
-import * as MainView from "./mainView";
-import { Triple } from "./graphs/triple";
-import { Graph } from "./graphs/graph";
-import { Model, ModelMeta } from "./model";
+import { plastiq, $ } from "./External";
+import * as MainView from "./MainView";
+import { Triple } from "./Graphs/Triple";
+import { Graph } from "./Graphs/Graph";
+import { Model, ModelMeta } from "./Model";
 
 const graph = new Graph();
 graph.addTriple(new Triple("testS", "testP", "testO"));

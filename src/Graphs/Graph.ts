@@ -1,5 +1,5 @@
-import { Triple } from "./triple";
-import { GraphNode } from "./graphNode";
+import { Triple } from "./Triple";
+import { GraphNode } from "./GraphNode";
 
 export class Graph {
   protected _graph: Array<Triple>

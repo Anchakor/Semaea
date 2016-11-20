@@ -1,7 +1,7 @@
-import { testlib } from "../external";
-import { Triple } from "./triple";
-import { Graph } from "./graph";
-import { GraphNode } from "./graphNode";
+import { testlib } from "../External";
+import { Triple } from "./Triple";
+import { Graph } from "./Graph";
+import { GraphNode } from "./GraphNode";
 
 testlib.test("Triple", function(assert) {
   const triple = new Triple("s", "p", "o");

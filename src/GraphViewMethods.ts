@@ -1,5 +1,5 @@
-import { Model } from "./model";
-import { GraphNode } from "./graphs/graphNode";
+import { Model } from "./Model";
+import { GraphNode } from "./Graphs/GraphNode";
 
 export const changeCurrentNodeCurry = (model: Model, graphNode: GraphNode) => () => {
   if (!graphNode) { return; }
