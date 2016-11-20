@@ -11,27 +11,8 @@
     "module": "amd",
     "outFile": "semaea.js"
   },
-  "files": [
-    "typings/plastiq.d.ts",
-    "typings/qunit.d.ts",
-    "src/external.ts",
-    "src/key.ts",
-    "src/common.ts",
-    "src/graphs/triple.ts",
-    "src/graphs/graph.ts",
-    "src/graphs/graphNode.ts",
-    "src/graphs/graph-tests.ts",
-    "src/model.ts",
-    "src/testmodule.ts",
-    "src/main.ts",
-    "src/utils.ts",
-    "src/mainView.ts",
-    "src/graphViewMethods.ts",
-    "src/graphView.ts",
-    "src/entityView.ts",
-    "src/modalsView.ts",
-    "src/modals/modals.ts",
-    "src/modals/autocomplete.ts",
-    "src/actions/actions.ts"
+  "include": [
+    "typings/*.d.ts",
+    "src/**/*.ts"
   ]
 }
