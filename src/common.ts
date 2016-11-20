@@ -1,7 +1,9 @@
-interface IString {
+import { VNode } from "../typings/plastiq.d";
+
+export interface IString {
   toString(): string
 }
   
-interface IComponent {
-  render(): Plastiq.VNode
+export interface IComponent {
+  render(): VNode
 }

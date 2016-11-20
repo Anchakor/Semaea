@@ -1,18 +1,22 @@
-class Model {
+import { IComponent } from "./common";
+import { GraphNode } from "./graphs/graphNode";
+import { Graph } from "./graphs/graph";
+
+export class Model {
   refresh: () => void
   elemIdToFocus: string
-  graph: Graphs.Graph = null
+  graph: Graph = null
   meta: ModelMeta = new ModelMeta()
   modals: Array<IComponent> = []
   
-  constructor(graph: Graphs.Graph) {
+  constructor(graph: Graph) {
     this.graph = graph;
   }
 }
 
-class ModelMeta {
-  currentNode: Graphs.GraphNode = null
-  previousNode: Graphs.GraphNode = null
-  previousNodeNonPredicate: Graphs.GraphNode = null
-  previousNodePredicate: Graphs.GraphNode = null
+export class ModelMeta {
+  currentNode: GraphNode = null
+  previousNode: GraphNode = null
+  previousNodeNonPredicate: GraphNode = null
+  previousNodePredicate: GraphNode = null
 }

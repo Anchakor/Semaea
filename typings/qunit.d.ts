@@ -345,7 +345,7 @@ interface QUnitAssert {
     raises(block: () => any, message?: string): any;
 }
 
-interface QUnitStatic extends QUnitAssert {    
+export interface QUnitStatic extends QUnitAssert {    
     /* ASYNC CONTROL */
 
     /**

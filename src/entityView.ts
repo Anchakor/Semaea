@@ -1,61 +1,68 @@
-namespace EntityView {
-  export function render(model: Model, graphNode: Graphs.GraphNode) {
-    const style: any = {};
-    if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
-      style.color = '#4af';
-    }
-    if (model.meta.currentNode && model.meta.currentNode.toString() == graphNode.toString()) {
-      style.color = '#5bf';
-      style.fontWeight = 'bold';
-    }
-    return h('span', {
-        style: style,
-        tabIndex: 0,
-        onkeydown: controllerEventHandler(controllerKeydown(model, graphNode)),
-        onclick: controllerEventHandler(controllerClick(model, graphNode)),
-        onfocus: GraphView.changeCurrentNodeCurry(model, graphNode)
-      }, graphNode.getValue());
+import { h, $ } from "./external";
+import * as GraphViewMethods from "./graphViewMethods";
+import * as Modals_Autocomplete from "./modals/autocomplete";
+import * as Modals from "./modals/modals";
+import * as Actions from "./actions/actions";
+import { Model } from "./model";
+import { GraphNode } from "./graphs/graphNode";
+import * as Key from "./key";
+
+export function render(model: Model, graphNode: GraphNode) {
+  const style: any = {};
+  if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
+    style.color = '#4af';
   }
-  
-  function controllerEventHandler(handler: (e: Event) => any) {
-    return function (e: Event, ...a: any[]) {
-      if (handler.apply(this, arguments)) {
-        if (e.preventDefault) {
-          e.preventDefault();
-        } else {
-          e.returnValue = false;
-        }
+  if (model.meta.currentNode && model.meta.currentNode.toString() == graphNode.toString()) {
+    style.color = '#5bf';
+    style.fontWeight = 'bold';
+  }
+  return h('span', {
+      style: style,
+      tabIndex: 0,
+      onkeydown: controllerEventHandler(controllerKeydown(model, graphNode)),
+      onclick: controllerEventHandler(controllerClick(model, graphNode)),
+      onfocus: GraphViewMethods.changeCurrentNodeCurry(model, graphNode)
+    }, graphNode.getValue());
+}
+
+function controllerEventHandler(handler: (e: Event) => any) {
+  return function (e: Event, ...a: any[]) {
+    if (handler.apply(this, arguments)) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      } else {
+        e.returnValue = false;
       }
     }
   }
+}
 
-  const controllerClick = (model: Model, graphNode: Graphs.GraphNode) => (e: MouseEvent) => { 
-    model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
-    GraphView.changeCurrentNodeCurry(model, graphNode)();
-    return true;
+const controllerClick = (model: Model, graphNode: GraphNode) => (e: MouseEvent) => { 
+  model.graph.replaceNode(graphNode, graphNode.getValue() + 'a');
+  GraphViewMethods.changeCurrentNodeCurry(model, graphNode)();
+  return true;
+}
+
+const controllerKeydown = (model: Model, graphNode: GraphNode) => (e: KeyboardEvent) => {
+  $('#t').textContent = e.keyCode + ' ' + e.key;
+  if (Key.isM(e)) {
+    keyPressedM(model);
   }
-
-  const controllerKeydown = (model: Model, graphNode: Graphs.GraphNode) => (e: KeyboardEvent) => {
-    $('#t').textContent = e.keyCode + ' ' + e.key;
-    if (Key.isM(e)) {
-      keyPressedM(model);
-    }
-    if (Key.isN(e)) {
-      Modals.Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'test label').then((value) => {
-        window.alert('HOHOOO '+value);
-      });
-    }
-    if (Key.isEnter(e)) {
-      Actions.showActionsMenuForGraphNode(model, graphNode);
-    }
-    GraphView.changeCurrentNodeCurry(model, graphNode)();
-    return !(Key.isTab(e));
-  }
-
-  function keyPressedM(model: Model) {
-    Modals.formGetString(model).then((value) => {
-      window.alert('WOOOO '+value);
+  if (Key.isN(e)) {
+    Modals_Autocomplete.showAutocompleteForm(model, ['aaa', 'bbb', 'ccc'], 'test label').then((value) => {
+      window.alert('HOHOOO '+value);
     });
-    //model.modals.push(modalTest(model));
   }
+  if (Key.isEnter(e)) {
+    Actions.showActionsMenuForGraphNode(model, graphNode);
+  }
+  GraphViewMethods.changeCurrentNodeCurry(model, graphNode)();
+  return !(Key.isTab(e));
+}
+
+function keyPressedM(model: Model) {
+  Modals.formGetString(model).then((value) => {
+    window.alert('WOOOO '+value);
+  });
+  //model.modals.push(modalTest(model));
 }
