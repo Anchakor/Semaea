@@ -7,6 +7,7 @@ export interface Plastiq {
 export interface HtmlModule {
   (...a: any[]): VNode
   refresh: () => void
+  refreshAfter: (p: Promise<any>) => void
 }
 
 export interface VNode {

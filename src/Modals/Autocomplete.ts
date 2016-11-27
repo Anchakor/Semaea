@@ -1,10 +1,10 @@
-import { h, $ } from "../External";
-import * as Modals from "./Modals";
-import { IString, IComponent } from "../Common";
-import { Model } from "../Model";
-import * as Plastiq from "../../typings/plastiq.d";
-import * as Utils from "../Utils";
-import * as Key from "../Key";
+import { h, $ } from "External";
+import * as Modals from "Modals/Modals";
+import { IString, IComponent } from "Common";
+import { Model } from "Model";
+import * as Plastiq from "plastiq";
+import * as Utils from "Utils";
+import * as Key from "Key";
 
 class Form implements IComponent {
   render: () => Plastiq.VNode

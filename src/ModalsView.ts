@@ -1,6 +1,6 @@
-import { h } from "./External"
-import { Model } from "./Model";
-import { IComponent } from "./Common";
+import { h } from "External"
+import { Model } from "Model";
+import { IComponent } from "Common";
 
 export function render(model: Model) {
   return h('div', {

@@ -1,7 +1,7 @@
-import { h, $ } from "./External";
-import * as GraphView from "./GraphView";
-import * as ModalsView from "./ModalsView";
-import { Model } from "./Model";
+import { h, $ } from "External";
+import * as GraphView from "GraphView";
+import * as ModalsView from "ModalsView";
+import { Model } from "Model";
 
 export function render(model: Model) {
   model.refresh = h.refresh;

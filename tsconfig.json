@@ -1,18 +1,29 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    //"lib": ["dom","es6","dom.iterable","scripthost","es2015.promise"],
-    "allowSyntheticDefaultImports": true,
+    "target": "ES5",
+    "lib": ["dom","es2015"], //https://github.com/sinclairzx81/typescript-bundle/blob/master/src/options.ts#L118
+    //"allowSyntheticDefaultImports": true,
     "allowJs": false,
     "outDir": "output",
     //"strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "module": "amd",
-    "outFile": "semaea.js"
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "src/*",
+        "typings/*"
+      ]
+    },
+    //"outFile": "semaea.js"
+    "sourceMap": true
   },
   "include": [
     "typings/*.d.ts",
     "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

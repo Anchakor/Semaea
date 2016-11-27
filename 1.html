@@ -52,7 +52,16 @@
 
   </style>
   
-  <script src="semaea.js"></script>
+  <script src="libraries/require.js"></script>
+  <script>
+  require.config({
+    baseUrl: "output"
+    /*paths: {
+        "some": "some/v1.0"
+    }*/
+  });
+  require(["Main"]);
+  </script>
 </head>
 <body>
 

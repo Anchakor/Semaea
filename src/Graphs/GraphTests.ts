@@ -1,7 +1,7 @@
-import { testlib } from "../External";
-import { Triple } from "./Triple";
-import { Graph } from "./Graph";
-import { GraphNode } from "./GraphNode";
+import { testlib } from "External";
+import { Triple } from "Graphs/Triple";
+import { Graph } from "Graphs/Graph";
+import { GraphNode } from "Graphs/GraphNode";
 
 export function run() {
 

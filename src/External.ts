@@ -1,5 +1,5 @@
-import { Plastiq, HtmlModule } from "../typings/plastiq.d";
-import { QUnitStatic } from "../typings/qunit.d";
+import { Plastiq, HtmlModule } from "plastiq";
+import { QUnitStatic } from "qunit";
 //import "../libraries/plastiq.js"
 
 export const $: any = eval("$");

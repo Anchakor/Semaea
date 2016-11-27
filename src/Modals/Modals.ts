@@ -1,8 +1,8 @@
-import { h } from "../External";
-import * as ModalsView from "../ModalsView";
-import { IComponent } from "../Common";
-import { Model } from "../Model";
-import * as Key from "../Key";
+import { h } from "External";
+import * as ModalsView from "ModalsView";
+import { IComponent } from "Common";
+import { Model } from "Model";
+import * as Key from "Key";
   
 export interface ICloseFormFunction<T> {
   (form: IComponent, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean): void
@@ -31,7 +31,7 @@ export function makeForm<T>(model: Model, formFunction: IFormFunction<T>) {
     model.modals.push(form1);
     model.elemIdToFocus = 'modal'+modalPosition;
   }); 
-  //plastiq.html.refreshAfter(p);
+  //h.refreshAfter(p);
   return p;
 }
 

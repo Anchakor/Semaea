@@ -1,10 +1,10 @@
-import * as Modals from "../Modals/Modals";
-import * as Modals_Autocomplete from "../Modals/Autocomplete";
-import * as GraphViewMethods from "../GraphViewMethods";
-import { Model } from "../Model";
-import { GraphNode } from "../Graphs/GraphNode";
-import { Triple } from "../Graphs/Triple";
-import { IString } from "../Common";
+import * as Modals from "Modals/Modals";
+import * as Modals_Autocomplete from "Modals/Autocomplete";
+import * as GraphViewMethods from "GraphViewMethods";
+import { Model } from "Model";
+import { GraphNode } from "Graphs/GraphNode";
+import { Triple } from "Graphs/Triple";
+import { IString } from "Common";
 
 export interface ActionFunction {
   (model: Model, graphNode: GraphNode): void

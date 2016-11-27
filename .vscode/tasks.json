@@ -2,9 +2,9 @@
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "0.1.0",
-  "command": "tsc-bundle",
+  "command": "tsc",
   "isShellCommand": true,
-  "args": ["src/Main.ts", "semaea.js", "--target", "es6"],
+  "args": ["-p", "."],
   "showOutput": "silent",
   "problemMatcher": "$tsc"
 }

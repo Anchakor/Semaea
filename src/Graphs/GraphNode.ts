@@ -1,4 +1,4 @@
-import { Triple } from "./Triple";
+import { Triple } from "Graphs/Triple";
 
 export class GraphNode {
   protected _triple: Triple
