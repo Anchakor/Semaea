@@ -14,11 +14,9 @@ export function run() {
   const testModelMeta = new ModelMeta();
   const model1 = new Model(graph);
 
-  window.onload = function () {
-    plastiq.append($('#plastiq'), (model: Model) => { return MainView.render(model); }, model1);
-    
-    setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
+  plastiq.append($('#plastiq'), (model: Model) => { return MainView.render(model); }, model1);
+  
+  setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
 
-    GraphTests.run();
-  }
+  GraphTests.run();
 }
