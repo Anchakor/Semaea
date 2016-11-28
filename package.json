@@ -1,0 +1,10 @@
+{
+  "name": "semaea",
+  "version": "0.0.1",
+  "dependencies": {
+    "requirejs": "^2.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^6.0.51"
+  }
+}
