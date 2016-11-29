@@ -1,5 +1,5 @@
 import { plastiq, $ } from "External";
-import * as MainView from "MainView";
+import { MainView } from "MainView";
 import { Triple } from "Graphs/Triple";
 import { Graph } from "Graphs/Graph";
 import { Model, ModelMeta } from "Model";
