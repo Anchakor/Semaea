@@ -1,5 +1,5 @@
-import * as https from "http" // TODO "https"
-import * as fs from "fs";
+import https = require("http") // TODO "https"
+import fs = require("fs");
 import { Triple } from "Graphs/Triple";
 
 const portNumber = 8000;
