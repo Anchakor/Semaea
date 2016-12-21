@@ -8,16 +8,15 @@ import { GraphNode } from "Graphs/GraphNode";
 import * as Key from "Key";
 
 export function render(model: Model, graphNode: GraphNode) {
-  const style: any = {};
+  let tagClass: string;
   if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
-    style.color = '#4af';
+    tagClass = 'element-otherOccurence';
   }
   if (model.meta.currentNode && model.meta.currentNode.toString() == graphNode.toString()) {
-    style.color = '#5bf';
-    style.fontWeight = 'bold';
+    tagClass = 'element-selected';
   }
   return h('span', {
-      style: style,
+      class: tagClass,
       tabIndex: 0,
       onkeydown: controllerEventHandler(controllerKeydown(model, graphNode)),
       onclick: controllerEventHandler(controllerClick(model, graphNode)),

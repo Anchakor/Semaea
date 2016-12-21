@@ -16,16 +16,33 @@
   <script src="output/semaea_client.js"></script>
   
   <style>
+  /* colours:
+  6EBAFA
+  2396F6
+  0481E8 - main
+  044983
+  021D34
+  */
     body {
       background-color: #202020;
       color: #eee;
       font-size: 0.8em;
       font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
+      line-height: 1.5em;
+    }
+
+    .element-selected {
+      color: #6EBAFA;
+      font-weight: bold;
+    }
+
+    .element-otherOccurence {
+      color: #2396F6
     }
     
     .modal {
-      background-color: #225;
-      border: 3px solid #fff;
+      background-color: #021D34;
+      border: 3px solid #044983;
       padding: 0.5em;
       display: inline-block;
       position: fixed;
@@ -48,7 +65,7 @@
     }
     
     .menuEntry-selected {
-      background-color: #228
+      background-color: #044983
     }
 
   </style>
