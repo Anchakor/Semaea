@@ -72,10 +72,10 @@
   <script src="libraries/require.js"></script>
   <script>
   require.config({
-    baseUrl: "output"
-    /*paths: {
-        "some": "some/v1.0"
-    }*/
+    baseUrl: "output",
+    paths: {
+        "Main": "semaea_client"
+    }
   });
   require(["Main"], function (main){ 
     main.run(); 
