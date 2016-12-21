@@ -10,7 +10,7 @@
     "noImplicitReturns": true,
     "moduleResolution": "node",
     //"traceResolution": true,
-    "module": "amd",
+    "module": "commonjs",
     "baseUrl": ".",
     "paths": {
       "*": [
