@@ -20,10 +20,3 @@ export function run() {
 
   GraphTests.run();
 }
-
-window.onload = (function(oldLoad: any){
-  return function(){
-    oldLoad && oldLoad();
-    run();
-  }
-})(window.onload)
