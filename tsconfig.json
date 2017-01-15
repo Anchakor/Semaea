@@ -5,6 +5,7 @@
     //"allowSyntheticDefaultImports": false,
     "allowJs": false,
     "outDir": "output",
+    "rootDir": ".",
     //"strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
