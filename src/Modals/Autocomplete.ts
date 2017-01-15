@@ -55,8 +55,10 @@ function containsEntryComparer(entry: IString, text: IString) {
   return entry.toString().indexOf(text.toString()) >= 0;
 }
 
-const formFunctionCurry = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true): Modals.IFormFunction<Result<T>> => 
-(closeForm: Modals.ICloseFormFunction<Result<T>>, elementIdToBeFocused: string): IComponent => {
+const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean) 
+  => Modals.IFormFunction<Result<T>> 
+  = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true) => 
+    (closeForm: Modals.ICloseFormFunction<Result<T>>, elementIdToBeFocused: string): IComponent => {
   const form = new Form();
   form.textElementId = elementIdToBeFocused;
   form.label = label
