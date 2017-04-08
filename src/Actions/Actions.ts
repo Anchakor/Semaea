@@ -5,6 +5,7 @@ import { Model } from "Model";
 import { GraphNode } from "Graphs/GraphNode";
 import { Triple } from "Graphs/Triple";
 import { IString } from "Common";
+import * as ServerClient from "Server/Client";
 
 export interface ActionFunction {
   (model: Model, graphNode: GraphNode): void
@@ -17,13 +18,23 @@ export class Action implements IString {
 }
 
 export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
-  const actions: Action[] = [new AddTripleAction, new RemoveTripleAction];
+  const actions: Action[] = [new AddTripleAction, new RemoveTripleAction, new CallServerAction];
   const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
   Modals_Autocomplete.showAutocompleteForm<Action>(model, actions, label, true).then((result) => {
     if (result.value) {
       result.value.execute(model, graphNode);
     }
   });
+}
+
+class CallServerAction extends Action {
+  label = "Call server";
+  execute = (model: Model, graphNode: GraphNode) => {
+    const response = ServerClient.send("test command");
+    response.then((value) => {
+      window.alert("received server response: "+value);
+    });
+  }
 }
 
 class AddTripleAction extends Action {

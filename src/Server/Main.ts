@@ -1,8 +1,8 @@
-import https = require("http") // TODO "https"
+import http = require("http") // TODO "https"
 import fs = require("fs");
 import { Triple } from "Graphs/Triple";
-
-const portNumber = 8000;
+import * as CommandHandler from "Server/CommandHandler";
+import { portNumber } from "Server/Config";
 
 export function run() {
   const triple = new Triple("s", "p", "o");
@@ -15,9 +15,19 @@ export function run() {
 
   console.log("Starting server at http://127.0.0.1:"+portNumber+"/");
 
-  https.createServer(/*options,*/ (req:any, res:any) => {
+  http.createServer(/*options,*/ (req:http.IncomingMessage, res:http.ServerResponse) => {
+    const output = CommandHandler.handle(req.read());
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Content-type","application/json; charset=utf-8");
+    if (!output) {
+      res.writeHead(500);
+      res.end();
+      return;
+    }
     res.writeHead(200);
-    res.end('hello world\n');
+    res.write(output);
+    res.end();
   }).listen(portNumber);
 }
-
