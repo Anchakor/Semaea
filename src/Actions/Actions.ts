@@ -20,7 +20,7 @@ export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) 
   const actions: Action[] = [new AddTripleAction, new RemoveTripleAction];
   const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
   Modals_Autocomplete.showAutocompleteForm<Action>(model, actions, label, false).then((result) => {
-    if (result.value != null) {
+    if (result.value) {
       result.value.execute(model, graphNode);
     }
   });

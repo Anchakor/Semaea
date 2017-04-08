@@ -50,18 +50,18 @@ export function run() {
     assert.strictEqual(g.get().length, 4);
     assert.strictEqual(g.get("s").length, 3);
     assert.strictEqual(g.get("s4").length, 1);
-    assert.strictEqual(g.get(null, "p").length, 2);
-    assert.strictEqual(g.get(null, null, "o4").length, 1);
-    assert.strictEqual(g.get("s", null, "o3").length, 1);
-    assert.strictEqual(g.get(null, null, "o4")[0].s, "s4");
-    assert.strictEqual(g.get(null, null, "o4")[0].p, "p4");
-    assert.strictEqual(g.get(null, null, "o4")[0].o, "o4");
-    assert.strictEqual(g.get("s", null, "o3")[0].p, "p3");
+    assert.strictEqual(g.get(undefined, "p").length, 2);
+    assert.strictEqual(g.get(undefined, undefined, "o4").length, 1);
+    assert.strictEqual(g.get("s", undefined, "o3").length, 1);
+    assert.strictEqual(g.get(undefined, undefined, "o4")[0].s, "s4");
+    assert.strictEqual(g.get(undefined, undefined, "o4")[0].p, "p4");
+    assert.strictEqual(g.get(undefined, undefined, "o4")[0].o, "o4");
+    assert.strictEqual(g.get("s", undefined, "o3")[0].p, "p3");
 
     g.removeTriple(new Triple("s4", "p4", "o4"));
     assert.strictEqual(g.get("s4").length, 0);
-    assert.strictEqual(g.get(null, "p4").length, 0);
-    assert.strictEqual(g.get(null, null, "o4").length, 0);
+    assert.strictEqual(g.get(undefined, "p4").length, 0);
+    assert.strictEqual(g.get(undefined, undefined, "o4").length, 0);
   });
 
   testlib.test("GraphNode", function(assert) {   

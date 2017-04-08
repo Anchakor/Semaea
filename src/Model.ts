@@ -17,8 +17,8 @@ export class Model {
 
 
 export class ModelMeta {
-  currentNode: GraphNode | null = null
-  previousNode: GraphNode | null = null
-  previousNodeNonPredicate: GraphNode | null = null
-  previousNodePredicate: GraphNode | null = null
+  currentNode?: GraphNode
+  previousNode?: GraphNode
+  previousNodeNonPredicate?: GraphNode
+  previousNodePredicate?: GraphNode
 }

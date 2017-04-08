@@ -12,7 +12,7 @@ export class Graph {
     return this._graph.length;
   }
   
-  get(s: string | null = null, p: string | null = null, o: string | null = null) {
+  get(s?: string, p?: string, o?: string) {
     return this._graph.filter(function (val, ix, array) {
       return !(typeof s == "string" && val.s != s)
         && !(typeof p == "string" && val.p != p)

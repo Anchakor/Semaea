@@ -16,9 +16,9 @@ export class MainView {
 
   static focusElemIdToFocus(model: Model) {
     setTimeout(() => {
-      if (model.elemIdToFocus != null && model.elemIdToFocus != '') {
+      if (model.elemIdToFocus && model.elemIdToFocus != '') {
         const elem = $('#'+model.elemIdToFocus)
-        if (elem != null) { elem.focus(); }
+        if (elem) { elem.focus(); }
       }
     }, 0);
   }
