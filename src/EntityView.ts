@@ -8,7 +8,7 @@ import { GraphNode } from "Graphs/GraphNode";
 import * as Key from "Key";
 
 export function render(model: Model, graphNode: GraphNode) {
-  let tagClass: string;
+  let tagClass: string = '';
   if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
     tagClass = 'element-otherOccurence';
   }

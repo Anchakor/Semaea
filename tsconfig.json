@@ -6,7 +6,7 @@
     "allowJs": false,
     "outDir": "output",
     "rootDir": ".",
-    //"strictNullChecks": true,
+    "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",

@@ -14,9 +14,6 @@ export class GraphNode {
   }
   
   getValue(): string {
-    if (!this._triple || !this._position) {
-      return null;
-    }
     return this._triple.getNodeAtPosition(this._position);
   }
   

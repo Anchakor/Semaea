@@ -58,7 +58,7 @@ function containsEntryComparer(entry: IString, text: IString) {
 const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean) 
   => Modals.IFormFunction<Result<T>> 
   = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true) => 
-    (closeForm: Modals.ICloseFormFunction<Result<T>>, elementIdToBeFocused: string): IComponent => {
+    (closeForm: Modals.ICloseFormFunction<Result<T | null>>, elementIdToBeFocused: string): IComponent => {
   const form = new Form();
   form.textElementId = elementIdToBeFocused;
   form.label = label
@@ -66,7 +66,7 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnReso
   form.initialEntries = entries;
   form.entryComparer = containsEntryComparer;
   form.close = function() {
-    closeForm(this, false, new Result<T>('', null), returnFocusOnResolve);
+    closeForm(this, false, new Result<T | null>('', null), returnFocusOnResolve);
   };
   form.submit = function() {
     closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]), returnFocusOnResolve);
