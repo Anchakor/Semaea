@@ -5,5 +5,4 @@ output/*
 semaea.js
 plastiq*
 build-plastiq.sh
-.vscode/launch.json
 .vscode/settings.json
