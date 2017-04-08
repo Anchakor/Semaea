@@ -2,16 +2,19 @@
   "compilerOptions": {
     "target": "ES5",
     "lib": ["dom","es2015"],
-    //"allowSyntheticDefaultImports": false,
+    "allowSyntheticDefaultImports": false,
     "allowJs": false,
-    "outDir": "output",
-    "rootDir": ".",
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
+    "noImplicitThis": true,
     "moduleResolution": "node",
     //"traceResolution": true,
     "module": "amd",
+    "outDir": "output",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "*": [

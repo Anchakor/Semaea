@@ -25,7 +25,7 @@ export function render(model: Model, graphNode: GraphNode) {
 }
 
 function controllerEventHandler(handler: (e: Event) => any) {
-  return function (e: Event, ...a: any[]) {
+  return function (this: (e: Event) => any, e: Event, ...a: any[]) {
     if (handler.apply(this, arguments)) {
       if (e.preventDefault) {
         e.preventDefault();

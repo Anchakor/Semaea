@@ -1,7 +1,7 @@
 export function partial(fn: any, ...a: any[]) {
   const slice = Array.prototype.slice;
   const args = slice.call(arguments, 1);
-  return function () {
+  return function (this: any) {
     return fn.apply(this, args.concat(slice.call(arguments, 0)));
   };
 }

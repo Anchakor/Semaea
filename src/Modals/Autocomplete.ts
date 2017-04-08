@@ -65,10 +65,10 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnReso
   form.entries = entries;
   form.initialEntries = entries;
   form.entryComparer = containsEntryComparer;
-  form.close = function() {
+  form.close = function(this: IComponent) {
     closeForm(this, false, new Result<T | null>('', null), returnFocusOnResolve);
   };
-  form.submit = function() {
+  form.submit = function(this: IComponent) {
     closeForm(this, true, new Result<T>($('#'+form.textElementId).value, <T>form.entries[form.selectedIdx]), returnFocusOnResolve);
   };
   form.render = () => { 
