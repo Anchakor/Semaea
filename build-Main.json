@@ -1,0 +1,5 @@
+{
+  "outputDir": "output/src",
+  "packOutputFileName": "semaea_client.js",
+  "browserModule": "Main"
+}

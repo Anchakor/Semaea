@@ -6,7 +6,7 @@ requirejs.config({
     //are loaded relative to the top-level JS file.
     nodeRequire: require,
 
-    baseUrl: "output"
+    baseUrl: "output/src"
 });
 
 requirejs(['Server/Main'],

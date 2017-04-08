@@ -2,9 +2,32 @@
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "0.1.0",
-  "command": "sh",
+  "command": "node",
   "isShellCommand": true,
-  "args": ["build.sh"],
+  "args": [],
   "showOutput": "silent",
-  "problemMatcher": "$tsc"
+  "problemMatcher": "$tsc",
+  "tasks": [
+    {
+      "taskName": "Debug Build",
+      "args": ["build.js", "debug"],
+      "suppressTaskName": true,
+      "isBuildCommand": true
+    },
+    {
+      "taskName": "Release Build",
+      "args": ["build.js", "release"],
+      "suppressTaskName": true
+    },
+    {
+      "taskName": "Clean Build Output Directory",
+      "args": ["build.js", "clean"],
+      "suppressTaskName": true
+    },
+    {
+      "taskName": "Simple Build",
+      "args": ["build.js", "simple"],
+      "suppressTaskName": true
+    }
+  ]
 }

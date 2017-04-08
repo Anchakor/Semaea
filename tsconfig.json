@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES5",
-    "lib": ["dom","es2015"], //https://github.com/sinclairzx81/typescript-bundle/blob/master/src/options.ts#L118
+    "lib": ["dom","es2015"],
     //"allowSyntheticDefaultImports": false,
     "allowJs": false,
     "outDir": "output",
