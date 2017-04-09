@@ -2,7 +2,7 @@ import http = require("http") // TODO "https"
 import fs = require("fs");
 import { Triple } from "Graphs/Triple";
 import * as CommandHandler from "Server/CommandHandler";
-import { portNumber } from "Server/Config";
+import { portNumber, maxRequestBytes } from "Server/Config";
 
 export function run() {
   const triple = new Triple("s", "p", "o");
@@ -26,12 +26,12 @@ export function run() {
     let requestString = '';
     req.addListener("data", (chunk) => {
       requestString += chunk;
-      if (requestString.length > 5*1e6) { 
+      if (requestString.length > maxRequestBytes) { 
           // flood attach, kill connection
           req.connection.destroy();
       }
     });
-    
+
     req.addListener("end", () => {
       const output = CommandHandler.handle(requestString);
 
