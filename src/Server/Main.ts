@@ -15,19 +15,41 @@ export function run() {
 
   console.log("Starting server at http://127.0.0.1:"+portNumber+"/");
 
-  http.createServer(/*options,*/ (req:http.IncomingMessage, res:http.ServerResponse) => {
-    const output = CommandHandler.handle(req.read());
-
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.setHeader("Content-type","application/json; charset=utf-8");
-    if (!output) {
-      res.writeHead(500);
+  http.createServer(/*options,*/ (req: http.IncomingMessage, res: http.ServerResponse) => {
+    if (req.method == "OPTIONS") {
+      setCORSHeaders(res);
+      res.writeHead(200);
       res.end();
       return;
     }
-    res.writeHead(200);
-    res.write(output);
-    res.end();
+
+    let requestString = '';
+    req.addListener("data", (chunk) => {
+      requestString += chunk;
+      if (requestString.length > 5*1e6) { 
+          // flood attach, kill connection
+          req.connection.destroy();
+      }
+    });
+    
+    req.addListener("end", () => {
+      const output = CommandHandler.handle(requestString);
+
+      setCORSHeaders(res);
+      res.setHeader("Content-type","application/json; charset=utf-8");
+      if (!output) {
+        res.writeHead(500);
+        res.end();
+        return;
+      }
+      res.writeHead(200);
+      res.write(output);
+      res.end();
+    });
   }).listen(portNumber);
+}
+
+function setCORSHeaders(res: http.ServerResponse) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 }
