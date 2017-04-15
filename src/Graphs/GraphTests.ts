@@ -2,6 +2,7 @@ import { testlib } from "External";
 import { Triple } from "Graphs/Triple";
 import { Graph } from "Graphs/Graph";
 import { GraphNode } from "Graphs/GraphNode";
+import * as Serializer from "Serialization/Serializer";
 
 export function run() {
 
@@ -95,4 +96,13 @@ export function run() {
     assert.strictEqual(g.get("s", "p3")[0].o, "o3bb");
   });
   
+  testlib.test("Serializer", function(assert) {
+    const g = setupTestGraph();
+    const gs = Serializer.serialize(g);
+    const g2 = Serializer.deserialize(Graph, gs);
+    assert.ok(g2);
+    if (g2) {
+      assert.deepEqual(g.get(), g2.get());
+    }
+  })
 }

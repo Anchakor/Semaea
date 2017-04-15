@@ -1,7 +1,8 @@
 import { Triple } from "Graphs/Triple";
 import { GraphNode } from "Graphs/GraphNode";
+import { ISerializable } from "Serialization/ISerializable";
 
-export class Graph {
+export class Graph implements ISerializable<Graph> {
   protected _graph: Array<Triple>
   
   constructor() {
@@ -37,4 +38,12 @@ export class Graph {
   removeTriple(triple: Triple) {
     this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
   }
+
+  deserializeObject(input: { _graph: {s: string, p: string, o: string}[] }): void {
+    this._graph = [];
+    input._graph.forEach(t => {
+      this.addTriple(new Triple(t.s, t.p, t.o));
+    });
+  }
+
 }
