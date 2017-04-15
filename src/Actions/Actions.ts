@@ -1,6 +1,6 @@
 import * as Modals from "Modals/Modals";
 import * as Modals_Autocomplete from "Modals/Autocomplete";
-import * as GraphViewMethods from "GraphViewMethods";
+import * as GraphViewMethods from "Views/GraphViewMethods";
 import { Model } from "Model";
 import { GraphNode } from "Graphs/GraphNode";
 import { Triple } from "Graphs/Triple";

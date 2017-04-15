@@ -1,6 +1,6 @@
 import { h, $ } from "External";
-import * as GraphView from "GraphView";
-import * as ModalsView from "ModalsView";
+import * as GraphView from "Views/GraphView";
+import * as ModalsView from "Views/ModalsView";
 import { Model } from "Model";
 
 export class MainView {

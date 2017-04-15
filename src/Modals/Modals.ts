@@ -1,5 +1,5 @@
 import { h } from "External";
-import * as ModalsView from "ModalsView";
+import * as ModalsView from "Views/ModalsView";
 import { IComponent } from "Common";
 import { Model } from "Model";
 import * as Key from "Key";

@@ -1,5 +1,5 @@
 import { h } from "External";
-import * as EntityView from "EntityView";
+import * as EntityView from "Views/EntityView";
 import { Model } from "Model";
 import { GraphNode } from "Graphs/GraphNode";
 import { Triple } from "Graphs/Triple";

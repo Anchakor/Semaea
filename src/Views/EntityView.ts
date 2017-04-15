@@ -1,5 +1,5 @@
 import { h, $ } from "External";
-import * as GraphViewMethods from "GraphViewMethods";
+import * as GraphViewMethods from "Views/GraphViewMethods";
 import * as Modals_Autocomplete from "Modals/Autocomplete";
 import * as Modals from "Modals/Modals";
 import * as Actions from "Actions/Actions";
