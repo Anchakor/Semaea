@@ -1,26 +1,26 @@
 
-import { ISerializable } from "Serialization/ISerializable";
+import { IDeserializeObject } from "Serialization/IDeserializeObject";
 import { IConstructable } from "Common";
 
 export function serialize(input: any): string {
   return JSON.stringify(input);
 }
 
-// use: deserialize(Class, inputString);
-export function deserialize<T extends ISerializable<T>>(ctor: IConstructable<T>, input: string): T | undefined {
+/** use: deserialize(Class.deserializeObject, inputString);
+ * where deserializeObject is static method implementing IDeserializeObject<Class> */
+export function deserialize<T>(deserializeObjectFunc: IDeserializeObject<T>, input: string): T | undefined {
   try {
-    return deserializeObject(ctor, JSON.parse(input));
+    return deserializeObject(deserializeObjectFunc, JSON.parse(input));
   } catch(ex) {
     return undefined;
   }
 }
 
-// use: deserialize(Class, inputObject);
-export function deserializeObject<T extends ISerializable<T>>(ctor: IConstructable<T>, input: Object): T | undefined {
+/** use: deserialize(Class.deserializeObject, inputObject);
+ * where deserializeObject is static method implementing IDeserializeObject<Class> */
+export function deserializeObject<T>(deserializeObjectFunc: IDeserializeObject<T>, input: Object): T | undefined {
   try {
-    const i = new ctor();
-    i.deserializeObject(input);
-    return i;
+    return deserializeObjectFunc(input);
   } catch(ex) {
     return undefined;
   }

@@ -1,12 +1,21 @@
+import { IDeserializeObject } from '../Serialization/IDeserializeObject';
+import { deserialize } from '../Serialization/Serializer';
 import { Triple } from "Graphs/Triple";
 import { GraphNode } from "Graphs/GraphNode";
-import { ISerializable } from "Serialization/ISerializable";
 
-export class Graph implements ISerializable<Graph> {
+export class Graph {
   protected _graph: Array<Triple>
   
   constructor() {
     this._graph = [];
+  }
+
+  static deserializeObject: IDeserializeObject<Graph> = (input: { _graph: Object[] }) => {
+    const x = new Graph();
+    input._graph.forEach(t => {
+      x.addTriple(Triple.deserializeObject(t));
+    });
+    return x;
   }
   
   count(): number {
@@ -37,13 +46,6 @@ export class Graph implements ISerializable<Graph> {
 
   removeTriple(triple: Triple) {
     this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
-  }
-
-  deserializeObject(input: { _graph: {s: string, p: string, o: string}[] }): void {
-    this._graph = [];
-    input._graph.forEach(t => {
-      this.addTriple(new Triple(t.s, t.p, t.o));
-    });
   }
 
 }

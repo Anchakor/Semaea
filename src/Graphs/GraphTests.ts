@@ -99,7 +99,7 @@ export function run() {
   testlib.test("Serializer", function(assert) {
     const g = setupTestGraph();
     const gs = Serializer.serialize(g);
-    const g2 = Serializer.deserialize(Graph, gs);
+    const g2 = Serializer.deserialize(Graph.deserializeObject, gs);
     assert.ok(g2);
     if (g2) {
       assert.deepEqual(g.get(), g2.get());

@@ -1,3 +1,5 @@
+import { IDeserializeObject } from 'Serialization/IDeserializeObject';
+
 export class Triple {
   s: string
   p: string
@@ -7,6 +9,10 @@ export class Triple {
     this.s = s;
     this.p = p;
     this.o = o;
+  }
+
+  static deserializeObject: IDeserializeObject<Triple> = (input: {s: string, p: string, o: string}) => {
+    return new Triple(input.s, input.p, input.o);
   }
 
   equals(other: Triple): boolean {
