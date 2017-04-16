@@ -4,6 +4,7 @@
     "lib": ["dom","es2015"],
     "allowSyntheticDefaultImports": false,
     "allowJs": false,
+    "allowUnreachableCode": true,
     "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true,
