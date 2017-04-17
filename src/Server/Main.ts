@@ -33,7 +33,7 @@ export function run() {
     });
 
     new Promise((resolve, reject) => req.addListener("end", resolve))
-    .then<string | undefined>(() => CommandHandler.handle(requestString))
+    .then<string>(() => CommandHandler.handle(requestString))
     .then((output) => { 
       if (output) sendOutput(output, res);
       else throw new Error("CommandHandler output null.");
