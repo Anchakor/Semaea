@@ -1,6 +1,4 @@
-
 import { IDeserializeObject } from "Serialization/IDeserializeObject";
-import { IConstructable } from "Common";
 
 export function serialize(input: any): string {
   return JSON.stringify(input);
