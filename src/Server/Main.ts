@@ -32,21 +32,27 @@ export function run() {
       }
     });
 
-    req.addListener("end", () => {
-      const output = CommandHandler.handle(requestString);
-
-      setCORSHeaders(res);
-      res.setHeader("Content-type","application/json; charset=utf-8");
-      if (!output) {
-        res.writeHead(500);
-        res.end();
-        return;
-      }
-      res.writeHead(200);
-      res.write(output);
-      res.end();
-    });
+    new Promise((resolve, reject) => req.addListener("end", resolve))
+    .then<string | undefined>(() => CommandHandler.handle(requestString))
+    .then((output) => { 
+      if (output) sendOutput(output, res);
+      else throw new Error("CommandHandler output null.");
+    })
+    .catch((err) => sendOutput(CommandHandler.prepareErrorResponse(err), res));
   }).listen(portNumber);
+}
+
+function sendOutput(output: string, res: http.ServerResponse) {
+  setCORSHeaders(res);
+  res.setHeader("Content-type","application/json; charset=utf-8");
+  if (!output) {
+    res.writeHead(500);
+    res.end();
+    return;
+  }
+  res.writeHead(200);
+  res.write(output);
+  res.end();
 }
 
 function setCORSHeaders(res: http.ServerResponse) {

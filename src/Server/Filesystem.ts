@@ -29,23 +29,28 @@ export function writeFileString(filePath: string, data: string) {
 }
 
 export interface IDirectoryEntry {
-  stats: fs.Stats
+  kind: "file" | "directory"
   name: string
 }
 
-export function listDirectorySimple(path: string) {
-  return listDirectoryCustom(path, (entry) => entry);
+export function listDirectorySimple(dirPath: string) {
+  return listDirectoryCustom(dirPath, (entry) => path.join(dirPath, entry));
 }
 
-export function listDirectory(path: string) {
-  return listDirectoryCustom(path, (entry) => {
-    return { stats: fs.statSync(entry), name: entry } as IDirectoryEntry
+export function listDirectory(dirPath: string) {
+  return listDirectoryCustom(dirPath, (entry) => {
+    const entryPath = path.join(dirPath, entry);
+    const stats = fs.statSync(entryPath);
+    return { 
+      kind: stats.isDirectory() ? "directory" : "file", 
+      name: entry 
+    } as IDirectoryEntry
   });
 }
 
-export function listDirectoryCustom<T>(path: string, callback: (entry: string) => T) {
+export function listDirectoryCustom<T>(dirPath: string, callback: (entry: string) => T) {
   return new Promise<T[]>((resolve, reject) => {
-    fs.readdir(path, (err, entry) => {
+    fs.readdir(dirPath, (err, entry) => {
       if (err) {
         reject(err); return;
       }
