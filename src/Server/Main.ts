@@ -1,7 +1,7 @@
 import http = require("http") // TODO "https"
 import fs = require("fs");
 import { Triple } from "Graphs/Triple";
-import * as CommandHandler from "Server/CommandHandler";
+import * as RequestHandler from "Server/RequestHandler";
 import { portNumber, maxRequestBytes } from "Server/Config";
 
 export function run() {
@@ -33,12 +33,12 @@ export function run() {
     });
 
     new Promise((resolve, reject) => req.addListener("end", resolve))
-    .then<string>(() => CommandHandler.handle(requestString))
+    .then<string>(() => RequestHandler.handle(requestString))
     .then((output) => { 
       if (output) sendOutput(output, res);
-      else throw new Error("CommandHandler output null.");
+      else throw new Error("RequestHandler output null.");
     })
-    .catch((err) => sendOutput(CommandHandler.prepareErrorResponse(err), res));
+    .catch((err) => sendOutput(RequestHandler.prepareErrorResponse(err), res));
   }).listen(portNumber);
 }
 

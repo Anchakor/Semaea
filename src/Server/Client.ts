@@ -1,6 +1,11 @@
 import { portNumber } from "Server/Config";
+import { Request } from "Server/Request";
 
-export function send(command: string): Promise<string> {
+export function send(request: Request): Promise<string> {
+  return sendString(JSON.stringify(request));
+}
+
+export function sendString(request: string): Promise<string> {
   const req = new XMLHttpRequest();
   req.overrideMimeType("application/json");
   req.open("POST", "http://127.0.0.1:"+portNumber+"/", true);
@@ -18,7 +23,7 @@ export function send(command: string): Promise<string> {
     });
   });
   
-  req.send(command);
+  req.send(request);
 
   return output;
 }

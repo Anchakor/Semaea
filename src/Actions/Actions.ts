@@ -6,7 +6,7 @@ import { GraphNode } from "Graphs/GraphNode";
 import { Triple } from "Graphs/Triple";
 import { IString } from "Common";
 import * as ServerClient from "Server/Client";
-import { ListDirectoryCommand } from "Server/Command";
+import * as Request from "Server/Request";
 
 export interface ActionFunction {
   (model: Model, graphNode: GraphNode): void
@@ -31,12 +31,11 @@ export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) 
 class CallServerAction extends Action {
   label = "Call server";
   execute = (model: Model, graphNode: GraphNode) => {
-    const c = new ListDirectoryCommand();
-    c.dirPath = "test";
-    const response = ServerClient.send(JSON.stringify(c));
-    //const response = ServerClient.send(JSON.stringify({ command: "test command"}));
-    response.then((value) => {
-      window.alert("received server response: "+value);
+    const c = new Request.ListDirectoryRequest();
+    { c.dirPath = "test"; }
+    ServerClient.send(c)
+    .then((response) => {
+      window.alert("received server response: "+response);
     });
   }
 }

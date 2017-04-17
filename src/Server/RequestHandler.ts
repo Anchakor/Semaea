@@ -1,27 +1,27 @@
 import * as Response from 'Server/Response';
-import { Command, ListDirectoryCommand } from './Command';
+import { Request, ListDirectoryRequest } from 'Server/Request';
 import { listDirectory } from "Server/Filesystem";
 
-export function handle(commandString: string): Promise<string> {
+export function handle(requestString: string): Promise<string> {
   try {
-    console.log("handling command: "+commandString);
-    const command = JSON.parse(commandString) as Command;
-    return handleCommand(command);
+    console.log("handling request: "+requestString);
+    const request = JSON.parse(requestString) as Request;
+    return handleRequest(request);
   } catch (ex) {
     return Promise.resolve(prepareErrorResponse(ex));
   }
 }
 
-function handleCommand(command: Command) {
-  switch (command.kind) {
-    case "ListDirectoryCommand":
-      return listDirectory(command.dirPath).then((listing) => {
+function handleRequest(request: Request) {
+  switch (request.kind) {
+    case "ListDirectoryRequest":
+      return listDirectory(request.dirPath).then((listing) => {
         const r = new Response.ListDirectoryResponse();
         r.listing = listing
         return prepareResponse(r);
       });
     default:
-      return Promise.resolve(prepareErrorResponse("CommandHandler: Unrecognized command."));
+      return Promise.resolve(prepareErrorResponse("RequestHandler: Unrecognized request."));
   }
 }
 
