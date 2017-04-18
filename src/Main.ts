@@ -4,6 +4,7 @@ import { Triple } from "Graphs/Triple";
 import { Graph } from "Graphs/Graph";
 import { Model, ModelMeta } from "Model";
 import * as GraphTests from "Graphs/GraphTests";
+import * as IntegrationTests from "Server/IntegrationTests";
 
 export function run() {
   const graph = new Graph();
@@ -19,4 +20,5 @@ export function run() {
   setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
 
   GraphTests.run();
+  IntegrationTests.run();
 }

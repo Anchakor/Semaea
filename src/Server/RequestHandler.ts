@@ -8,7 +8,8 @@ export function handle(requestString: string): Promise<string> {
     const request = JSON.parse(requestString) as Request;
     return handleRequest(request);
   } catch (ex) {
-    return Promise.resolve(prepareErrorResponse(ex));
+    return Promise.resolve(createResponseString(
+      Response.createErrorResponse(ex)));
   }
 }
 
@@ -18,25 +19,14 @@ function handleRequest(request: Request) {
       return listDirectory(request.dirPath).then((listing) => {
         const r = new Response.ListDirectoryResponse();
         r.listing = listing
-        return prepareResponse(r);
+        return createResponseString(r);
       });
     default:
-      return Promise.resolve(prepareErrorResponse("RequestHandler: Unrecognized request."));
+      return Promise.resolve(createResponseString(
+        Response.createErrorResponse("RequestHandler: Unrecognized request.")));
   }
 }
 
-export function prepareErrorResponse(err: any) {
-  const r = new Response.ErrorResponse();
-  if (err) {
-    if (typeof err === "string") {
-      r.message = err
-    } else if (typeof err === "object") {
-      r.message = JSON.stringify(err);
-    }
-  }
-  return JSON.stringify(r);
-}
-
-function prepareResponse(response: Object) {
+export function createResponseString(response: Object) {
   return JSON.stringify(response);
 }

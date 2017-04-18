@@ -2,6 +2,7 @@ import http = require("http") // TODO "https"
 import fs = require("fs");
 import { Triple } from "Graphs/Triple";
 import * as RequestHandler from "Server/RequestHandler";
+import * as Response from "Server/Response";
 import { portNumber, maxRequestBytes } from "Server/Config";
 
 export function run() {
@@ -38,7 +39,8 @@ export function run() {
       if (output) sendOutput(output, res);
       else throw new Error("RequestHandler output null.");
     })
-    .catch((err) => sendOutput(RequestHandler.prepareErrorResponse(err), res));
+    .catch((err) => sendOutput(RequestHandler.createResponseString(
+      Response.createErrorResponse(err)), res));
   }).listen(portNumber);
 }
 
