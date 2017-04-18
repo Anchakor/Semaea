@@ -1,4 +1,4 @@
-import { testlib } from "External";
+import * as Test from "Test";
 import { Triple } from "Graphs/Triple";
 import { Graph } from "Graphs/Graph";
 import { GraphNode } from "Graphs/GraphNode";
@@ -6,7 +6,7 @@ import * as Serializer from "Serialization/Serializer";
 
 export function run() {
 
-  testlib.test("Triple", function(assert) {
+  Test.test("Triple", function(assert) {
     const triple = new Triple("s", "p", "o");
     assert.strictEqual(triple.s, "s");
     assert.strictEqual(triple.p, "p");
@@ -44,7 +44,7 @@ export function run() {
     return g;
   }
 
-  testlib.test("Graph", function(assert) {
+  Test.test("Graph", function(assert) {
     const g = setupTestGraph();
     assert.strictEqual(g.count(), 4);
       
@@ -65,7 +65,7 @@ export function run() {
     assert.strictEqual(g.get(undefined, undefined, "o4").length, 0);
   });
 
-  testlib.test("GraphNode", function(assert) {   
+  Test.test("GraphNode", function(assert) {   
     const g = setupTestGraph();
     const gn = new GraphNode(new Triple("sx", "px", "ox"), "o");
     assert.strictEqual(gn.getValue(), "ox");
@@ -96,13 +96,13 @@ export function run() {
     assert.strictEqual(g.get("s", "p3")[0].o, "o3bb");
   });
   
-  testlib.test("Serializer", function(assert) {
+  Test.test("Serializer", function(assert) {
     const g = setupTestGraph();
     const gs = Serializer.serialize(g);
     const g2 = Serializer.deserialize(Graph.deserializeObject, gs);
-    assert.ok(g2);
+    assert.ok(g2, "Graph ran through serialization and deserialization is truthy.");
     if (g2) {
-      assert.deepEqual(g.get(), g2.get());
+      assert.serializedEqual(g.get(), g2.get(), "Graph ran through serialization and deserialization matches the original graph.");
     }
   })
 }
