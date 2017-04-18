@@ -6,7 +6,9 @@ export function handle(requestString: string): Promise<string> {
   try {
     console.log("handling request: "+requestString);
     const request = JSON.parse(requestString) as Request;
-    return handleRequest(request);
+    return handleRequest(request)
+      .catch((err) => Promise.resolve(createResponseString(
+        Response.createErrorResponse(err))));
   } catch (ex) {
     return Promise.resolve(createResponseString(
       Response.createErrorResponse(ex)));
