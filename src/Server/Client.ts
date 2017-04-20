@@ -24,24 +24,27 @@ export function send(request: Request): Promise<string> {
 
 /** Send request string to get a response string. To get Response object call request() */
 export function sendString(request: string): Promise<string> {
-  const req = new XMLHttpRequest();
-  req.overrideMimeType("application/json");
-  req.open("POST", "http://127.0.0.1:"+portNumber+"/", true);
-  req.setRequestHeader("Content-type","application/json; charset=utf-8");
+  return new Promise<string>((resolve, reject) => {
+    try {
+      const url = "http://127.0.0.1:"+portNumber+"/";
+      const req = new XMLHttpRequest();
+      req.overrideMimeType("application/json");
+      req.open("POST", url, true);
+      req.setRequestHeader("Content-type","application/json; charset=utf-8");
 
-  const output = new Promise<string>((resolve, reject) => {
-    req.addEventListener("load", function (this: XMLHttpRequest) {
-      resolve(this.responseText);
-    });
-    req.addEventListener("error", function (this: XMLHttpRequest) {
-      reject(this.responseText);
-    });
-    req.addEventListener("abort", function (this: XMLHttpRequest) {
-      reject(this.responseText);
-    });
-  });
+      req.onload = (ev) => {
+        resolve(req.responseText);
+      };
+      req.onabort = (ev) => {
+        reject(req.responseText);
+      };
+      req.onerror = (ev) => {
+        reject(new Error("Error sending request to url: "+url));
+      };
   
-  req.send(request);
-
-  return output;
+      req.send(request);
+    } catch(ex) {
+      reject(ex);
+    }
+  });
 }

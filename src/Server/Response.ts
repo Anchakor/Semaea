@@ -6,7 +6,8 @@ export function createErrorResponse(err: any) {
     if (typeof err === "string") {
       r.message = err
     } else if (typeof err === "object") {
-      r.message = JSON.stringify(err);
+      if (JSON.stringify(err) !== "{}") r.message = JSON.stringify(err);
+      else r.message = err.toString();
     }
   }
   return r;
