@@ -1,11 +1,11 @@
 
-export type Request = ListDirectoryRequest | Request2
+export type Request = ListDirectoryRequest | UnrecognizedRequest
 
 export class ListDirectoryRequest {
   kind: "ListDirectoryRequest" = "ListDirectoryRequest"
   dirPath: string
 }
 
-export class Request2 {
-  kind: "Request2" = "Request2"
+export class UnrecognizedRequest {
+  kind: "UnrecognizedRequest" = "UnrecognizedRequest"
 }

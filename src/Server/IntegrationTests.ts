@@ -6,6 +6,17 @@ import { IDirectoryEntry } from 'Server/Filesystem';
 
 export function run() {
 
+  Test.testAsync("Integration Request", function(assert, asyncDone) {
+    const c = (new Request.UnrecognizedRequest());
+    const p1 = ServerClient.request(c, "ListDirectoryResponse")
+    .catch((response) => {
+      const expected = new Response.ErrorResponse();
+      expected.message = "RequestHandler: Unrecognized request.";
+      assert.serializedEqual(response, expected, "When sending unrecognized request, received correct ErrorResponse");
+      asyncDone();
+    });
+  });
+
   Test.testAsync("Integration Filesystem ListDirectoryRequest", function(assert, asyncDone) {
     const c = new Request.ListDirectoryRequest();
     { c.dirPath = "test"; }
