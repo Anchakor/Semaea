@@ -19,7 +19,7 @@ export function run() {
 
   Test.testAsync("Integration Filesystem ListDirectoryRequest", function(assert, asyncDone) {
     const c = new Request.ListDirectoryRequest();
-    { c.dirPath = "test"; }
+    { c.dirPath = "test/static"; }
     const p1 = ServerClient.request(c, "ListDirectoryResponse")
     .then((response) => {
       const expected = new Response.ListDirectoryResponse();
