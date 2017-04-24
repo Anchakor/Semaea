@@ -54,7 +54,7 @@ export function run() {
     const p2 = ServerClient.request(req, "ReadFileResponse")
     .catch((response) => {
       const expected = new Response.ErrorResponse();
-      { expected.message = "Error writing a file: test/static/nonexistantTestFile.txt"; }
+      { expected.message = "Error reading file: test/static/nonexistantTestFile.txt"; }
       assert.serializedEqual(response, expected, "When sending request for nonexisting directory, received correct ErrorResponse.");
     });
 

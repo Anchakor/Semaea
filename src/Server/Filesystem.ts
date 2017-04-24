@@ -7,7 +7,7 @@ export function readFileString(filePath: string) {
   return new Promise<string>((resolve, reject) => {
     fs.readFile(filePath, fileEncoding, (err, data) => {
       if (err) {
-        reject("Error writing a file: "+filePath); return;
+        reject("Error reading file: "+filePath); return;
       }
       resolve(data);
     });
@@ -20,7 +20,7 @@ export function writeFileString(filePath: string, data: string) {
     .then(() => {
       fs.writeFile(filePath, data, { encoding: fileEncoding, flag: "w" }, (err) => {
         if (err) {
-          reject("Error reading file: "+filePath); return;
+          reject("Error writing file: "+filePath); return;
         }
         resolve(undefined);
       });
