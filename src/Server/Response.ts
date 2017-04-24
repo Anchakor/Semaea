@@ -13,15 +13,23 @@ export function createErrorResponse(err: any) {
   return r;
 }
 
-export type Response = ErrorResponse | ListDirectoryResponse
-export type ResponseKind = "ErrorResponse" | "ListDirectoryResponse"
+export type Response = ErrorResponse | FilesystemResponse
+export type ResponseKind = "ErrorResponse" | FilesystemResponseKind
 
 export class ErrorResponse {
   kind: "ErrorResponse" = "ErrorResponse"
   message: string
 }
 
+export type FilesystemResponse = ListDirectoryResponse | ReadFileResponse
+export type FilesystemResponseKind = "ListDirectoryResponse" | "ReadFileResponse"
+
 export class ListDirectoryResponse {
   kind: "ListDirectoryResponse" = "ListDirectoryResponse"
   listing: IDirectoryEntry[]
+}
+
+export class ReadFileResponse {
+  kind: "ReadFileResponse" = "ReadFileResponse"
+  content: string
 }

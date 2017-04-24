@@ -1,3 +1,4 @@
+import { readFileString } from './Filesystem';
 import * as Response from 'Server/Response';
 import { Request, ListDirectoryRequest } from 'Server/Request';
 import { listDirectory } from "Server/Filesystem";
@@ -21,6 +22,12 @@ function handleRequest(request: Request) {
       return listDirectory(request.dirPath).then((listing) => {
         const r = new Response.ListDirectoryResponse();
         r.listing = listing
+        return createResponseString(r);
+      });
+    case "ReadFileRequest":
+      return readFileString(request.filePath).then((content) => {
+        const r = new Response.ReadFileResponse();
+        r.content = content;
         return createResponseString(r);
       });
     default:
