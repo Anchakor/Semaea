@@ -5,7 +5,7 @@ export class UnrecognizedRequest {
   kind: "UnrecognizedRequest" = "UnrecognizedRequest"
 }
 
-export type FilesystemRequest = ListDirectoryRequest | ReadFileRequest
+export type FilesystemRequest = ListDirectoryRequest | ReadFileRequest | WriteFileRequest
 
 export class ListDirectoryRequest {
   kind: "ListDirectoryRequest" = "ListDirectoryRequest"
@@ -15,6 +15,12 @@ export class ListDirectoryRequest {
 export class ReadFileRequest {
   kind: "ReadFileRequest" = "ReadFileRequest"
   filePath: string
+}
+
+export class WriteFileRequest {
+  kind: "WriteFileRequest" = "WriteFileRequest"
+  filePath: string
+  content: string
 }
 
 

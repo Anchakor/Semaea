@@ -60,4 +60,26 @@ export function run() {
 
     Promise.all([ p1, p2 ]).then(asyncDone).catch(asyncDone);
   });
+
+  Test.testAsync("Integration Filesystem WriteFileRequest-ReadFileRequest", function(assert, asyncDone) {
+    const req = new Request.WriteFileRequest();
+    { req.filePath = "test/testWriteFile.txt";
+      req.content = "asdf\n \n"+Math.random(); }
+    const p1 = ServerClient.request(req, "WriteFileResponse")
+    .then((response) => {
+      const expected = new Response.WriteFileResponse();
+      assert.serializedEqual(response, expected, "When sending correct request, received correct WriteFileResponse.");
+
+      const req2 = new Request.ReadFileRequest();
+      { req2.filePath = req.filePath; }
+      return ServerClient.request(req2, "ReadFileResponse")
+    })
+    .then((response) => {
+      const expected = new Response.ReadFileResponse();
+      { expected.content = req.content; }
+      assert.serializedEqual(response, expected, "When sending correct request, received correct ReadFileResponse.");
+    });
+
+    Promise.all([ p1 ]).then(asyncDone).catch(asyncDone);
+  });
 }

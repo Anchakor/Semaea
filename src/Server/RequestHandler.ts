@@ -1,7 +1,6 @@
-import { readFileString } from './Filesystem';
 import * as Response from 'Server/Response';
 import { Request, ListDirectoryRequest } from 'Server/Request';
-import { listDirectory } from "Server/Filesystem";
+import { listDirectory, readFileString, writeFileString } from "Server/Filesystem";
 
 export function handle(requestString: string): Promise<string> {
   try {
@@ -28,6 +27,11 @@ function handleRequest(request: Request) {
       return readFileString(request.filePath).then((content) => {
         const r = new Response.ReadFileResponse();
         r.content = content;
+        return createResponseString(r);
+      });
+    case "WriteFileRequest":
+      return writeFileString(request.filePath, request.content).then(() => {
+        const r = new Response.WriteFileResponse();
         return createResponseString(r);
       });
     default:

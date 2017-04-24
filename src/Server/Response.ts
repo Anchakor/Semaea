@@ -13,16 +13,16 @@ export function createErrorResponse(err: any) {
   return r;
 }
 
-export type Response = ErrorResponse | FilesystemResponse
-export type ResponseKind = "ErrorResponse" | FilesystemResponseKind
+export type Response =      ErrorResponse |   FilesystemResponse
+export type ResponseKind =  "ErrorResponse" | FilesystemResponseKind
 
 export class ErrorResponse {
   kind: "ErrorResponse" = "ErrorResponse"
   message: string
 }
 
-export type FilesystemResponse = ListDirectoryResponse | ReadFileResponse
-export type FilesystemResponseKind = "ListDirectoryResponse" | "ReadFileResponse"
+export type FilesystemResponse =      ListDirectoryResponse |   ReadFileResponse |    WriteFileResponse
+export type FilesystemResponseKind =  "ListDirectoryResponse" | "ReadFileResponse" |  "WriteFileResponse"
 
 export class ListDirectoryResponse {
   kind: "ListDirectoryResponse" = "ListDirectoryResponse"
@@ -32,4 +32,8 @@ export class ListDirectoryResponse {
 export class ReadFileResponse {
   kind: "ReadFileResponse" = "ReadFileResponse"
   content: string
+}
+
+export class WriteFileResponse {
+  kind: "WriteFileResponse" = "WriteFileResponse"
 }
