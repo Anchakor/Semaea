@@ -33,7 +33,7 @@ export function run() {
     const p2 = ServerClient.request(req, "ListDirectoryResponse")
     .catch((response) => {
       const expected = new Response.ErrorResponse();
-      { expected.message = "{\"errno\":-2,\"code\":\"ENOENT\",\"syscall\":\"scandir\",\"path\":\"test/static/nonexistantTest\"}"; }
+      { expected.message = "Error getting list of directory: test/static/nonexistantTest"; }
       assert.serializedEqual(response, expected, "When sending request for nonexisting directory, received correct ErrorResponse.");
     });
 
@@ -54,7 +54,7 @@ export function run() {
     const p2 = ServerClient.request(req, "ReadFileResponse")
     .catch((response) => {
       const expected = new Response.ErrorResponse();
-      { expected.message = "{\"errno\":-2,\"code\":\"ENOENT\",\"syscall\":\"open\",\"path\":\"test/static/nonexistantTestFile.txt\"}"; }
+      { expected.message = "Error writing a file: test/static/nonexistantTestFile.txt"; }
       assert.serializedEqual(response, expected, "When sending request for nonexisting directory, received correct ErrorResponse.");
     });
 

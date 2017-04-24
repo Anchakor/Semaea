@@ -3,11 +3,11 @@ import path = require("path");
 
 const fileEncoding = "utf8";
 
-export function readFileString(path: string) {
+export function readFileString(filePath: string) {
   return new Promise<string>((resolve, reject) => {
-    fs.readFile(path, fileEncoding, (err, data) => {
+    fs.readFile(filePath, fileEncoding, (err, data) => {
       if (err) {
-        reject(err); return;
+        reject("Error writing a file: "+filePath); return;
       }
       resolve(data);
     });
@@ -20,7 +20,7 @@ export function writeFileString(filePath: string, data: string) {
     .then(() => {
       fs.writeFile(filePath, data, { encoding: fileEncoding, flag: "w" }, (err) => {
         if (err) {
-          reject(err); return;
+          reject("Error reading file: "+filePath); return;
         }
         resolve(undefined);
       });
@@ -52,7 +52,7 @@ export function listDirectoryCustom<T>(dirPath: string, callback: (entry: string
   return new Promise<T[]>((resolve, reject) => {
     fs.readdir(dirPath, (err, entry) => {
       if (err) {
-        reject(err); return;
+        reject("Error getting list of directory: "+dirPath); return;
       }
       resolve(entry.map(callback));
     });
