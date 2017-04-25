@@ -31,7 +31,7 @@ export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) 
 }
 
 export function showActionsMenu(model: Model, graphNode: GraphNode, actions: IAction[], label: string) {
-  Autocomplete.showAutocompleteForm(model, actions, label, true).then((result) => {
+  Autocomplete.showAutocompleteForm(model, actions, label, (a) => a.toString(), true).then((result) => {
     if (result.value) {
       result.value.execute(model, graphNode);
     }

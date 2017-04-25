@@ -6,11 +6,11 @@ import * as Plastiq from "plastiq";
 import * as Utils from "Utils";
 import * as Key from "Key";
 
-class Form implements IComponent {
+class Form<T> implements IComponent {
   render: () => Plastiq.VNode
   submit: () => void
   close: () => void
-  entryComparer: (text: IString, entryText: IString) => boolean = containsEntryComparer
+  entryToString: (x: T) => string
 
   label = ''
   textElementId = ''
@@ -23,8 +23,8 @@ class Form implements IComponent {
     this.setSelection(-1);
   }
   selectedIdx = -1
-  initialEntries: Array<IString> = []
-  entries: Array<IString> = []
+  initialEntries: Array<T> = []
+  entries: Array<T> = []
   selectionChange = (change: number) => {
     const naiveNewIdx = this.selectedIdx + change;
     this.setSelection(naiveNewIdx);
@@ -35,9 +35,12 @@ class Form implements IComponent {
     if (newIdx == -1) {
       this.currentText = this.writtenText;
     } else {
-      this.currentText = this.entries[newIdx].toString();
+      this.currentText = this.entryToString(this.entries[newIdx]);
     }
     this.selectedIdx = newIdx;
+  }
+  entryComparer: (arrayValue: T, otherValue: string) => boolean = <U>(arrayValue: T, otherValue: string) => { 
+    return this.entryToString(arrayValue).indexOf(otherValue) >= 0; 
   }
 }
 
@@ -51,20 +54,16 @@ export class Result<T> {
   value: T
 }
 
-function containsEntryComparer(entry: IString, text: IString) {
-  return entry.toString().indexOf(text.toString()) >= 0;
-}
-
-const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean) 
+const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean) 
   => Modals.IFormFunction<Result<T>> 
-  = <T>(label: string, entries: Array<T>, returnFocusOnResolve: boolean = true) => 
+  = <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean = true) => 
     (closeForm: Modals.ICloseFormFunction<Result<T | undefined>>, elementIdToBeFocused: string): IComponent => {
-  const form = new Form();
+  const form = new Form<T>();
   form.textElementId = elementIdToBeFocused;
   form.label = label
   form.entries = entries;
   form.initialEntries = entries;
-  form.entryComparer = containsEntryComparer;
+  form.entryToString = entryToString;
   form.close = function(this: IComponent) {
     closeForm(this, false, new Result<T | undefined>('', undefined), returnFocusOnResolve);
   };
@@ -120,7 +119,7 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnReso
             }
           }
         },
-        form.entries[entryId].toString()
+        entryToString(form.entries[entryId])
       );
     };
     const menuEntries = form.entries.map((val, ix, arr) => {
@@ -132,6 +131,6 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, returnFocusOnReso
   return form;
 }
 
-export function showAutocompleteForm<T extends IString>(model: Model, entries: Array<T>, label: string = '', returnFocusOnResolve: boolean = true) {
-  return Modals.makeForm(model, formFunctionCurry(label, entries, returnFocusOnResolve));
+export function showAutocompleteForm<T>(model: Model, entries: Array<T>, label: string = '', entryToString: (x: T) => string = (x: T) => x.toString(), returnFocusOnResolve: boolean = true) {
+  return Modals.makeForm(model, formFunctionCurry(label, entries, entryToString, returnFocusOnResolve));
 }
