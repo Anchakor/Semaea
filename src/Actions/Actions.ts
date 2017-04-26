@@ -4,28 +4,13 @@ import * as GraphViewMethods from "Views/GraphViewMethods";
 import { Model } from "Model";
 import { GraphNode } from "Graphs/GraphNode";
 import { Triple } from "Graphs/Triple";
-import { IString } from "Common";
 import * as ServerClient from "Server/Client";
 import * as Request from "Server/Request";
-
-export interface IActionFunction {
-  (model: Model, graphNode: GraphNode): void
-}
-
-export interface IAction extends IString {
-  label: string
-  execute: IActionFunction
-  toString(): string
-}
-
-export abstract class Action implements IAction {
-  abstract label: string;
-  abstract execute: IActionFunction;
-  toString() { return this.label; }
-}
+import { OpenFileAction } from "Actions/OpenFileAction";
+import { IAction, Action } from "Actions/IAction";
 
 export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
-  const actions: Action[] = [new AddTripleAction, new RemoveTripleAction, new CallServerAction];
+  const actions: IAction[] = [new AddTripleAction, new RemoveTripleAction, new CallServerAction, new OpenFileAction];
   const label = 'Choose action for '+graphNode.getValue()+' ('+graphNode.getTriple().toString()+')';
   showActionsMenu(model, graphNode, actions, label);
 }
