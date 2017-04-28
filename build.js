@@ -42,7 +42,7 @@ function sh(command, args) {
 }
 
 function rJsPack(moduleConfig, noOptimize) {
-  var args = ['node_modules/requirejs/bin/r.js', '-o', 
+  var args = ['node_modules/requirejs/bin/r.js', '-o', 'rjsbuild.js',
     'baseUrl='+moduleConfig.outputDir, 
     'name='+moduleConfig.browserModule, 
     'out='+moduleConfig.packOutputFilePath];

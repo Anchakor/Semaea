@@ -1,24 +1,6 @@
-import { plastiq, $ } from "External";
-import { MainView } from "Views/MainView";
-import { Triple } from "Graphs/Triple";
-import { Graph } from "Graphs/Graph";
-import { Model, ModelMeta } from "Model";
-import * as GraphTests from "Graphs/GraphTests";
-import * as IntegrationTests from "Server/IntegrationTests";
+import Inferno = require("inferno");
+import h = require("../node_modules/inferno-hyperscript/dist/inferno-hyperscript");
 
-export function run() {
-  const graph = new Graph();
-  graph.addTriple(new Triple("testS", "testP", "testO"));
-  graph.addTriple(new Triple("testS", "testP2", "testO"));
-  graph.addTriple(new Triple("testO", "testP3", "testO3"));
-
-  const testModelMeta = new ModelMeta();
-  const model1 = new Model(graph);
-
-  plastiq.append($('#plastiq'), (model: Model) => { return MainView.render(model); }, model1);
-  
-  setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
-
-  GraphTests.run();
-  IntegrationTests.run();
+export function run(x: HTMLElement) {
+  Inferno.render(h("h1", {}, "asdf"), x)
 }

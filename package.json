@@ -2,6 +2,8 @@
   "name": "semaea",
   "version": "0.0.1",
   "dependencies": {
+    "inferno": "^3.0.6",
+    "inferno-hyperscript": "^3.0.6",
     "requirejs": "^2.3.2"
   },
   "devDependencies": {

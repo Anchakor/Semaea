@@ -3,7 +3,7 @@
     "target": "ES5",
     "lib": ["dom","es2015"],
     "allowSyntheticDefaultImports": false,
-    "allowJs": false,
+    "allowJs": true,
     "allowUnreachableCode": true,
     "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
