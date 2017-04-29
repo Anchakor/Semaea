@@ -7,10 +7,10 @@ export class MainView {
   static render(model: Model) {
     MainView.focusElemIdToFocus(model);
     
-    return h('div',
+    return h('div', {}, [
       GraphView.render(model),
       ModalsView.render(model)
-      );
+      ]);
   }
 
   static focusElemIdToFocus(model: Model) {
