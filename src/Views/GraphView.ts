@@ -11,11 +11,11 @@ export function render(model: Model) {
 
 function renderLevel(model: Model, depth: number) {
   return h('div', model.graph.get().map((triple: Triple) => {
-    return h('div',
+    return h('div', {}, [
       renderLevelPosition(model, new GraphNode(triple, 's')), ' ',
       renderLevelPosition(model, new GraphNode(triple, 'p')), ' ',
       renderLevelPosition(model, new GraphNode(triple, 'o'))
-      );
+      ]);
   }));
 }
 

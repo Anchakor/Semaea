@@ -11,7 +11,6 @@
     var testlib = QUnit;
   </script>
   
-  <script src="libraries/plastiq.js"></script>
   <script src="libraries/140medley.js"></script>
   
   <style>
@@ -78,7 +77,7 @@
     }
   });
   require(["Main"], function (main){ 
-    main.run(); 
+    main.run($('#plastiq')); 
   });
   </script>
 </head>

@@ -5,7 +5,6 @@ import { Model } from "Model";
 
 export class MainView {
   static render(model: Model) {
-    model.refresh = h.refresh;
     MainView.focusElemIdToFocus(model);
     
     return h('div',
