@@ -125,7 +125,9 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x
         return menuEntryView(ix, (ix == form.selectedIdx));
       });
     const label = h('p', { style: 'margin: 0; margin-bottom: 0.3em;'}, form.label);
-    return h('div', {}, [label, inputBox, submitButton, cancelButton, menuEntries]);
+    const entries = [label, inputBox, submitButton, cancelButton]
+    entries.concat(menuEntries)
+    return h('div', {}, entries);
   };
   return form;
 }

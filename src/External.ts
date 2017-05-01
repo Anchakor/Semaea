@@ -1,13 +1,13 @@
 import { QUnitStatic } from '../typings/qunit';
-import Inferno = require('inferno');
-import hs = require('inferno-hyperscript');
-import InfernoComponent = require('inferno-component');
+import * as Inferno from 'inferno';
+import { default as InfernoHyperscript } from 'inferno-hyperscript';
+import { default as InfernoComponent,  } from 'inferno-component';
 
 export const $: any = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
-export const inferno = Inferno;
-export const Component = InfernoComponent.default;
+export const UILib = Inferno;
+export const Component = InfernoComponent;
 export type VNode = Inferno.VNode;
 
-export const h = (_tag: any, _props: object = {}, _children: any[] | any = []) => hs.default(_tag, _props, _children);
-export const linkEvent = inferno.linkEvent;
+export const h = InfernoHyperscript;
+export const linkEvent = UILib.linkEvent;

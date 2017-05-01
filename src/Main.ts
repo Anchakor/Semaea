@@ -1,4 +1,4 @@
-import { inferno, $ } from './External';
+import { UILib, $ } from './External';
 import { MainView } from './Views/MainView';
 import { Triple } from './Graphs/Triple';
 import { Graph } from './Graphs/Graph';
@@ -15,7 +15,7 @@ export function run(attachPoint: HTMLElement) {
   const testModelMeta = new ModelMeta();
   const model1 = new Model(graph);
 
-  inferno.render(MainView.render(model1), attachPoint);
+  UILib.render(MainView.render(model1), attachPoint);
   
   setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
 
