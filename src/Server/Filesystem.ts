@@ -1,13 +1,13 @@
-import fs = require("fs");
-import path = require("path");
+import fs = require('fs');
+import path = require('path');
 
-const fileEncoding = "utf8";
+const fileEncoding = 'utf8';
 
 export function readFileString(filePath: string) {
   return new Promise<string>((resolve, reject) => {
     fs.readFile(filePath, fileEncoding, (err, data) => {
       if (err) {
-        reject("Error reading file: "+filePath); return;
+        reject('Error reading file: '+filePath); return;
       }
       resolve(data);
     });
@@ -18,9 +18,9 @@ export function writeFileString(filePath: string, data: string) {
   return new Promise<undefined>((resolve, reject) => {
     mkdirp(path.dirname(filePath))
     .then(() => {
-      fs.writeFile(filePath, data, { encoding: fileEncoding, flag: "w" }, (err) => {
+      fs.writeFile(filePath, data, { encoding: fileEncoding, flag: 'w' }, (err) => {
         if (err) {
-          reject("Error writing file: "+filePath); return;
+          reject('Error writing file: '+filePath); return;
         }
         resolve(undefined);
       });
@@ -29,7 +29,7 @@ export function writeFileString(filePath: string, data: string) {
 }
 
 export interface IDirectoryEntry {
-  kind: "file" | "directory"
+  kind: 'file' | 'directory'
   name: string
 }
 
@@ -42,7 +42,7 @@ export function listDirectory(dirPath: string) {
     const entryPath = path.join(dirPath, entry);
     const stats = fs.statSync(entryPath);
     return { 
-      kind: stats.isDirectory() ? "directory" : "file", 
+      kind: stats.isDirectory() ? 'directory' : 'file', 
       name: entry 
     } as IDirectoryEntry
   });
@@ -52,7 +52,7 @@ export function listDirectoryCustom<T>(dirPath: string, callback: (entry: string
   return new Promise<T[]>((resolve, reject) => {
     fs.readdir(dirPath, (err, entry) => {
       if (err) {
-        reject("Error getting list of directory: "+dirPath); return;
+        reject('Error getting list of directory: '+dirPath); return;
       }
       resolve(entry.map(callback));
     });
@@ -69,7 +69,7 @@ function mkdirp(dirPath: string) {
             reject(err); return;
           }
           if (!stats.isDirectory()) {
-            reject("File exists but is not a directory."); return;
+            reject('File exists but is not a directory.'); return;
           }
           resolve(undefined);
         });

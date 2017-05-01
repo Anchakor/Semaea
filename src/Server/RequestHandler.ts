@@ -1,10 +1,10 @@
-import * as Response from 'Server/Response';
-import { Request, ListDirectoryRequest } from 'Server/Request';
-import { listDirectory, readFileString, writeFileString } from "Server/Filesystem";
+import * as Response from '../Server/Response';
+import { Request, ListDirectoryRequest } from '../Server/Request';
+import { listDirectory, readFileString, writeFileString } from '../Server/Filesystem';
 
 export function handle(requestString: string): Promise<string> {
   try {
-    console.log("handling request: "+requestString);
+    console.log('handling request: '+requestString);
     const request = JSON.parse(requestString) as Request;
     return handleRequest(request)
       .catch((err) => Promise.resolve(createResponseString(
@@ -17,26 +17,26 @@ export function handle(requestString: string): Promise<string> {
 
 function handleRequest(request: Request) {
   switch (request.kind) {
-    case "ListDirectoryRequest":
+    case 'ListDirectoryRequest':
       return listDirectory(request.dirPath).then((listing) => {
         const r = new Response.ListDirectoryResponse();
         r.listing = listing
         return createResponseString(r);
       });
-    case "ReadFileRequest":
+    case 'ReadFileRequest':
       return readFileString(request.filePath).then((content) => {
         const r = new Response.ReadFileResponse();
         r.content = content;
         return createResponseString(r);
       });
-    case "WriteFileRequest":
+    case 'WriteFileRequest':
       return writeFileString(request.filePath, request.content).then(() => {
         const r = new Response.WriteFileResponse();
         return createResponseString(r);
       });
     default:
       return Promise.resolve(createResponseString(
-        Response.createErrorResponse("RequestHandler: Unrecognized request.")));
+        Response.createErrorResponse('RequestHandler: Unrecognized request.')));
   }
 }
 

@@ -1,4 +1,4 @@
-import { VNode } from "../typings/plastiq.d";
+import { VNode } from 'plastiq';
 
 export interface IString {
   toString(): string

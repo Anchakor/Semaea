@@ -1,12 +1,12 @@
-import http = require("http") // TODO "https"
-import fs = require("fs");
-import { Triple } from "Graphs/Triple";
-import * as RequestHandler from "Server/RequestHandler";
-import * as Response from "Server/Response";
-import { portNumber, maxRequestBytes } from "Server/Config";
+import http = require('http') // TODO 'https'
+import fs = require('fs');
+import { Triple } from '../Graphs/Triple';
+import * as RequestHandler from '../Server/RequestHandler';
+import * as Response from '../Server/Response';
+import { portNumber, maxRequestBytes } from '../Server/Config';
 
 export function run() {
-  const triple = new Triple("s", "p", "o");
+  const triple = new Triple('s', 'p', 'o');
   console.log(triple.toString());
 
   const options = {
@@ -14,10 +14,10 @@ export function run() {
     //cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
   };
 
-  console.log("Starting server at http://127.0.0.1:"+portNumber+"/");
+  console.log('Starting server at http://127.0.0.1:'+portNumber+'/');
 
   http.createServer(/*options,*/ (req: http.IncomingMessage, res: http.ServerResponse) => {
-    if (req.method == "OPTIONS") {
+    if (req.method == 'OPTIONS') {
       setCORSHeaders(res);
       res.writeHead(200);
       res.end();
@@ -25,7 +25,7 @@ export function run() {
     }
 
     let requestString = '';
-    req.addListener("data", (chunk) => {
+    req.addListener('data', (chunk) => {
       requestString += chunk;
       if (requestString.length > maxRequestBytes) { 
           // flood attach, kill connection
@@ -33,11 +33,11 @@ export function run() {
       }
     });
 
-    new Promise((resolve, reject) => req.addListener("end", resolve))
+    new Promise((resolve, reject) => req.addListener('end', resolve))
     .then<string>(() => RequestHandler.handle(requestString))
     .then((output) => { 
       if (output) sendOutput(output, res);
-      else throw new Error("RequestHandler output null.");
+      else throw new Error('RequestHandler output null.');
     })
     .catch((err) => sendOutput(RequestHandler.createResponseString(
       Response.createErrorResponse(err)), res));
@@ -46,7 +46,7 @@ export function run() {
 
 function sendOutput(output: string, res: http.ServerResponse) {
   setCORSHeaders(res);
-  res.setHeader("Content-type","application/json; charset=utf-8");
+  res.setHeader('Content-type','application/json; charset=utf-8');
   if (!output) {
     res.writeHead(500);
     res.end();
@@ -58,6 +58,6 @@ function sendOutput(output: string, res: http.ServerResponse) {
 }
 
 function setCORSHeaders(res: http.ServerResponse) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 }

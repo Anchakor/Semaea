@@ -1,7 +1,7 @@
-import { h, $ } from "External";
-import * as GraphView from "Views/GraphView";
-import * as ModalsView from "Views/ModalsView";
-import { Model } from "Model";
+import { h, $ } from '../External';
+import * as GraphView from '../Views/GraphView';
+import * as ModalsView from '../Views/ModalsView';
+import { Model } from '../Model';
 
 export class MainView {
   static render(model: Model) {

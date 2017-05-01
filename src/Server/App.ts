@@ -1,4 +1,4 @@
-var requirejs = require("requirejs");
+var requirejs = require('requirejs');
 
 requirejs.config({
     //Pass the top-level main.js/index.js require
@@ -6,7 +6,7 @@ requirejs.config({
     //are loaded relative to the top-level JS file.
     nodeRequire: require,
 
-    baseUrl: "output/src"
+    baseUrl: 'output/src'
 });
 
 requirejs(['Server/Main'],

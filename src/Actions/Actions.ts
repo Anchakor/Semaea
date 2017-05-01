@@ -1,13 +1,13 @@
-import * as Modals from "Modals/Modals";
-import * as Autocomplete from "Modals/Autocomplete";
-import * as GraphViewMethods from "Views/GraphViewMethods";
-import { Model } from "Model";
-import { GraphNode } from "Graphs/GraphNode";
-import { Triple } from "Graphs/Triple";
-import * as ServerClient from "Server/Client";
-import * as Request from "Server/Request";
-import { OpenFileAction } from "Actions/OpenFileAction";
-import { IAction, Action } from "Actions/IAction";
+import * as Modals from '../Modals/Modals';
+import * as Autocomplete from '../Modals/Autocomplete';
+import * as GraphViewMethods from '../Views/GraphViewMethods';
+import { Model } from '../Model';
+import { GraphNode } from '../Graphs/GraphNode';
+import { Triple } from '../Graphs/Triple';
+import * as ServerClient from '../Server/Client';
+import * as Request from '../Server/Request';
+import { OpenFileAction } from '../Actions/OpenFileAction';
+import { IAction, Action } from '../Actions/IAction';
 
 export function showActionsMenuForGraphNode(model: Model, graphNode: GraphNode) {
   const actions: IAction[] = [new AddTripleAction, new RemoveTripleAction, new CallServerAction, new OpenFileAction];
@@ -24,13 +24,13 @@ export function showActionsMenu(model: Model, graphNode: GraphNode, actions: IAc
 }
 
 class CallServerAction extends Action {
-  label = "Call server";
+  label = 'Call server';
   execute = (model: Model, graphNode: GraphNode) => {
     const c = new Request.ListDirectoryRequest();
-    { c.dirPath = "test"; }
+    { c.dirPath = 'test'; }
     ServerClient.send(c)
     .then((response) => {
-      window.alert("received server response: "+response);
+      window.alert('received server response: '+response);
     });
   }
 }

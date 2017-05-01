@@ -1,8 +1,8 @@
-import { h } from "External";
-import * as ModalsView from "Views/ModalsView";
-import { IComponent } from "Common";
-import { Model } from "Model";
-import * as Key from "Key";
+import { h } from '../External';
+import * as ModalsView from '../Views/ModalsView';
+import { IComponent } from '../Common';
+import { Model } from '../Model';
+import * as Key from '../Key';
   
 export interface ICloseFormFunction<T> {
   (form: IComponent, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean): void

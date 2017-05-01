@@ -1,11 +1,11 @@
-import { QUnitStatic } from "qunit";
-//import hs = require("../node_modules/inferno-hyperscript/dist/inferno-hyperscript");
-import hs = require("inferno-hyperscript");
-import Inferno = require("inferno");
-//import InfernoComponent = require("../node_modules/inferno-component/dist/inferno-component");
-//import InfernoComponent = require("inferno-component");
-import InfernoComponent from "inferno-component";
-//import InfernoComponent = require("../node_modules/inferno-component/dist/inferno-component");
+import { QUnitStatic } from 'qunit';
+//import hs = require('../node_modules/inferno-hyperscript/dist/inferno-hyperscript');
+import hs = require('inferno-hyperscript');
+import Inferno = require('inferno');
+//import InfernoComponent = require('../node_modules/inferno-component/dist/inferno-component');
+//import InfernoComponent = require('inferno-component');
+import InfernoComponent from 'inferno-component';
+//import InfernoComponent = require('../node_modules/inferno-component/dist/inferno-component');
 
 export const $: any = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;

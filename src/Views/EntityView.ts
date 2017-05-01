@@ -1,12 +1,12 @@
-import { h, he, Component, $ } from "External";
-import * as GraphViewMethods from "Views/GraphViewMethods";
-import * as Modals_Autocomplete from "Modals/Autocomplete";
-import * as Modals from "Modals/Modals";
-import * as Actions from "Actions/Actions";
-import { Model } from "Model";
-import { GraphNode } from "Graphs/GraphNode";
-import * as Key from "Key";
-import InfernoComponent from "inferno-component";
+import { h, he, Component, $ } from 'External';
+import * as GraphViewMethods from '../Views/GraphViewMethods';
+import * as Modals_Autocomplete from '../Modals/Autocomplete';
+import * as Modals from '../Modals/Modals';
+import * as Actions from '../Actions/Actions';
+import { Model } from '../Model';
+import { GraphNode } from '../Graphs/GraphNode';
+import * as Key from '../Key';
+import InfernoComponent from 'inferno-component';
 
 interface Props {
   model: Model,

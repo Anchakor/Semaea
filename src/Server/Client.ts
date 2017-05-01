@@ -1,7 +1,7 @@
-import { portNumber } from "Server/Config";
-import { Request } from "Server/Request";
-import * as Response from "Server/Response";
-import * as RequestHandler from "Server/RequestHandler";
+import { portNumber } from '../Server/Config';
+import { Request } from '../Server/Request';
+import * as Response from '../Server/Response';
+import * as RequestHandler from '../Server/RequestHandler';
 
 export function requestSimple(request: Request): Promise<Response.Response> {
   return send(request)
@@ -26,11 +26,11 @@ export function send(request: Request): Promise<string> {
 export function sendString(request: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     try {
-      const url = "http://127.0.0.1:"+portNumber+"/";
+      const url = 'http://127.0.0.1:'+portNumber+'/';
       const req = new XMLHttpRequest();
-      req.overrideMimeType("application/json");
-      req.open("POST", url, true);
-      req.setRequestHeader("Content-type","application/json; charset=utf-8");
+      req.overrideMimeType('application/json');
+      req.open('POST', url, true);
+      req.setRequestHeader('Content-type','application/json; charset=utf-8');
 
       req.onload = (ev) => {
         resolve(req.responseText);
@@ -39,7 +39,7 @@ export function sendString(request: string): Promise<string> {
         reject(req.responseText);
       };
       req.onerror = (ev) => {
-        reject(new Error("Error sending request to url: "+url));
+        reject(new Error('Error sending request to url: '+url));
       };
   
       req.send(request);

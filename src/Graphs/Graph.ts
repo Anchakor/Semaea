@@ -1,7 +1,7 @@
 import { IDeserializeObject } from '../Serialization/IDeserializeObject';
 import { deserialize } from '../Serialization/Serializer';
-import { Triple } from "Graphs/Triple";
-import { GraphNode } from "Graphs/GraphNode";
+import { Triple } from '../Graphs/Triple';
+import { GraphNode } from '../Graphs/GraphNode';
 
 export class Graph {
   protected _graph: Array<Triple>
@@ -24,9 +24,9 @@ export class Graph {
   
   get(s?: string, p?: string, o?: string) {
     return this._graph.filter(function (val, ix, array) {
-      return !(typeof s == "string" && val.s != s)
-        && !(typeof p == "string" && val.p != p)
-        && !(typeof o == "string" && val.o != o) 
+      return !(typeof s == 'string' && val.s != s)
+        && !(typeof p == 'string' && val.p != p)
+        && !(typeof o == 'string' && val.o != o) 
     });
   }
 
