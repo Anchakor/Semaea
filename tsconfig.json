@@ -13,7 +13,7 @@
     "noImplicitThis": true,
     "moduleResolution": "node",
     //"traceResolution": true,
-    "module": "amd",
+    "module": "commonjs",
     "outDir": "output",
     "rootDir": ".",
     "baseUrl": ".",

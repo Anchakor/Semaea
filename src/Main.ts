@@ -22,3 +22,10 @@ export function run(attachPoint: HTMLElement) {
   GraphTests.run();
   IntegrationTests.run();
 }
+
+window.onload = (function(oldLoad: any){
+  return function(){
+    oldLoad && oldLoad();
+    run($('#plastiq'));
+  }
+})(window.onload)

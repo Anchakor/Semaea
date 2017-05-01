@@ -12,17 +12,15 @@ const modulesToBuild = [ 'build-Main.json'/*, 'build-Example1.json', 'build-Exam
 function mainRun(moduleConfig) {
   switch (args[1]) {
     case 'debug':
-      sh('tsc', ['-p', '.']) &&
-      rJsPack(moduleConfig, true) &&
+      mainBuild() &&
       echo("Debug build successful");
       break;
     case 'release':
-      sh('tsc', ['-p', '.']) &&
-      rJsPack(moduleConfig, false) &&
+      mainBuild() &&
       echo("Release build successful");
       break;
     case 'simple':
-      sh('tsc', ['-p', '.']) &&
+      mainBuild() &&
       echo("Simple build successful");
       break;
     case 'clean':
@@ -32,6 +30,10 @@ function mainRun(moduleConfig) {
     default:
       echo('To build use `node build.js debug` (or "release", "simple" or "clean").');
   }
+}
+
+function mainBuild() {
+  return sh('webpack') && sh('webpack', ['--config', 'webpackServer.config.js']);
 }
 
 function sh(command, args) {
