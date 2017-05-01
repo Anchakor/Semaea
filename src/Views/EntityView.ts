@@ -1,4 +1,4 @@
-import { h, he, Component, $ } from 'External';
+import { h, linkEvent, Component, $ } from '../External';
 import * as GraphViewMethods from '../Views/GraphViewMethods';
 import * as Modals_Autocomplete from '../Modals/Autocomplete';
 import * as Modals from '../Modals/Modals';
@@ -6,14 +6,13 @@ import * as Actions from '../Actions/Actions';
 import { Model } from '../Model';
 import { GraphNode } from '../Graphs/GraphNode';
 import * as Key from '../Key';
-import InfernoComponent from 'inferno-component';
 
 interface Props {
   model: Model,
   graphNode: GraphNode
 }
 
-export class EntityView extends InfernoComponent<Props, {}> {
+export class EntityView extends Component<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context) }
   public render() {
     return render(this.props.model, this.props.graphNode);
@@ -31,9 +30,9 @@ export function render(model: Model, graphNode: GraphNode) {
   return h('span', {
       class: tagClass,
       tabIndex: 0,
-      onkeydown: he(model, controllerEventHandler(controllerKeydown(model, graphNode))),
-      onclick: he(model, controllerEventHandler(controllerClick(model, graphNode))),
-      onfocus: he(model, GraphViewMethods.changeCurrentNodeCurry(model, graphNode))
+      onkeydown: linkEvent(model, controllerEventHandler(controllerKeydown(model, graphNode))),
+      onclick: linkEvent(model, controllerEventHandler(controllerClick(model, graphNode))),
+      onfocus: linkEvent(model, GraphViewMethods.changeCurrentNodeCurry(model, graphNode))
     }, graphNode.getValue());
 }
 

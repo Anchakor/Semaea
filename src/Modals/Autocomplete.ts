@@ -1,13 +1,12 @@
-import { h, $ } from '../External';
+import { h, $, VNode } from '../External';
 import * as Modals from '../Modals/Modals';
 import { IString, IComponent } from '../Common';
 import { Model } from '../Model';
-import * as Plastiq from 'plastiq';
 import * as Utils from '../Utils';
 import * as Key from '../Key';
 
 class Form<T> implements IComponent {
-  render: () => Plastiq.VNode
+  render: () => VNode
   submit: () => void
   close: () => void
   entryToString: (x: T) => string

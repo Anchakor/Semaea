@@ -1,4 +1,4 @@
-import { VNode } from 'plastiq';
+import { VNode } from './External';
 
 export interface IString {
   toString(): string

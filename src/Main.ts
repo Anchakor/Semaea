@@ -1,4 +1,4 @@
-import { inferno, $ } from "External";
+import { inferno, $ } from './External';
 import { MainView } from './Views/MainView';
 import { Triple } from './Graphs/Triple';
 import { Graph } from './Graphs/Graph';
