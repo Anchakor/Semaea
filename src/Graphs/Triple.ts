@@ -1,4 +1,4 @@
-import { IDeserializeObject } from 'Serialization/IDeserializeObject';
+import { IDeserializeObject } from '../Serialization/IDeserializeObject';
 
 export class Triple {
   s: string

@@ -1,6 +1,6 @@
-import { Model } from "Model";
-import { GraphNode } from "Graphs/GraphNode";
-import { IString } from "Common";
+import { Model } from '../Model';
+import { GraphNode } from '../Graphs/GraphNode';
+import { IString } from '../Common';
 
 export interface IActionFunction {
   (model: Model, graphNode: GraphNode): void

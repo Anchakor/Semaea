@@ -1,5 +1,5 @@
-import { testlib } from "External";
-import { QUnitAssert } from "qunit";
+import { testlib } from './External';
+import { QUnitAssert } from 'qunit';
 
 export interface Assert extends QUnitAssert {
   serializedEqual: (actual: any, expected: any, message?: string) => any

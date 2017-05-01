@@ -1,10 +1,10 @@
-import { h, $ } from "External";
-import * as Modals from "Modals/Modals";
-import { IString, IComponent } from "Common";
-import { Model } from "Model";
-import * as Plastiq from "plastiq";
-import * as Utils from "Utils";
-import * as Key from "Key";
+import { h, $ } from '../External';
+import * as Modals from '../Modals/Modals';
+import { IString, IComponent } from '../Common';
+import { Model } from '../Model';
+import * as Plastiq from 'plastiq';
+import * as Utils from '../Utils';
+import * as Key from '../Key';
 
 class Form<T> implements IComponent {
   render: () => Plastiq.VNode
@@ -101,12 +101,12 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x
         onclick: function (e: MouseEvent) {
           form.submit();
         }
-      }, "O");
+      }, 'O');
     const cancelButton = h('button', {
         onclick: function (e: MouseEvent) {
           form.close();
         }
-      }, "X");
+      }, 'X');
     const menuEntryView = (entryId: number, selected: boolean) => {
       return h('div',
         {

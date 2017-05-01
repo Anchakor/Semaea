@@ -1,6 +1,6 @@
-import { Plastiq, HtmlModule } from "plastiq";
-import { QUnitStatic } from "qunit";
-//import "../libraries/plastiq.js"
+import { Plastiq, HtmlModule } from 'plastiq';
+import { QUnitStatic } from 'qunit';
+//import '../libraries/plastiq.js'
 
 export const $: any = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
