@@ -4,10 +4,12 @@
   "dependencies": {
     "inferno": "^3.0.6",
     "inferno-component": "^3.0.6",
-    "inferno-hyperscript": "^3.0.6"
+    "inferno-hyperscript": "^3.0.6",
+    "inferno-redux": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^6.0.51",
+    "@types/redux": "^3.6.0",
     "source-map-loader": "^0.1.5",
     "ts-loader": "^1.3.0"
   }

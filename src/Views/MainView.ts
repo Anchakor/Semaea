@@ -1,18 +1,38 @@
-import { TestingView } from './TestingView';
-import { h, $, Component } from '../External';
+import { test } from '../Test';
+import { isStatefulComponent } from 'inferno-shared/dist';
+import { TestingView, VisibleTestingView, TestIncrementStoreActionTypeConst, TestIncrementStoreAction } from './TestingView';
+import { $, Component, h, StoreLib, UIStoreLib } from '../External';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
 import { Model } from '../Model';
+
+
+export class State {
+  testing: { x: number }
+}
+
+const reducer: StoreLib.Reducer<State> = (state: State = { testing: { x: 10 } }, action: TestIncrementStoreAction) => {
+  switch (action.type) {
+    case TestIncrementStoreActionTypeConst:
+      return Object.assign({}, state, { testing: { x: state.testing.x + action.value } });
+    default:
+      return state;
+  }
+}
+
+const store = StoreLib.createStore<State>(reducer);
 
 export class MainView {
   static render(model: Model) {
     MainView.focusElemIdToFocus(model);
     
-    return h('div', {}, [
-      GraphView.render(model),
-      ModalsView.render(model),
-      h(TestingView)
-      ]);
+    return h(UIStoreLib.Provider, { store: store }, 
+      h('div', {}, [
+        GraphView.render(model),
+        ModalsView.render(model),
+        h(VisibleTestingView)
+        ])
+      );
   }
 
   static focusElemIdToFocus(model: Model) {
