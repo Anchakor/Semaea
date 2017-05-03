@@ -17,7 +17,7 @@ export class TestingView extends Component<TestingViewProps, {}> {
     }, 1000);
     return h('p', {}, [
       h('span', {}, 'counter: '),
-      h('span', {}, this.props.testing.x.toString())
+      h('span', {}, this.props.x.toString())
     ]);
   }
 }
@@ -31,12 +31,12 @@ export interface TestIncrementStoreAction extends StoreLib.Action { type: TestIn
 }
 const createTestIncrementStoreAction = () => ({ type: TestIncrementStoreActionTypeConst, value: 1 } as TestIncrementStoreAction);
 
-export const VisibleTestingView = connect( //<TestingViewStateProps, TestingViewDispatchProps, TestingView>(
+export const VisibleTestingView = connect(
   TestingView,
-  (state: State, props?: {}): TestingViewStateProps => { 
+  (state: State, ownProps?: {}): TestingViewStateProps => { 
     return { x: state.testing.x }; 
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, props?: {}): TestingViewDispatchProps => { 
+  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): TestingViewDispatchProps => { 
     return {
       onSomeUpdate: () => {
         return dispatch(createTestIncrementStoreAction());

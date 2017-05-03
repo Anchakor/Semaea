@@ -17,6 +17,8 @@ export const linkEvent = Inferno.linkEvent;
 
 export { Redux as StoreLib };
 export { InfernoRedux as UIStoreLib };
-export const connect = <P1, P2, C extends InfernoComponent<P1 & P2, {}>>(component: new () => C, mapStateToProps?: (state: any, props?: {}) => P1, mapDispatchToProps?: (dispatch: <A extends Redux.Action>(action: A) => void, props?: {}) => P2) => {
-  return InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component);
-}
+export const connect = <P1, P2, C extends InfernoComponent<P1 & P2, {}>, OwnProps>(
+  component: new () => C, 
+  mapStateToProps?: (state: any, ownProps?: OwnProps) => P1, 
+  mapDispatchToProps?: (dispatch: <A extends Redux.Action>(action: A) => void, ownProps?: OwnProps) => P2
+  ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component);
