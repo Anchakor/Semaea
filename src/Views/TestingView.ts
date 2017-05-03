@@ -1,9 +1,13 @@
-import { h, Component, UIStoreLib, StoreLib } from '../External';
+import { State } from './MainView';
+import { Component, connect, h, StoreLib, UIStoreLib } from '../External';
 
-export interface TestingViewProps {
+export interface TestingViewStateProps {
   x: number
+}
+export interface TestingViewDispatchProps {
   onSomeUpdate: () => void
 }
+type TestingViewProps = TestingViewStateProps & TestingViewDispatchProps
 
 export class TestingView extends Component<TestingViewProps, {}> {
   constructor(props?: TestingViewProps, context?: any) { super(props, context); }
@@ -27,15 +31,16 @@ export interface TestIncrementStoreAction extends StoreLib.Action { type: TestIn
 }
 const createTestIncrementStoreAction = () => ({ type: TestIncrementStoreActionTypeConst, value: 1 } as TestIncrementStoreAction);
 
-export const VisibleTestingView = UIStoreLib.connect(
-  (state: any, props?: {}) => { 
-    return state; 
+export const VisibleTestingView = connect( //<TestingViewStateProps, TestingViewDispatchProps, TestingView>(
+  TestingView,
+  (state: State, props?: {}): TestingViewStateProps => { 
+    return { x: state.testing.x }; 
   },
-  (dispatch: (action: any) => void, props?: {}) => { 
+  (dispatch: <A extends StoreLib.Action>(action: A) => void, props?: {}): TestingViewDispatchProps => { 
     return {
       onSomeUpdate: () => {
         return dispatch(createTestIncrementStoreAction());
       }
     };
   }
-)(TestingView);
+);
