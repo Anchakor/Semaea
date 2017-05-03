@@ -9,10 +9,10 @@ export const $: any = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
 
 export { Inferno as UILib };
-export const Component = InfernoComponent;
+export { InfernoComponent as Component };
 export type VNode = Inferno.VNode;
 
-export const h = InfernoHyperscript;
+export { InfernoHyperscript as h };
 export const linkEvent = Inferno.linkEvent;
 
 export { Redux as StoreLib };
