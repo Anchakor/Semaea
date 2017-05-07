@@ -31,7 +31,7 @@ export interface TestIncrementStoreAction extends StoreLib.Action { type: TestIn
 }
 const createTestIncrementStoreAction = () => ({ type: TestIncrementStoreActionTypeConst, value: 1 } as TestIncrementStoreAction);
 
-export const VisibleTestingView = connect(
+export const TestingComponent = connect(
   TestingView,
   (state: State, ownProps?: {}): TestingViewStateProps => { 
     return { x: state.testing.x }; 

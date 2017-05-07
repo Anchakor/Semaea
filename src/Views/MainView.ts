@@ -1,6 +1,6 @@
 import { test } from '../Test';
 import { isStatefulComponent } from 'inferno-shared/dist';
-import { TestingView, VisibleTestingView, TestIncrementStoreActionTypeConst, TestIncrementStoreAction } from './TestingView';
+import { TestingView, TestingComponent, TestIncrementStoreActionTypeConst, TestIncrementStoreAction } from './TestingView';
 import { $, Component, h, StoreLib, UIStoreLib } from '../External';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
@@ -30,7 +30,7 @@ export class MainView {
       h('div', {}, [
         GraphView.render(model),
         ModalsView.render(model),
-        h(VisibleTestingView)
+        h(TestingComponent)
         ])
       );
   }
