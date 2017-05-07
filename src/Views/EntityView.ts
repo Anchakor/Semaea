@@ -1,4 +1,4 @@
-import { h, linkEvent, Component, $ } from '../External';
+import { h, linkEvent, UIComponent, $ } from '../External';
 import * as GraphViewMethods from '../Views/GraphViewMethods';
 import * as Modals_Autocomplete from '../Modals/Autocomplete';
 import * as Modals from '../Modals/Modals';
@@ -12,7 +12,7 @@ interface Props {
   graphNode: GraphNode
 }
 
-export class EntityView extends Component<Props, {}> {
+export class EntityView extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context) }
   public render() {
     return render(this.props.model, this.props.graphNode);

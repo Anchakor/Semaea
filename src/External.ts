@@ -9,7 +9,7 @@ export const $: any = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
 
 export { Inferno as UILib };
-export { InfernoComponent as Component };
+export { InfernoComponent as UIComponent };
 export type VNode = Inferno.VNode;
 
 export { InfernoHyperscript as h };
