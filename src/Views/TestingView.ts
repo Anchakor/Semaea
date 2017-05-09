@@ -1,5 +1,5 @@
 import { UIComponent, connect, h, StoreLib, UIStoreLib } from '../External';
-import { State as ParentState } from './MainView';
+import { State as StoreState } from './MainView';
 
 // State:
 
@@ -55,7 +55,7 @@ export class TestingView extends UIComponent<TestingViewProps, {}> {
 
 export const Component = connect(
   TestingView,
-  (state: ParentState, ownProps?: {}): TestingViewStateProps => { 
+  (state: StoreState, ownProps?: {}): TestingViewStateProps => { 
     return { x: state.testing.x }; 
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): TestingViewDispatchProps => { 
