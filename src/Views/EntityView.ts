@@ -6,19 +6,20 @@ import * as Actions from '../Actions/Actions';
 import { Model } from '../Model';
 import { GraphNode } from '../Graphs/GraphNode';
 import * as Key from '../Key';
+import * as GraphView from '../Views/GraphView';
 
-interface Props {
-  model: Model,
+interface Props extends GraphView.Props {
   graphNode: GraphNode
 }
 
-export class EntityView extends UIComponent<Props, {}> {
-  constructor(props?: Props, context?: any) { super(props, context) }
-  public render() {
-    return render(this.props.model, this.props.graphNode);
-  }
+export function EntityView(props: Props) {
+  return h('span', { 
+    tabIndex: 0, 
+    onclick: () => window.alert('asdf') 
+  }, props.graphNode.getValue());
 }
 
+/*
 export function render(model: Model, graphNode: GraphNode) {
   let tagClass: string = '';
   if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
@@ -77,3 +78,4 @@ function keyPressedM(model: Model) {
   });
   //model.modals.push(modalTest(model));
 }
+*/

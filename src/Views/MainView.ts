@@ -1,25 +1,9 @@
-import { $, h, StoreLib, UIStoreLib } from '../External';
+import { $, h, UIStoreLib } from '../External';
 import { Model } from '../Model';
+import { store } from '../UIStore/Main';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
 import * as TestingView from './TestingView';
-
-export interface State {
-  testing: TestingView.State
-}
-const defaultState: State = { 
-  testing: TestingView.defaultState 
-};
-
-const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
-  return {
-    testing: TestingView.reducer(state.testing, action)
-  }
-}
-
-const store = StoreLib.createStore<State>(reducer);
-
-//////////////////////
 
 export class MainView {
   static render(model: Model) {
@@ -27,7 +11,7 @@ export class MainView {
     
     return h(UIStoreLib.Provider, { store: store }, 
       h('div', {}, [
-        GraphView.render(model),
+        h(GraphView.Component),
         ModalsView.render(model),
         h(TestingView.Component)
         ])

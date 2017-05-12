@@ -1,5 +1,5 @@
 import { UIComponent, connect, h, StoreLib, UIStoreLib } from '../External';
-import { State as StoreState } from './MainView';
+import { State as StoreState } from '../UIStore/Main';
 
 // State:
 
