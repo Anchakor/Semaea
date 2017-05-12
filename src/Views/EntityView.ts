@@ -7,15 +7,26 @@ import { Model } from '../Model';
 import { GraphNode } from '../Graphs/GraphNode';
 import * as Key from '../Key';
 import * as GraphView from '../Views/GraphView';
+import { GraphMeta } from "../UIStore/Graph";
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
+  graphMeta: GraphMeta
 }
 
 export function EntityView(props: Props) {
+  let tagClass: string = '';
+  if (props.graphMeta.currentNode && props.graphMeta.currentNode.getValue() == props.graphNode.getValue()) {
+    tagClass = 'element-otherOccurence';
+  }
+  if (props.graphMeta.currentNode && props.graphMeta.currentNode.toString() == props.graphNode.toString()) {
+    tagClass = 'element-selected';
+  }
   return h('span', { 
     tabIndex: 0, 
-    onclick: () => window.alert('asdf') 
+    class: tagClass, 
+    onclick: () => window.alert('asdf'),
+    onfocus: () => props.changeCurrentNode(props.graphIndex, props.graphNode)
   }, props.graphNode.getValue());
 }
 

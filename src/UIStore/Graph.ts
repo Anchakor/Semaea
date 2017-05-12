@@ -2,19 +2,21 @@ import { StoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { arrayImmutableSet } from "Common";
+import { arrayImmutableSet, objectJoin, objectClone } from "../Common";
+
+export interface GraphMeta {
+  currentNode?: GraphNode
+  previousNode?: GraphNode
+  previousNodeNonPredicate?: GraphNode
+  previousNodePredicate?: GraphNode
+}
 
 export interface State {
   graphs: {
     graph: Graph
-    meta: {
-      currentNode?: GraphNode
-      previousNode?: GraphNode
-      previousNodeNonPredicate?: GraphNode
-      previousNodePredicate?: GraphNode
-    }
+    meta: GraphMeta
   }[]
-  currentGraph: number
+  currentGraphIndex: number
 }
 export let defaultState: State = { 
   graphs: [{ 
@@ -26,7 +28,7 @@ export let defaultState: State = {
       previousNodePredicate: undefined
     }
   }],
-  currentGraph: 0
+  currentGraphIndex: 0
 };
 defaultState = initializeTestGraph(defaultState);
 
@@ -36,14 +38,44 @@ export const InitializeTestGraphActionTypeConst = 'InitializeTestGraphAction';
 export type InitializeTestGraphActionType = 'InitializeTestGraphAction';
 export interface InitializeTestGraphAction extends StoreLib.Action { type: InitializeTestGraphActionType
 }
-const createInitializeTestGraphAction = () => ({ type: InitializeTestGraphActionTypeConst } as InitializeTestGraphAction);
+export const createInitializeTestGraphAction = () => ({ type: InitializeTestGraphActionTypeConst } as InitializeTestGraphAction);
 function initializeTestGraph(state: State) {
   const graph = new Graph();
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
   graph.addTriple(new Triple('testS', 'testP2', 'testO'));
   graph.addTriple(new Triple('testO', 'testP3', 'testO3'));
-  return Object.assign({}, state, { graphs: arrayImmutableSet(state.graphs, 0, { graph: graph, meta: state.graphs[0].meta }) });
+  return objectJoin(state, { graphs: arrayImmutableSet(state.graphs, 0, { graph: graph, meta: state.graphs[0].meta }) });
 }
+
+export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
+export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
+export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeCurrentNodeActionType
+  graphIndex: number
+  graphNode: GraphNode
+}
+export const createChangeCurrentNodeAction = (graphIndex: number, graphNode: GraphNode) => 
+  ({ type: ChangeCurrentNodeActionTypeConst, graphIndex: graphIndex, graphNode: graphNode } as ChangeCurrentNodeAction);
+function createChangeCurrentNode(state: State, action: ChangeCurrentNodeAction){
+  const currentGraph = state.graphs[action.graphIndex];
+  const newMeta = objectClone(currentGraph.meta);
+  if (currentGraph.meta.currentNode) {
+    if (currentGraph.meta.currentNode.getValue() != action.graphNode.getValue()) {
+      newMeta.previousNode = currentGraph.meta.currentNode;
+      if (newMeta.previousNode.position != 'p') {
+        newMeta.previousNodeNonPredicate = newMeta.previousNode
+      } else {
+        newMeta.previousNodePredicate = newMeta.previousNode
+      }
+    }
+  }
+  newMeta.currentNode = action.graphNode;
+  return objectJoin(state, { 
+    graphs: arrayImmutableSet(state.graphs, action.graphIndex, 
+      objectJoin(currentGraph, { meta: newMeta })
+    )
+  });
+}
+
 
 // Reducer:
 
@@ -51,6 +83,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
   switch (action.type) {
     case InitializeTestGraphActionTypeConst:
       return initializeTestGraph(state);
+    case ChangeCurrentNodeActionTypeConst:
+      return createChangeCurrentNode(state, action as ChangeCurrentNodeAction);
     default:
       return state;
   }
