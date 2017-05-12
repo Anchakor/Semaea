@@ -1,8 +1,8 @@
+import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
 import { StoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { arrayImmutableSet, objectJoin, objectClone } from "../Common";
 
 export interface GraphMeta {
   currentNode?: GraphNode

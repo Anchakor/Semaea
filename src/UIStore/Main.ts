@@ -1,6 +1,6 @@
 import { StoreLib } from '../External';
 import * as TestingView from '../Views/TestingView';
-import * as Graph from './Graph';
+import * as Graph from './Graphs';
 
 export interface State {
   testing: TestingView.State

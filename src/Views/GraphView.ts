@@ -1,12 +1,10 @@
-import { createChangeCurrentNodeAction } from '../UIStore/Graph';
-import { Graph } from '../Graphs/Graph';
-import { h, StoreLib, UIComponent, connect } from '../External';
-import * as EntityView from '../Views/EntityView';
-import { Model } from '../Model';
+import { objectJoin } from '../Common';
+import { connect, h, StoreLib, UIComponent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { State as StoreState, mapFullStateToProps } from '../UIStore/Main';
-import { objectJoin } from "../Common";
+import { createChangeCurrentNodeAction } from '../UIStore/Graphs';
+import { State as StoreState } from '../UIStore/Main';
+import * as EntityView from '../Views/EntityView';
 
 // View (functional component):
 

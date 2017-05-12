@@ -1,13 +1,7 @@
-import { h, linkEvent, UIComponent, $ } from '../External';
-import * as GraphViewMethods from '../Views/GraphViewMethods';
-import * as Modals_Autocomplete from '../Modals/Autocomplete';
-import * as Modals from '../Modals/Modals';
-import * as Actions from '../Actions/Actions';
-import { Model } from '../Model';
+import { h } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
-import * as Key from '../Key';
+import { GraphMeta } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
-import { GraphMeta } from "../UIStore/Graph";
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
