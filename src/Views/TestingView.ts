@@ -40,12 +40,18 @@ type TestingViewProps = TestingViewStateProps & TestingViewDispatchProps
 
 export class TestingView extends UIComponent<TestingViewProps, {}> {
   constructor(props?: TestingViewProps, context?: any) { super(props, context); }
+  
+  elem: any
+  componentDidMount() {
+    this.elem.focus();
+  }
+
   public render() {
     setTimeout(() => {
       this.props.onSomeUpdate();
     }, 1000);
     return h('p', {}, [
-      h('span', {}, 'counter: '),
+      h('span', { tabindex: 0, ref: (i: any) => { this.elem = i; } }, 'counter: '),
       h('span', {}, this.props.x.toString())
     ]);
   }
