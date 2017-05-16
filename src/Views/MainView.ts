@@ -12,7 +12,7 @@ export class MainView {
     return h(UIStoreLib.Provider, { store: store }, 
       h('div', {}, [
         h(GraphView.Component),
-        ModalsView.render(model),
+        h(ModalsView.Component),
         h(TestingView.Component)
         ])
       );
