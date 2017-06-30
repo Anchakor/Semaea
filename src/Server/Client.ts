@@ -1,7 +1,7 @@
 import { portNumber } from '../Server/Config';
 import { Request } from '../Server/Request';
-import * as Response from '../Server/Response';
 import * as RequestHandler from '../Server/RequestHandler';
+import * as Response from '../Server/Response';
 
 export function requestSimple(request: Request): Promise<Response.Response> {
   return send(request)
@@ -9,10 +9,10 @@ export function requestSimple(request: Request): Promise<Response.Response> {
   .catch((err) => Response.createErrorResponse(err));
 }
 
-export function request(request: Request, responseKind: Response.ResponseKind): Promise<Response.Response> {
+export function request<T extends Response.Response>(request: Request, responseKind: Response.ResponseKind): Promise<T> {
   return requestSimple(request)
   .then((response) => {
-    if (response.kind == responseKind) return response;
+    if (response.kind == responseKind) return Promise.resolve(response as T);
     else return Promise.reject(response);
   });
 }

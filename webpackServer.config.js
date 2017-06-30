@@ -13,28 +13,23 @@ module.exports = {
         path: path.join(__dirname, 'output')
     },
     resolve: {
-        // This path should always correspond tsconfig.json.compilerOptions.baseUrl
-        root: path.resolve("src"),
+        modules: [
+            // This path should always correspond tsconfig.json.compilerOptions.baseUrl
+            path.resolve("src")
 
-        // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
-
-        // these are the defaults
-        // modulesDirectories: ["web_modules", "node_modules"]
-    },
-    module: {
-        loaders: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-            { test: /\.tsx?$/, loader: "ts-loader" },
-            /*{
-                test: /\.scss$/,
-                loaders: ["style-loader", "css-loader", "sass-loader"]
-            }*/
+            // these are the defaults
+            , "web_modules", "node_modules"
         ],
 
-        preLoaders: [
+        // Add '.ts' and '.tsx' as resolvable extensions.
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    },
+    module: {
+        rules: [
+            // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+            { test: /\.tsx?$/, loader: "ts-loader" },
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { test: /\.js$/, loader: "source-map-loader" }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
     // When importing a module whose path matches one of the following, just

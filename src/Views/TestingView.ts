@@ -19,10 +19,11 @@ const createTestIncrementStoreAction = () => ({ type: TestIncrementStoreActionTy
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: TestIncrementStoreAction) => {
+export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
     case TestIncrementStoreActionTypeConst:
-      return Object.assign({}, state, { x: state.x + action.value });
+      const a = action as TestIncrementStoreAction;
+      return Object.assign({}, state, { x: state.x + a.value });
     default:
       return state;
   }

@@ -34,6 +34,7 @@ defaultState = initializeTestGraph(defaultState);
 
 // Actions:
 
+// InitializeTestGraphAction
 export const InitializeTestGraphActionTypeConst = 'InitializeTestGraphAction';
 export type InitializeTestGraphActionType = 'InitializeTestGraphAction';
 export interface InitializeTestGraphAction extends StoreLib.Action { type: InitializeTestGraphActionType
@@ -47,6 +48,7 @@ function initializeTestGraph(state: State) {
   return objectJoin(state, { graphs: arrayImmutableSet(state.graphs, 0, { graph: graph, meta: state.graphs[0].meta }) });
 }
 
+// ChangeCurrentNodeAction
 export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
 export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
 export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeCurrentNodeActionType

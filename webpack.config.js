@@ -13,28 +13,24 @@ module.exports = {
         path: path.join(__dirname, 'output')
     },
     resolve: {
-        // This path should always correspond tsconfig.json.compilerOptions.baseUrl
-        root: path.resolve("src"),
+        modules: [
+            // This path should always correspond tsconfig.json.compilerOptions.baseUrl
+            path.resolve("src")
+
+            // these are the defaults
+            , "web_modules", "node_modules"
+        ],
+        //alias: { "inferno-redux": "./node_modules/inferno-redux" },
 
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
-
-        // these are the defaults
-        // modulesDirectories: ["web_modules", "node_modules"]
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
     module: {
-        loaders: [
+        rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
             { test: /\.tsx?$/, loader: "ts-loader" },
-            /*{
-                test: /\.scss$/,
-                loaders: ["style-loader", "css-loader", "sass-loader"]
-            }*/
-        ],
-
-        preLoaders: [
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { test: /\.js$/, loader: "source-map-loader" }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
     },
     // When importing a module whose path matches one of the following, just

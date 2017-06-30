@@ -15,7 +15,7 @@ export class OpenFileAction extends Action {
     const getDirList = (): Promise<Response.ListDirectoryResponse> => {
       const req = new Request.ListDirectoryRequest();
       { req.dirPath = this.dirPath; }
-      return ServerClient.request(req, 'ListDirectoryResponse');
+      return ServerClient.request<Response.ListDirectoryResponse>(req, 'ListDirectoryResponse');
     }
     const showList = () => getDirList().then((response) => {
       this.formLabel = 'Open file (directory: '+this.dirPath+')';

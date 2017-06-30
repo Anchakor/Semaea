@@ -54,7 +54,7 @@ export class Result<T> {
 }
 
 const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean) 
-  => Modals.IFormFunction<Result<T>> 
+  => Modals.IFormFunction<Result<T | undefined>> 
   = <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean = true) => 
     (closeForm: Modals.ICloseFormFunction<Result<T | undefined>>, elementIdToBeFocused: string): IComponent => {
   const form = new Form<T>();
