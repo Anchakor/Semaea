@@ -20,7 +20,6 @@ module.exports = {
             // these are the defaults
             , "web_modules", "node_modules"
         ],
-        //alias: { "inferno-redux": "./node_modules/inferno-redux" },
 
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]

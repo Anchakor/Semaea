@@ -2,10 +2,10 @@
   "name": "semaea",
   "version": "0.0.1",
   "dependencies": {
-    "inferno": "^3.0.6",
-    "inferno-component": "^3.0.6",
-    "inferno-hyperscript": "^3.0.6",
-    "inferno-redux": "^3.1.0"
+    "inferno": "^3.3.1",
+    "inferno-component": "^3.3.1",
+    "inferno-hyperscript": "^3.3.1",
+    "inferno-redux": "^3.3.1"
   },
   "devDependencies": {
     "@types/node": "^8.0.7",
