@@ -63,7 +63,7 @@ export class TestingView extends UIComponent<TestingViewProps, {}> {
 export const Component = connect(
   TestingView,
   (state: StoreState, ownProps?: {}): TestingViewStateProps => { 
-    return { x: state.testing.x }; 
+    return { x: state.testing_.x }; 
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): TestingViewDispatchProps => { 
     return {

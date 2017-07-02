@@ -30,7 +30,7 @@ export class View extends UIComponent<Props, {}> {
   private renderGraphSwitchingBar() {
     return h('div', {}, [
       h('span', {}, "Graphs: ")
-    ].concat(this.props.graphs.graphs.map((g, i) => {
+    ].concat(this.props.graphs_.graphs.map((g, i) => {
       let tagClass: string = '';
       if (this.props.graphIndex == i) {
         tagClass = 'element-selected'
@@ -43,10 +43,10 @@ export class View extends UIComponent<Props, {}> {
   }
 
   private renderCurrentGraph() {
-    if (!this.props.graphs.graphs[this.props.graphIndex]) {
+    if (!this.props.graphs_.graphs[this.props.graphIndex]) {
       return h('div', {}, 'Viewed graph is undefined');
     }
-    return h('div', {}, this.props.graphs.graphs[this.props.graphIndex].graph.get().map((triple: Triple) => {
+    return h('div', {}, this.props.graphs_.graphs[this.props.graphIndex].graph.get().map((triple: Triple) => {
       return h('div', {}, [
         renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
         renderLevelPosition(this.props, new GraphNode(triple, 'p')), ' ',
@@ -59,7 +59,7 @@ export class View extends UIComponent<Props, {}> {
 function renderLevelPosition(props: Props, graphNode: GraphNode) {
   return h(EntityView.EntityView, objectJoin(props, { 
     graphNode: graphNode,
-    graphMeta: props.graphs.graphs[props.graphIndex].meta
+    graphMeta: props.graphs_.graphs[props.graphIndex].meta
    })); 
 }
 
@@ -67,7 +67,7 @@ function renderLevelPosition(props: Props, graphNode: GraphNode) {
 
 export const Component = connect(
   View,
-  (state: StoreState) => objectJoin(state, { graphIndex: state.graphs.currentGraphIndex }),
+  (state: StoreState) => objectJoin(state, { graphIndex: state.graphs_.currentGraphIndex }),
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
       changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(graphIndex, graphNode)),

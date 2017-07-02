@@ -14,13 +14,13 @@ export type Props = StateProps & DispatchProps
 export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
-    const x = this.props.modals.modals.map((modal, i, a) => {
+    const x = this.props.modals_.modals.map((modal, i, a) => {
       return h('div', {
         class: 'modal' + ((i + 1 == a.length) ? ' modal-top' : '')
       }, modal.render()); // TODO
     });
     x.push(h('div', {
-      class: (this.props.modals.modals.length > 0) ? 'modalBackground' : ''
+      class: (this.props.modals_.modals.length > 0) ? 'modalBackground' : ''
     }));
     return h('div', {
         class: 'modals'

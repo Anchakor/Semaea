@@ -4,23 +4,23 @@ import * as Graphs from './Graphs';
 import * as Modals from './Modals';
 
 export interface State {
-  testing: TestingView.State
-  graphs: Graphs.State
-  modals: Modals.State
+  testing_: TestingView.State
+  graphs_: Graphs.State
+  modals_: Modals.State
 }
 const defaultState: State = {
-  testing: TestingView.defaultState,
-  graphs: Graphs.defaultState,
-  modals: Modals.defaultState
+  testing_: TestingView.defaultState,
+  graphs_: Graphs.defaultState,
+  modals_: Modals.defaultState
 };
 
 // Reducer:
 
 const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   return {
-    testing: TestingView.reducer(state.testing, action),
-    graphs: Graphs.reducer(state.graphs, action),
-    modals: Modals.reducer(state.modals, action)
+    testing_: TestingView.reducer(state.testing_, action),
+    graphs_: Graphs.reducer(state.graphs_, action),
+    modals_: Modals.reducer(state.modals_, action)
   }
 }
 
