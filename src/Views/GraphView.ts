@@ -5,6 +5,7 @@ import { Triple } from '../Graphs/Triple';
 import { createChangeCurrentGraphAction, createChangeCurrentNodeAction } from '../UIStore/Graphs';
 import { State as StoreState } from '../UIStore/Main';
 import * as EntityView from '../Views/EntityView';
+import { createShowAlertModalAction } from "../UIStore/Modals";
 
 // View (component):
 
@@ -14,6 +15,7 @@ export interface StateProps extends StoreState {
 export interface DispatchProps {
   changeCurrentGraph: (graphIndex: number) => void
   changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => void
+  showAlertModal: (originatingGraphIndex: number, message: string) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -71,6 +73,7 @@ export const Component = connect(
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
       changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(graphIndex, graphNode)),
-      changeCurrentGraph: (graphIndex: number) => dispatch(createChangeCurrentGraphAction(graphIndex))
+      changeCurrentGraph: (graphIndex: number) => dispatch(createChangeCurrentGraphAction(graphIndex)),
+      showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message))
     };
   });

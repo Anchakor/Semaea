@@ -19,7 +19,7 @@ export function EntityView(props: Props) {
   return h('span', { 
     tabIndex: 0, 
     class: tagClass, 
-    onclick: () => window.alert('asdf'),
+    onclick: () => props.showAlertModal(props.graphIndex, "Some message."),
     onfocus: () => props.changeCurrentNode(props.graphIndex, props.graphNode)
   }, props.graphNode.getValue());
 }

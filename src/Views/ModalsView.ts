@@ -1,7 +1,27 @@
-import { IComponent } from '../Common';
+import { IComponent, objectJoin } from '../Common';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { Model } from '../Model';
 import { State as StoreState } from '../UIStore/Main';
+import * as Modals from '../UIStore/Modals';
+
+/** Factory function for getting the apropriate functional component of a modal */
+function getModalView(props: Props, modal: Modals.Modal, modalIndex: number) {
+  switch (modal.type) {
+    case Modals.AlertModalTypeConst:
+      return AlertModalView(objectJoin(props, { message: (modal as Modals.AlertModal).message }));
+    default:
+      return h('div');
+  }
+}
+
+interface xProps extends Props {
+  message: string
+}
+
+export function AlertModalView(props: xProps) {
+  return h('div', {}, props.message)
+}
+
 
 // View (functional component):
 
@@ -15,16 +35,14 @@ export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
     const x = this.props.modals_.modals.map((modal, i, a) => {
-      return h('div', {
-        class: 'modal' + ((i + 1 == a.length) ? ' modal-top' : '')
-      }, modal.render()); // TODO
+      return h('div', { 
+        style: 'border: 1px dotted; padding: 0.3em;'
+      }, [ getModalView(this.props, modal, i) ]); // TODO
     });
-    x.push(h('div', {
-      class: (this.props.modals_.modals.length > 0) ? 'modalBackground' : ''
-    }));
-    return h('div', {
-        class: 'modals'
-      }, x);
+    if (this.props.modals_.modals.length > 0) {
+      x.push(h('hr', {}));
+    }
+    return h('div', {}, x);
   }
 }
 
@@ -37,6 +55,8 @@ export const Component = connect(
     return {
     };
   });
+
+
 
 
 
