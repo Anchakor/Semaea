@@ -16,7 +16,7 @@ export function makeForm<T>(model: Model, formFunction: IFormFunction<T>) {
   const p = new Promise<T>((resolve, reject) => {
     const modalPosition = model.modals.length;
     const closeForm: ICloseFormFunction<T> = (formToClose: IComponent, isResolved: boolean, resolveRejectValue: T, returnFocusOnResolve: boolean = true) => {
-      ModalsView.closeModal(model, formToClose);
+      //ModalsView.closeModal(model, formToClose);
       if (isResolved) {
         if (returnFocusOnResolve) {
           (<HTMLElement>pastFocus).focus();

@@ -11,8 +11,8 @@
     var testlib = QUnit;
   </script>
   
-  <script src="libraries/plastiq.js"></script>
   <script src="libraries/140medley.js"></script>
+  <script src="output/semaea_client.js"></script>
   
   <style>
   /* colours:
@@ -68,19 +68,6 @@
     }
 
   </style>
-  
-  <script src="libraries/require.js"></script>
-  <script>
-  require.config({
-    baseUrl: "output/src",
-    paths: {
-        "Main": "semaea_client"
-    }
-  });
-  require(["Main"], function (main){ 
-    main.run(); 
-  });
-  </script>
 </head>
 <body>
 

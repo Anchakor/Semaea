@@ -1,6 +1,7 @@
 import { Model } from '../Model';
 import { GraphNode } from '../Graphs/GraphNode';
 
+/* TODO delete: */
 export const changeCurrentNodeCurry = (model: Model, graphNode: GraphNode) => () => {
   if (!graphNode) { return; }
   if (model.meta.currentNode) {

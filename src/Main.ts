@@ -1,4 +1,4 @@
-import { plastiq, $ } from './External';
+import { UILib, $ } from './External';
 import { MainView } from './Views/MainView';
 import { Triple } from './Graphs/Triple';
 import { Graph } from './Graphs/Graph';
@@ -6,7 +6,7 @@ import { Model, ModelMeta } from './Model';
 import * as GraphTests from './Graphs/GraphTests';
 import * as IntegrationTests from './Server/IntegrationTests';
 
-export function run() {
+export function run(attachPoint: HTMLElement) {
   const graph = new Graph();
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
   graph.addTriple(new Triple('testS', 'testP2', 'testO'));
@@ -15,10 +15,17 @@ export function run() {
   const testModelMeta = new ModelMeta();
   const model1 = new Model(graph);
 
-  plastiq.append($('#plastiq'), (model: Model) => { return MainView.render(model); }, model1);
+  UILib.render(MainView.render(model1), attachPoint);
   
   setInterval(() => { $('#graph').textContent = JSON.stringify(model1); }, 1000);
 
   GraphTests.run();
   IntegrationTests.run();
 }
+
+window.onload = (function(oldLoad: any){
+  return function(){
+    oldLoad && oldLoad();
+    run($('#plastiq'));
+  }
+})(window.onload)

@@ -1,13 +1,12 @@
-import { h, $ } from '../External';
+import { h, $, VNode } from '../External';
 import * as Modals from '../Modals/Modals';
 import { IString, IComponent } from '../Common';
 import { Model } from '../Model';
-import * as Plastiq from 'plastiq';
 import * as Utils from '../Utils';
 import * as Key from '../Key';
 
 class Form<T> implements IComponent {
-  render: () => Plastiq.VNode
+  render: () => VNode
   submit: () => void
   close: () => void
   entryToString: (x: T) => string
@@ -55,7 +54,7 @@ export class Result<T> {
 }
 
 const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean) 
-  => Modals.IFormFunction<Result<T>> 
+  => Modals.IFormFunction<Result<T | undefined>> 
   = <T>(label: string, entries: Array<T>, entryToString: (x: T) => string, returnFocusOnResolve: boolean = true) => 
     (closeForm: Modals.ICloseFormFunction<Result<T | undefined>>, elementIdToBeFocused: string): IComponent => {
   const form = new Form<T>();
@@ -126,7 +125,9 @@ const formFunctionCurry: <T>(label: string, entries: Array<T>, entryToString: (x
         return menuEntryView(ix, (ix == form.selectedIdx));
       });
     const label = h('p', { style: 'margin: 0; margin-bottom: 0.3em;'}, form.label);
-    return h('div', label, inputBox, submitButton, cancelButton, menuEntries)
+    const entries = [label, inputBox, submitButton, cancelButton]
+    entries.concat(menuEntries)
+    return h('div', {}, entries);
   };
   return form;
 }

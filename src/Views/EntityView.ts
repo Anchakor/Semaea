@@ -1,12 +1,30 @@
-import { h, $ } from '../External';
-import * as GraphViewMethods from '../Views/GraphViewMethods';
-import * as Modals_Autocomplete from '../Modals/Autocomplete';
-import * as Modals from '../Modals/Modals';
-import * as Actions from '../Actions/Actions';
-import { Model } from '../Model';
+import { h } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
-import * as Key from '../Key';
+import { GraphMeta } from '../UIStore/Graphs';
+import * as GraphView from '../Views/GraphView';
 
+interface Props extends GraphView.Props {
+  graphNode: GraphNode
+  graphMeta: GraphMeta
+}
+
+export function EntityView(props: Props) {
+  let tagClass: string = '';
+  if (props.graphMeta.currentNode && props.graphMeta.currentNode.getValue() == props.graphNode.getValue()) {
+    tagClass = 'element-otherOccurence';
+  }
+  if (props.graphMeta.currentNode && props.graphMeta.currentNode.toString() == props.graphNode.toString()) {
+    tagClass = 'element-selected';
+  }
+  return h('span', { 
+    tabIndex: 0, 
+    class: tagClass, 
+    onclick: () => props.showAlertModal(props.graphIndex, "Some message "+props.graphNode.toString()+"."),
+    onfocus: () => props.changeCurrentNode(props.graphIndex, props.graphNode)
+  }, props.graphNode.getValue());
+}
+
+/*
 export function render(model: Model, graphNode: GraphNode) {
   let tagClass: string = '';
   if (model.meta.currentNode && model.meta.currentNode.getValue() == graphNode.getValue()) {
@@ -18,9 +36,9 @@ export function render(model: Model, graphNode: GraphNode) {
   return h('span', {
       class: tagClass,
       tabIndex: 0,
-      onkeydown: controllerEventHandler(controllerKeydown(model, graphNode)),
-      onclick: controllerEventHandler(controllerClick(model, graphNode)),
-      onfocus: GraphViewMethods.changeCurrentNodeCurry(model, graphNode)
+      onkeydown: linkEvent(model, controllerEventHandler(controllerKeydown(model, graphNode))),
+      onclick: linkEvent(model, controllerEventHandler(controllerClick(model, graphNode))),
+      onfocus: linkEvent(model, GraphViewMethods.changeCurrentNodeCurry(model, graphNode))
     }, graphNode.getValue());
 }
 
@@ -65,3 +83,4 @@ function keyPressedM(model: Model) {
   });
   //model.modals.push(modalTest(model));
 }
+*/

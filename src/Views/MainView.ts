@@ -1,16 +1,20 @@
-import { h, $ } from '../External';
+import { $, h, UIStoreLib } from '../External';
+import { Model } from '../Model';
+import { store } from '../UIStore/Main';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
-import { Model } from '../Model';
+import * as TestingView from '../Views/TestingView';
 
 export class MainView {
   static render(model: Model) {
-    model.refresh = h.refresh;
     MainView.focusElemIdToFocus(model);
     
-    return h('div',
-      GraphView.render(model),
-      ModalsView.render(model)
+    return h(UIStoreLib.Provider, { store: store }, 
+      h('div', {}, [
+        h(ModalsView.Component),
+        h(GraphView.Component),
+        h(TestingView.Component)
+        ])
       );
   }
 
@@ -22,4 +26,4 @@ export class MainView {
       }
     }, 0);
   }
-} 
+}

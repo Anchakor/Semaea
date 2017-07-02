@@ -1,2 +1,2 @@
 #!/bin/sh
-node output/src/Server/App.js
+node output/semaea_server.js

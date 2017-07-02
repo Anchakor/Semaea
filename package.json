@@ -2,9 +2,16 @@
   "name": "semaea",
   "version": "0.0.1",
   "dependencies": {
-    "requirejs": "^2.3.2"
+    "inferno": "^3.6.4",
+    "inferno-component": "^3.6.4",
+    "inferno-hyperscript": "^3.6.4",
+    "inferno-redux": "^3.6.4"
   },
   "devDependencies": {
-    "@types/node": "^6.0.51"
+    "@types/node": "^8.0.7",
+    "@types/redux": "^3.6.0",
+    "source-map-loader": "^0.2.1",
+    "ts-loader": "^2.2.1",
+    "webpack": "^3.0.0"
   }
 }
