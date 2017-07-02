@@ -10,12 +10,13 @@ export interface GraphMeta {
   previousNodeNonPredicate?: GraphNode
   previousNodePredicate?: GraphNode
 }
+export interface ViewableGraph {
+  graph: Graph
+  meta: GraphMeta
+}
 
 export interface State {
-  graphs: {
-    graph: Graph
-    meta: GraphMeta
-  }[]
+  graphs: ViewableGraph[]
   currentGraphIndex: number
 }
 export let defaultState: State = { 
@@ -45,11 +46,14 @@ function doInitializeTestGraphAction(state: State) {
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
   graph.addTriple(new Triple('testS', 'testP2', 'testO'));
   graph.addTriple(new Triple('testO', 'testP3', 'testO3'));
-  const newGraphs = arrayImmutableSet(defaultState.graphs, 0, { graph: graph, meta: defaultState.graphs[0].meta });
 
   const graph2 = new Graph();
   graph2.addTriple(new Triple('testS', 'testP', 'testO'));
-  newGraphs.push({ graph: graph2, meta: defaultState.graphs[0].meta })
+
+  const newGraphs = [
+    { graph: graph, meta: defaultState.graphs[0].meta },
+    { graph: graph2, meta: defaultState.graphs[0].meta }
+    ];
 
   return objectJoin(state, { graphs: newGraphs });
 }
