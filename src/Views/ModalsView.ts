@@ -3,31 +3,32 @@ import { connect, h, StoreLib, UIComponent } from '../External';
 import { Model } from '../Model';
 import { State as StoreState } from '../UIStore/Main';
 import * as Modals from '../UIStore/Modals';
+import { AlertModalView } from "../Views/Modals/AlertModalView";
 
 /** Factory function for getting the apropriate functional component of a modal */
 function getModalView(props: Props, modal: Modals.Modal, modalIndex: number) {
+  const modalProps = objectJoin(props, { 
+    modalIndex: modalIndex,
+    modal: modal
+  });
   switch (modal.type) {
     case Modals.AlertModalTypeConst:
-      return AlertModalView(objectJoin(props, { message: (modal as Modals.AlertModal).message }));
+      return AlertModalView(modalProps as any);
     default:
       return h('div');
   }
 }
 
-interface xProps extends Props {
-  message: string
+export interface ModalPropsBase extends Props {
+  modalIndex: number
 }
 
-export function AlertModalView(props: xProps) {
-  return h('div', {}, props.message)
-}
-
-
-// View (functional component):
+// View (component):
 
 export interface StateProps extends StoreState {
 }
 export interface DispatchProps {
+  closeModal: (modalIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -37,7 +38,13 @@ export class View extends UIComponent<Props, {}> {
     const x = this.props.modals_.modals.map((modal, i, a) => {
       return h('div', { 
         style: 'border: 1px dotted; padding: 0.3em;'
-      }, [ getModalView(this.props, modal, i) ]); // TODO
+      }, [ 
+        getModalView(this.props, modal, i),
+        h('span', {
+          style: 'border: 1px dotted; padding: 0.3em;',
+          onclick: () => this.props.closeModal(i)
+        }, 'X')
+      ]); // TODO
     });
     if (this.props.modals_.modals.length > 0) {
       x.push(h('hr', {}));
@@ -53,31 +60,6 @@ export const Component = connect(
   (state: StoreState) => state,
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
+      closeModal: (modalIndex: number) => dispatch(Modals.createCloseModalAction(modalIndex)),
     };
   });
-
-
-
-
-
-/////////
-
-export function render(model: Model) {
-  const x = model.modals.map((modal, i, a) => {
-    return h('div', {
-      class: 'modal' + ((i + 1 == a.length) ? ' modal-top' : '')
-    }, modal.render());
-  });
-  x.push(h('div', {
-    class: (model.modals.length > 0) ? 'modalBackground' : ''
-  }));
-  return h('div', {
-      class: 'modals'
-    }, x);
-}
-
-export function closeModal(model: Model, modal: IComponent) {
-  model.modals = (model.modals).filter((val, ix) => {
-      return val != modal;
-    });
-}

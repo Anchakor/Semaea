@@ -43,12 +43,30 @@ function doShowAlertModalAction(state: State, action: ShowAlertModalAction) {
   });
 }
 
+// CloseModalAction
+export const CloseModalActionTypeConst = 'CloseModalAction';
+export type CloseModalActionType = 'CloseModalAction';
+export interface CloseModalAction extends StoreLib.Action { type: CloseModalActionType
+  modalIndex: number
+}
+export const createCloseModalAction = (modalIndex: number) => 
+  ({ type: CloseModalActionTypeConst, modalIndex: modalIndex } as CloseModalAction);
+function doCloseModalAction(state: State, action: CloseModalAction) {
+  return objectJoin(state, { 
+    modals: state.modals.filter((val: Modal, ix: number, array: Modal[]) => {
+      return ix != action.modalIndex;
+    })
+  });
+}
+
 // Reducers:
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
     case ShowAlertModalActionTypeConst:
       return doShowAlertModalAction(state, action as ShowAlertModalAction);
+    case CloseModalActionTypeConst:
+      return doCloseModalAction(state, action as CloseModalAction);
     default:
       return state;
   }

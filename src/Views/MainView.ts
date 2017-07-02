@@ -3,7 +3,7 @@ import { Model } from '../Model';
 import { store } from '../UIStore/Main';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
-import * as TestingView from './TestingView';
+import * as TestingView from '../Views/TestingView';
 
 export class MainView {
   static render(model: Model) {
@@ -11,8 +11,8 @@ export class MainView {
     
     return h(UIStoreLib.Provider, { store: store }, 
       h('div', {}, [
-        h(GraphView.Component),
         h(ModalsView.Component),
+        h(GraphView.Component),
         h(TestingView.Component)
         ])
       );
