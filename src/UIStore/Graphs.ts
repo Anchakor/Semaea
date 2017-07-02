@@ -30,7 +30,7 @@ export let defaultState: State = {
   }],
   currentGraphIndex: 0
 };
-defaultState = initializeTestGraph(defaultState);
+defaultState = doInitializeTestGraphAction(defaultState);
 
 // Actions:
 
@@ -40,12 +40,31 @@ export type InitializeTestGraphActionType = 'InitializeTestGraphAction';
 export interface InitializeTestGraphAction extends StoreLib.Action { type: InitializeTestGraphActionType
 }
 export const createInitializeTestGraphAction = () => ({ type: InitializeTestGraphActionTypeConst } as InitializeTestGraphAction);
-function initializeTestGraph(state: State) {
+function doInitializeTestGraphAction(state: State) {
   const graph = new Graph();
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
   graph.addTriple(new Triple('testS', 'testP2', 'testO'));
   graph.addTriple(new Triple('testO', 'testP3', 'testO3'));
-  return objectJoin(state, { graphs: arrayImmutableSet(state.graphs, 0, { graph: graph, meta: state.graphs[0].meta }) });
+  const newGraphs = arrayImmutableSet(defaultState.graphs, 0, { graph: graph, meta: defaultState.graphs[0].meta });
+
+  const graph2 = new Graph();
+  graph2.addTriple(new Triple('testS', 'testP', 'testO'));
+  newGraphs.push({ graph: graph2, meta: defaultState.graphs[0].meta })
+
+  return objectJoin(state, { graphs: newGraphs });
+}
+
+// ChangeCurrentGraphAction
+export const ChangeCurrentGraphActionTypeConst = 'ChangeCurrentGraphAction';
+export type ChangeCurrentGraphActionType = 'ChangeCurrentGraphAction';
+export interface ChangeCurrentGraphAction extends StoreLib.Action { type: ChangeCurrentGraphActionType
+  graphIndex: number
+  graphNode: GraphNode
+}
+export const createChangeCurrentGraphAction = (graphIndex: number) => 
+  ({ type: ChangeCurrentGraphActionTypeConst, graphIndex: graphIndex } as ChangeCurrentGraphAction);
+function doChangeCurrentGraphAction(state: State, action: ChangeCurrentGraphAction) {
+  return objectJoin(state, { currentGraphIndex: action.graphIndex });
 }
 
 // ChangeCurrentNodeAction
@@ -57,7 +76,7 @@ export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeC
 }
 export const createChangeCurrentNodeAction = (graphIndex: number, graphNode: GraphNode) => 
   ({ type: ChangeCurrentNodeActionTypeConst, graphIndex: graphIndex, graphNode: graphNode } as ChangeCurrentNodeAction);
-function createChangeCurrentNode(state: State, action: ChangeCurrentNodeAction){
+function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction) {
   const currentGraph = state.graphs[action.graphIndex];
   const newMeta = objectClone(currentGraph.meta);
   if (currentGraph.meta.currentNode) {
@@ -84,9 +103,11 @@ function createChangeCurrentNode(state: State, action: ChangeCurrentNodeAction){
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
     case InitializeTestGraphActionTypeConst:
-      return initializeTestGraph(state);
+      return doInitializeTestGraphAction(state);
+    case ChangeCurrentGraphActionTypeConst:
+      return doChangeCurrentGraphAction(state, action as ChangeCurrentGraphAction);
     case ChangeCurrentNodeActionTypeConst:
-      return createChangeCurrentNode(state, action as ChangeCurrentNodeAction);
+      return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     default:
       return state;
   }
