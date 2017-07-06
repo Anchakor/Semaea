@@ -30,9 +30,9 @@ export interface ShowAlertModalAction extends StoreLib.Action { type: ShowAlertM
   originatingGraphIndex: number
   message: string
 }
-export const createShowAlertModalAction = (originatingGraphIndex: number, message: string) => 
-  ({ type: ShowAlertModalActionTypeConst, originatingGraphIndex: originatingGraphIndex, message: message } as ShowAlertModalAction);
-function doShowAlertModalAction(state: State, action: ShowAlertModalAction) {
+export const createShowAlertModalAction = (originatingGraphIndex: number, message: string): ShowAlertModalAction => 
+  ({ type: ShowAlertModalActionTypeConst, originatingGraphIndex: originatingGraphIndex, message: message });
+function doShowAlertModalAction(state: State, action: ShowAlertModalAction): State {
   const modal: AlertModal = { 
     type: AlertModalTypeConst,
     originatingGraphIndex: action.originatingGraphIndex,
@@ -49,9 +49,9 @@ export type CloseModalActionType = 'CloseModalAction';
 export interface CloseModalAction extends StoreLib.Action { type: CloseModalActionType
   modalIndex: number
 }
-export const createCloseModalAction = (modalIndex: number) => 
-  ({ type: CloseModalActionTypeConst, modalIndex: modalIndex } as CloseModalAction);
-function doCloseModalAction(state: State, action: CloseModalAction) {
+export const createCloseModalAction = (modalIndex: number): CloseModalAction => 
+  ({ type: CloseModalActionTypeConst, modalIndex: modalIndex });
+function doCloseModalAction(state: State, action: CloseModalAction): State {
   return objectJoin(state, { 
     modals: state.modals.filter((val: Modal, ix: number, array: Modal[]) => {
       return ix != action.modalIndex;

@@ -40,8 +40,8 @@ export const InitializeTestGraphActionTypeConst = 'InitializeTestGraphAction';
 export type InitializeTestGraphActionType = 'InitializeTestGraphAction';
 export interface InitializeTestGraphAction extends StoreLib.Action { type: InitializeTestGraphActionType
 }
-export const createInitializeTestGraphAction = () => ({ type: InitializeTestGraphActionTypeConst } as InitializeTestGraphAction);
-function doInitializeTestGraphAction(state: State) {
+export const createInitializeTestGraphAction = ():InitializeTestGraphAction => ({ type: InitializeTestGraphActionTypeConst });
+function doInitializeTestGraphAction(state: State): State {
   const graph = new Graph();
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
   graph.addTriple(new Triple('testS', 'testP2', 'testO'));
@@ -63,11 +63,10 @@ export const ChangeCurrentGraphActionTypeConst = 'ChangeCurrentGraphAction';
 export type ChangeCurrentGraphActionType = 'ChangeCurrentGraphAction';
 export interface ChangeCurrentGraphAction extends StoreLib.Action { type: ChangeCurrentGraphActionType
   graphIndex: number
-  graphNode: GraphNode
 }
-export const createChangeCurrentGraphAction = (graphIndex: number) => 
-  ({ type: ChangeCurrentGraphActionTypeConst, graphIndex: graphIndex } as ChangeCurrentGraphAction);
-function doChangeCurrentGraphAction(state: State, action: ChangeCurrentGraphAction) {
+export const createChangeCurrentGraphAction = (graphIndex: number): ChangeCurrentGraphAction => 
+  ({ type: ChangeCurrentGraphActionTypeConst, graphIndex: graphIndex });
+function doChangeCurrentGraphAction(state: State, action: ChangeCurrentGraphAction): State {
   return objectJoin(state, { currentGraphIndex: action.graphIndex });
 }
 
@@ -78,9 +77,9 @@ export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeC
   graphIndex: number
   graphNode: GraphNode
 }
-export const createChangeCurrentNodeAction = (graphIndex: number, graphNode: GraphNode) => 
-  ({ type: ChangeCurrentNodeActionTypeConst, graphIndex: graphIndex, graphNode: graphNode } as ChangeCurrentNodeAction);
-function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction) {
+export const createChangeCurrentNodeAction = (graphIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
+  ({ type: ChangeCurrentNodeActionTypeConst, graphIndex: graphIndex, graphNode: graphNode });
+function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction): State {
   const currentGraph = state.graphs[action.graphIndex];
   const newMeta = objectClone(currentGraph.meta);
   if (currentGraph.meta.currentNode) {
