@@ -38,7 +38,8 @@ class Form<T> implements IComponent {
     }
     this.selectedIdx = newIdx;
   }
-  entryComparer: (arrayValue: T, otherValue: string) => boolean = <U>(arrayValue: T, otherValue: string) => { 
+  entryComparer: (arrayValue: T, otherValue: string | undefined) => boolean = <U>(arrayValue: T, otherValue: string | undefined) => { 
+    if (!otherValue) { return true; }
     return this.entryToString(arrayValue).indexOf(otherValue) >= 0; 
   }
 }

@@ -1,4 +1,4 @@
 
 export interface IDeserializeObject<T> {
-  (input: Object): T
+  (input: any): T
 }
