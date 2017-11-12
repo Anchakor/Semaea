@@ -58,18 +58,6 @@ function doInitializeTestGraphAction(state: State): State {
   return objectJoin(state, { graphs: newGraphs });
 }
 
-// ChangeCurrentGraphAction
-export const ChangeCurrentGraphActionTypeConst = 'ChangeCurrentGraphAction';
-export type ChangeCurrentGraphActionType = 'ChangeCurrentGraphAction';
-export interface ChangeCurrentGraphAction extends StoreLib.Action { type: ChangeCurrentGraphActionType
-  graphIndex: number
-}
-export const createChangeCurrentGraphAction = (graphIndex: number): ChangeCurrentGraphAction => 
-  ({ type: ChangeCurrentGraphActionTypeConst, graphIndex: graphIndex });
-function doChangeCurrentGraphAction(state: State, action: ChangeCurrentGraphAction): State {
-  return objectJoin(state, { currentGraphIndex: action.graphIndex });
-}
-
 // ChangeCurrentNodeAction
 export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
 export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
@@ -107,8 +95,6 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
   switch (action.type) {
     case InitializeTestGraphActionTypeConst:
       return doInitializeTestGraphAction(state);
-    case ChangeCurrentGraphActionTypeConst:
-      return doChangeCurrentGraphAction(state, action as ChangeCurrentGraphAction);
     case ChangeCurrentNodeActionTypeConst:
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     default:

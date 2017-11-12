@@ -2,18 +2,20 @@ import { objectJoin } from '../Common';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { createChangeCurrentGraphAction, createChangeCurrentNodeAction } from '../UIStore/Graphs';
+import { createChangeCurrentNodeAction } from '../UIStore/Graphs';
 import { State as StoreState } from '../UIStore/Main';
 import * as EntityView from '../Views/EntityView';
-import { createShowAlertModalAction } from "../UIStore/Modals";
+import { createShowAlertModalAction } from '../UIStore/Modals';
+import { createChangeSaViewGraphAction } from '../UIStore/SaViews';
 
 // View (component):
 
 export interface StateProps extends StoreState {
+  saViewIndex: number
   graphIndex: number
 }
 export interface DispatchProps {
-  changeCurrentGraph: (graphIndex: number) => void
+  changeCurrentGraph: (saViewIndex: number, graphIndex: number) => void
   changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => void
   showAlertModal: (originatingGraphIndex: number, message: string) => void
 }
@@ -39,7 +41,7 @@ export class View extends UIComponent<Props, {}> {
       }
       return h('button', { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentGraph(i)
+        onclick: () => this.props.changeCurrentGraph(this.props.saViewIndex, i)
       }, i.toString())
     })));
   }
@@ -69,11 +71,14 @@ function renderLevelPosition(props: Props, graphNode: GraphNode) {
 
 export const Component = connect(
   View,
-  (state: StoreState) => objectJoin(state, { graphIndex: state.graphs_.currentGraphIndex }),
+  (state: StoreState) => objectJoin(state, { 
+    saViewIndex: state.saViews_.currentSaViewIndex,
+    graphIndex: state.saViews_.saViews[state.saViews_.currentSaViewIndex].graphIndex 
+  }),
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
       changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(graphIndex, graphNode)),
-      changeCurrentGraph: (graphIndex: number) => dispatch(createChangeCurrentGraphAction(graphIndex)),
+      changeCurrentGraph: (saViewIndex: number, graphIndex: number) => dispatch(createChangeSaViewGraphAction(saViewIndex, graphIndex)),
       showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message))
     };
   });
