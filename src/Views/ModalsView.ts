@@ -1,4 +1,4 @@
-import { IComponent, objectJoin } from '../Common';
+import { IComponent, objectJoin, objectJoinExtend } from '../Common';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { Model } from '../Model';
 import { State as StoreState } from '../UIStore/Main';
@@ -7,7 +7,7 @@ import { AlertModalView } from "../Views/Modals/AlertModalView";
 
 /** Factory function for getting the apropriate functional component of a modal */
 function getModalView(props: Props, modal: Modals.Modal, modalIndex: number) {
-  const modalProps = objectJoin(props, { 
+  const modalProps = objectJoinExtend(props, { 
     modalIndex: modalIndex,
     modal: modal
   });
