@@ -4,32 +4,27 @@ import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 
-export interface GraphMeta {
+export interface SaGraphView {
+  graphIndex: number
   currentNode?: GraphNode
   previousNode?: GraphNode
   previousNodeNonPredicate?: GraphNode
   previousNodePredicate?: GraphNode
 }
-export interface ViewableGraph {
-  graph: Graph
-  meta: GraphMeta
-}
 
 export interface State {
-  graphs: ViewableGraph[]
-  currentGraphIndex: number
+  graphs: Graph[]
+  saGraphViews: SaGraphView[]
 }
 export let defaultState: State = { 
-  graphs: [{ 
-    graph: new Graph(),
-    meta: {
-      currentNode: undefined,
-      previousNode: undefined,
-      previousNodeNonPredicate: undefined,
-      previousNodePredicate: undefined
-    }
+  graphs: [new Graph()],
+  saGraphViews: [{ 
+    graphIndex: 0,
+    currentNode: undefined,
+    previousNode: undefined,
+    previousNodeNonPredicate: undefined,
+    previousNodePredicate: undefined
   }],
-  currentGraphIndex: 0
 };
 defaultState = doInitializeTestGraphAction(defaultState);
 
@@ -50,41 +45,40 @@ function doInitializeTestGraphAction(state: State): State {
   const graph2 = new Graph();
   graph2.addTriple(new Triple('testS', 'testP', 'testO'));
 
-  const newGraphs = [
-    { graph: graph, meta: defaultState.graphs[0].meta },
-    { graph: graph2, meta: defaultState.graphs[0].meta }
+  const newGraphs = [ graph, graph2 ];
+  const newViews = [
+    objectClone(defaultState.saGraphViews[0]),
+    objectJoin(defaultState.saGraphViews[0], { graphIndex: 1 })
     ];
 
-  return objectJoin(state, { graphs: newGraphs });
+  return objectJoin(state, { graphs: newGraphs, saGraphViews: newViews });
 }
 
 // ChangeCurrentNodeAction
 export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
 export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
 export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeCurrentNodeActionType
-  graphIndex: number
+  saViewGraphIndex: number
   graphNode: GraphNode
 }
-export const createChangeCurrentNodeAction = (graphIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
-  ({ type: ChangeCurrentNodeActionTypeConst, graphIndex: graphIndex, graphNode: graphNode });
+export const createChangeCurrentNodeAction = (saViewGraphIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
+  ({ type: ChangeCurrentNodeActionTypeConst, saViewGraphIndex: saViewGraphIndex, graphNode: graphNode });
 function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction): State {
-  const currentGraph = state.graphs[action.graphIndex];
-  const newMeta = objectClone(currentGraph.meta);
-  if (currentGraph.meta.currentNode) {
-    if (currentGraph.meta.currentNode.getValue() != action.graphNode.getValue()) {
-      newMeta.previousNode = currentGraph.meta.currentNode;
-      if (newMeta.previousNode.position != 'p') {
-        newMeta.previousNodeNonPredicate = newMeta.previousNode
+  const saViewGraph = state.saGraphViews[action.saViewGraphIndex];
+  const newSaViewGraph = objectClone(saViewGraph);
+  if (saViewGraph.currentNode) {
+    if (saViewGraph.currentNode.getValue() != action.graphNode.getValue()) {
+      newSaViewGraph.previousNode = saViewGraph.currentNode;
+      if (newSaViewGraph.previousNode.position != 'p') {
+        newSaViewGraph.previousNodeNonPredicate = newSaViewGraph.previousNode
       } else {
-        newMeta.previousNodePredicate = newMeta.previousNode
+        newSaViewGraph.previousNodePredicate = newSaViewGraph.previousNode
       }
     }
   }
-  newMeta.currentNode = action.graphNode;
+  newSaViewGraph.currentNode = action.graphNode;
   return objectJoin(state, { 
-    graphs: arrayImmutableSet(state.graphs, action.graphIndex, 
-      objectJoin(currentGraph, { meta: newMeta })
-    )
+    saGraphViews: arrayImmutableSet(state.saGraphViews, action.saViewGraphIndex, newSaViewGraph)
   });
 }
 

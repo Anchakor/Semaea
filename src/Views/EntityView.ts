@@ -1,26 +1,26 @@
 import { h } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
-import { GraphMeta } from '../UIStore/Graphs';
+import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
-  graphMeta: GraphMeta
+  saGraphView: SaGraphView
 }
 
 export function EntityView(props: Props) {
   let tagClass: string = '';
-  if (props.graphMeta.currentNode && props.graphMeta.currentNode.getValue() == props.graphNode.getValue()) {
+  if (props.saGraphView.currentNode && props.saGraphView.currentNode.getValue() == props.graphNode.getValue()) {
     tagClass = 'element-otherOccurence';
   }
-  if (props.graphMeta.currentNode && props.graphMeta.currentNode.toString() == props.graphNode.toString()) {
+  if (props.saGraphView.currentNode && props.saGraphView.currentNode.toString() == props.graphNode.toString()) {
     tagClass = 'element-selected';
   }
   return h('span', { 
     tabIndex: 0, 
     class: tagClass, 
-    onclick: () => props.showAlertModal(props.graphIndex, "Some message "+props.graphNode.toString()+"."),
-    onfocus: () => props.changeCurrentNode(props.graphIndex, props.graphNode)
+    onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
+    onfocus: () => props.changeCurrentNode(props.saGraphView.graphIndex, props.graphNode)
   }, props.graphNode.getValue());
 }
 
