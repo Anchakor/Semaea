@@ -54,6 +54,22 @@ function doInitializeTestGraphAction(state: State): State {
   return objectJoin(state, { graphs: newGraphs, saGraphViews: newViews });
 }
 
+// ChangeSaViewGraphAction
+export const ChangeSaGraphViewGraphActionTypeConst = 'ChangeSaGraphViewGraphAction';
+export type ChangeSaGraphViewGraphActionType = 'ChangeSaGraphViewGraphAction';
+export interface ChangeSaGraphViewGraphAction extends StoreLib.Action { type: ChangeSaGraphViewGraphActionType
+  saGraphViewIndex: number
+  graphIndex: number
+}
+export const createChangeSaGraphViewGraphAction = (saGraphViewIndex: number, graphIndex: number): ChangeSaGraphViewGraphAction => 
+  ({ type: ChangeSaGraphViewGraphActionTypeConst, saGraphViewIndex: saGraphViewIndex, graphIndex: graphIndex });
+function doChangeSaGraphViewGraphAction(state: State, action: ChangeSaGraphViewGraphAction): State {
+  return objectJoin(state, { 
+    saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, 
+      objectJoin(state.saGraphViews[action.saGraphViewIndex], { graphIndex: action.graphIndex })
+    )});
+}
+
 // ChangeCurrentNodeAction
 export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
 export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
@@ -89,6 +105,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
   switch (action.type) {
     case InitializeTestGraphActionTypeConst:
       return doInitializeTestGraphAction(state);
+    case ChangeSaGraphViewGraphActionTypeConst:
+      return doChangeSaGraphViewGraphAction(state, action as ChangeSaGraphViewGraphAction);
     case ChangeCurrentNodeActionTypeConst:
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     default:

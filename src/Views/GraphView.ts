@@ -2,11 +2,11 @@ import { objectJoin, objectJoinExtend } from '../Common';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { createChangeCurrentNodeAction, SaGraphView } from '../UIStore/Graphs';
+import { createChangeCurrentNodeAction, SaGraphView, createChangeSaGraphViewGraphAction } from '../UIStore/Graphs';
 import { State as StoreState } from '../UIStore/Main';
 import * as EntityView from '../Views/EntityView';
 import { createShowAlertModalAction } from '../UIStore/Modals';
-import { createChangeSaViewSaGraphViewAction, SaView } from '../UIStore/SaViews';
+import { SaView, createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { Graph } from '../Graphs/Graph';
 
 // View (component):
@@ -18,8 +18,9 @@ export interface StateProps extends StoreState {
   graph: Graph
 }
 export interface DispatchProps {
-  changeCurrentGraph: (saViewIndex: number, graphIndex: number) => void
-  changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => void
+  changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
+  changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
+  changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
   showAlertModal: (originatingGraphIndex: number, message: string) => void
 }
 export type Props = StateProps & DispatchProps
@@ -28,10 +29,26 @@ export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, [
+      this.renderSaGraphViewSwitchingBar(),
       this.renderGraphSwitchingBar(),
       h('hr'),
       this.renderCurrentGraph()
     ]);
+  }
+
+  private renderSaGraphViewSwitchingBar() {
+    return h('div', {}, [
+      h('span', {}, "Graph Views: ")
+    ].concat(this.props.graphs_.saGraphViews.map((g, i) => {
+      let tagClass: string = '';
+      if (this.props.saView.saGraphViewIndex == i) {
+        tagClass = 'element-selected'
+      }
+      return h('button', { 
+        class: tagClass,
+        onclick: () => this.props.changeCurrentSaGraphView(this.props.saViewIndex, i)
+      }, i.toString())
+    })));
   }
 
   private renderGraphSwitchingBar() {
@@ -44,7 +61,7 @@ export class View extends UIComponent<Props, {}> {
       }
       return h('button', { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentGraph(this.props.saViewIndex, i)
+        onclick: () => this.props.changeCurrentGraph(this.props.saView.saGraphViewIndex, i)
       }, i.toString())
     })));
   }
@@ -82,8 +99,9 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
-      changeCurrentNode: (graphIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(graphIndex, graphNode)),
-      changeCurrentGraph: (saViewIndex: number, graphIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, graphIndex)),
+      changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
+      changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
+      changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
       showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message))
     };
   });

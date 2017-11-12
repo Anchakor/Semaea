@@ -20,7 +20,7 @@ export function EntityView(props: Props) {
     tabIndex: 0, 
     class: tagClass, 
     onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
-    onfocus: () => props.changeCurrentNode(props.saGraphView.graphIndex, props.graphNode)
+    onfocus: () => props.changeCurrentNode(props.saView.saGraphViewIndex, props.graphNode)
   }, props.graphNode.getValue());
 }
 
