@@ -12,7 +12,7 @@ function getModalView(props: Props, modal: Modals.Modal, modalIndex: number) {
     modal: modal
   });
   switch (modal.type) {
-    case Modals.AlertModalTypeConst:
+    case Modals.ModalType.AlertModal:
       return AlertModalView(modalProps as any);
     default:
       return h('div');

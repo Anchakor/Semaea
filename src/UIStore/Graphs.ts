@@ -1,5 +1,5 @@
 import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
-import { StoreLib } from '../External';
+import { StoreLib, UILib, UIStoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
@@ -30,12 +30,10 @@ defaultState = doInitializeTestGraphAction(defaultState);
 
 // Actions:
 
-// InitializeTestGraphAction
-export const InitializeTestGraphActionTypeConst = 'InitializeTestGraphAction';
-export type InitializeTestGraphActionType = 'InitializeTestGraphAction';
-export interface InitializeTestGraphAction extends StoreLib.Action { type: InitializeTestGraphActionType
+export enum ActionType { InitializeTestGraph = 'InitializeTestGraph' }
+export interface InitializeTestGraphAction extends StoreLib.Action { type: ActionType.InitializeTestGraph
 }
-export const createInitializeTestGraphAction = ():InitializeTestGraphAction => ({ type: InitializeTestGraphActionTypeConst });
+export const createInitializeTestGraphAction = ():InitializeTestGraphAction => ({ type: ActionType.InitializeTestGraph });
 function doInitializeTestGraphAction(state: State): State {
   const graph = new Graph();
   graph.addTriple(new Triple('testS', 'testP', 'testO'));
@@ -54,15 +52,13 @@ function doInitializeTestGraphAction(state: State): State {
   return objectJoin(state, { graphs: newGraphs, saGraphViews: newViews });
 }
 
-// ChangeSaViewGraphAction
-export const ChangeSaGraphViewGraphActionTypeConst = 'ChangeSaGraphViewGraphAction';
-export type ChangeSaGraphViewGraphActionType = 'ChangeSaGraphViewGraphAction';
-export interface ChangeSaGraphViewGraphAction extends StoreLib.Action { type: ChangeSaGraphViewGraphActionType
+export enum ActionType { ChangeSaGraphViewGraph = 'ChangeSaGraphViewGraph' }
+export interface ChangeSaGraphViewGraphAction extends StoreLib.Action { type: ActionType.ChangeSaGraphViewGraph
   saGraphViewIndex: number
   graphIndex: number
 }
 export const createChangeSaGraphViewGraphAction = (saGraphViewIndex: number, graphIndex: number): ChangeSaGraphViewGraphAction => 
-  ({ type: ChangeSaGraphViewGraphActionTypeConst, saGraphViewIndex: saGraphViewIndex, graphIndex: graphIndex });
+  ({ type: ActionType.ChangeSaGraphViewGraph, saGraphViewIndex: saGraphViewIndex, graphIndex: graphIndex });
 function doChangeSaGraphViewGraphAction(state: State, action: ChangeSaGraphViewGraphAction): State {
   return objectJoin(state, { 
     saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, 
@@ -70,15 +66,13 @@ function doChangeSaGraphViewGraphAction(state: State, action: ChangeSaGraphViewG
     )});
 }
 
-// ChangeCurrentNodeAction
-export const ChangeCurrentNodeActionTypeConst = 'ChangeCurrentNodeAction';
-export type ChangeCurrentNodeActionType = 'ChangeCurrentNodeAction';
-export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ChangeCurrentNodeActionType
+export enum ActionType { ChangeCurrentNode = 'ChangeCurrentNode' }
+export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ActionType.ChangeCurrentNode
   saViewGraphIndex: number
   graphNode: GraphNode
 }
 export const createChangeCurrentNodeAction = (saViewGraphIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
-  ({ type: ChangeCurrentNodeActionTypeConst, saViewGraphIndex: saViewGraphIndex, graphNode: graphNode });
+  ({ type: ActionType.ChangeCurrentNode, saViewGraphIndex: saViewGraphIndex, graphNode: graphNode });
 function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction): State {
   const saViewGraph = state.saGraphViews[action.saViewGraphIndex];
   const newSaViewGraph = objectClone(saViewGraph);
@@ -103,11 +97,11 @@ function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
-    case InitializeTestGraphActionTypeConst:
+    case ActionType.InitializeTestGraph:
       return doInitializeTestGraphAction(state);
-    case ChangeSaGraphViewGraphActionTypeConst:
+    case ActionType.ChangeSaGraphViewGraph:
       return doChangeSaGraphViewGraphAction(state, action as ChangeSaGraphViewGraphAction);
-    case ChangeCurrentNodeActionTypeConst:
+    case ActionType.ChangeCurrentNode:
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     default:
       return state;

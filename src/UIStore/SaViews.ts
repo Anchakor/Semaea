@@ -27,15 +27,13 @@ export let defaultState: State = {
 
 // Actions:
 
-// ChangeSaViewGraphAction
-export const ChangeSaViewSaGraphViewActionTypeConst = 'ChangeSaViewSaGraphViewAction';
-export type ChangeSaViewSaGraphViewActionType = 'ChangeSaViewSaGraphViewAction';
-export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: ChangeSaViewSaGraphViewActionType
+export enum ActionType { ChangeSaViewSaGraphView = 'ChangeSaViewSaGraphView' }
+export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: ActionType.ChangeSaViewSaGraphView
   saViewIndex: number
   saGraphViewIndex: number
 }
 export const createChangeSaViewSaGraphViewAction = (saViewIndex: number, saGraphViewIndex: number): ChangeSaViewSaGraphViewAction => 
-  ({ type: ChangeSaViewSaGraphViewActionTypeConst, saViewIndex: saViewIndex, saGraphViewIndex: saGraphViewIndex });
+  ({ type: ActionType.ChangeSaViewSaGraphView, saViewIndex: saViewIndex, saGraphViewIndex: saGraphViewIndex });
 function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGraphViewAction): State {
   return objectJoin(state, { 
     saViews: arrayImmutableSet(state.saViews, action.saViewIndex, 
@@ -47,7 +45,7 @@ function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGra
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
-    case ChangeSaViewSaGraphViewActionTypeConst:
+    case ActionType.ChangeSaViewSaGraphView:
       return doChangeSaViewSaGraphViewAction(state, action as ChangeSaViewSaGraphViewAction);
     default:
       return state;

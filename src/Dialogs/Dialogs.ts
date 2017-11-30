@@ -1,7 +1,11 @@
 
 export type DialogType = void // TODO
 
-export type ViewStatus = 'opened' | 'closed' | 'no view'
+export enum ViewStatus { 
+  Opened = 'Opened', 
+  Closed = 'Closed', 
+  NoView = 'NoView'
+}
 
 export interface Dialog {
   type: DialogType
