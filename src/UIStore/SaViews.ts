@@ -33,6 +33,19 @@ export let defaultState: State = {
 
 // Actions:
 
+// ChangeSaViewAction
+export enum ActionType { ChangeSaView = 'ChangeSaView' }
+export interface ChangeSaViewAction extends StoreLib.Action { type: ActionType.ChangeSaView
+  saViewIndex: number
+}
+export const createChangeSaViewAction = (saViewIndex: number): ChangeSaViewAction => 
+  ({ type: ActionType.ChangeSaView, saViewIndex: saViewIndex });
+function doChangeSaViewAction(state: State, action: ChangeSaViewAction) {
+  return objectJoin(state, { currentSaViewIndex: action.saViewIndex } as State);
+}
+//-dispatch:
+//ChangeSaView: (saViewIndex: number) => dispatch(createChangeSaViewAction(saViewIndex))
+
 export enum ActionType { ChangeSaViewSaGraphView = 'ChangeSaViewSaGraphView' }
 export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: ActionType.ChangeSaViewSaGraphView
   saViewIndex: number
@@ -51,6 +64,8 @@ function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGra
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   switch (action.type) {
+    case ActionType.ChangeSaView:
+      return doChangeSaViewAction(state, action as ChangeSaViewAction);
     case ActionType.ChangeSaViewSaGraphView:
       return doChangeSaViewSaGraphViewAction(state, action as ChangeSaViewSaGraphViewAction);
     default:
