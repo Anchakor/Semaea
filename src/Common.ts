@@ -11,6 +11,9 @@ export interface IComponent {
 /** Create a copy of `array`, setting item at index `ix` to `value`. */
 export const arrayImmutableSet = <T>(array: Array<T>, ix: number, value: T): Array<T> => Object.assign([...array], {[ix]: value});
 
+/** Create a copy of `array`, appending item `value` to it. */
+export const arrayImmutableAppend = <T>(array: Array<T>, value: T): Array<T> => Object.assign([...array], {[array.length]: value});
+
 /** Create a new object which is combinations of properies of `a` and `b` (`b` overriding `a`) */
 export const objectJoin = <A>(a: A, b: Partial<A>): A => Object.assign({}, a, b);
 export const objectJoinExtend = <A,B>(a: A, b: B): A & B => Object.assign({}, a, b);
