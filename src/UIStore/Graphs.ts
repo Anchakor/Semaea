@@ -4,6 +4,13 @@ import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 
+/* Graphs and SaGraphViews
+Graphs are the data being displayed in Semaea in one SaGraphView.
+SaGraphView has the information about how is a Graph being displayed by Semaea.
+SaGraphViews 0..* - 1 Graph
+SaGraphViews 0..1 - 0..* SaViews
+*/
+
 export interface SaGraphView {
   graphIndex: number
   currentNode?: GraphNode

@@ -2,6 +2,12 @@ import { SaGraphView } from './Graphs';
 import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
 import { StoreLib } from '../External';
 
+/* SaViews
+SaViews are the Semaea Views, the main UI views user can switch between
+SaViews 0..* - 0..1 Dialogs
+SaViews 0..* - 0..1 SaGraphViews
+*/
+
 export const BaseSaViewTypeConst = 'BaseSaView';
 export type BaseSaViewType = 'BaseSaView';
 
