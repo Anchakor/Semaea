@@ -1,7 +1,9 @@
 
-export type DialogType = void // TODO
+export enum DialogType {
+  DeleteGraph = 'DeleteGraph'
+} // TODO
 
-export enum ViewStatus { 
+export enum Status { 
   Opened = 'Opened', 
   Closed = 'Closed', 
   NoView = 'NoView'
@@ -9,10 +11,13 @@ export enum ViewStatus {
 
 export interface Dialog {
   type: DialogType
-  viewStatus: ViewStatus
+  status: Status
 }
 
 export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: DialogType): T[] => {
   return dialogs.filter((value: Dialog) => value.type == type) as T[];
 };
 
+export interface DeleteGraphDialog extends Dialog {
+  type: DialogType.DeleteGraph
+}

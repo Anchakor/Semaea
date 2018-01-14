@@ -5,14 +5,14 @@ import * as Modals from './Modals';
 import * as SaViews from './SaViews';
 import * as Dialogs from './Dialogs';
 
-export interface State {
+export interface StoreState {
   testing_: TestingView.State
   graphs_: Graphs.State
   modals_: Modals.State
   saViews_: SaViews.State
   dialogs_: Dialogs.State
 }
-const defaultState: State = {
+const defaultState: StoreState = {
   testing_: TestingView.defaultState,
   graphs_: Graphs.defaultState,
   modals_: Modals.defaultState,
@@ -22,19 +22,22 @@ const defaultState: State = {
 
 // Reducer:
 
-const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
+const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState, action: StoreLib.Action) => {
+  var newState = Dialogs.reducer(state, action);
+  if (newState != state) { return newState; } // TODO unit test this works
+
   return {
     testing_: TestingView.reducer(state.testing_, action),
     graphs_: Graphs.reducer(state.graphs_, action),
     modals_: Modals.reducer(state.modals_, action),
     saViews_: SaViews.reducer(state.saViews_, action),
-    dialogs_: Dialogs.reducer(state.dialogs_, action)
+    dialogs_: state.dialogs_
   }
 }
 
 // Store initialization:
 
-export const store = StoreLib.createStore<State>(reducer);
+export const store = StoreLib.createStore<StoreState>(reducer);
 
 // Other:
 

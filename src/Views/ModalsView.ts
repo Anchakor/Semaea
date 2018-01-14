@@ -1,7 +1,7 @@
 import { IComponent, objectJoin, objectJoinExtend } from '../Common';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { Model } from '../Model';
-import { State as StoreState } from '../UIStore/Main';
+import { StoreState } from '../UIStore/Main';
 import * as Modals from '../UIStore/Modals';
 import { AlertModalView } from "../Views/Modals/AlertModalView";
 

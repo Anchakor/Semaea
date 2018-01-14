@@ -3,11 +3,12 @@ import { connect, h, StoreLib, UIComponent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { createChangeCurrentNodeAction, SaGraphView, createChangeSaGraphViewGraphAction } from '../UIStore/Graphs';
-import { State as StoreState } from '../UIStore/Main';
+import { StoreState } from '../UIStore/Main';
 import * as EntityView from '../Views/EntityView';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { SaView, createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { Graph } from '../Graphs/Graph';
+import { createCreateDeleteGraphDialogAction } from 'UIStore/Dialogs';
 
 // View (component):
 
@@ -22,6 +23,7 @@ export interface DispatchProps {
   changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
   showAlertModal: (originatingGraphIndex: number, message: string) => void
+  createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -102,6 +104,7 @@ export const Component = connect(
       changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
       changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
       changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
-      showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message))
+      showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
+      createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))
     };
   });

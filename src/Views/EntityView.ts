@@ -2,6 +2,7 @@ import { h } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
+import * as Key from '../Key';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -19,9 +20,18 @@ export function EntityView(props: Props) {
   return h('span', { 
     tabIndex: 0, 
     class: tagClass, 
+    onkeydown: keydown(props),
     onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
     onfocus: () => props.changeCurrentNode(props.saView.saGraphViewIndex, props.graphNode)
   }, props.graphNode.getValue());
+}
+
+function keydown(props: Props) {
+  return (event: KeyboardEvent) => {
+    if (Key.isM(event)) {
+      props.createDeleteGraphDialog(123, props.saViewIndex);
+    }
+  }
 }
 
 /*
