@@ -14,14 +14,14 @@ export type BaseSaViewType = 'BaseSaView';
 export type SaViewType = BaseSaViewType
 
 export interface SaView {
-  saGraphViewIndex: number
-  originatingView?: number
-  type: SaViewType
+  readonly saGraphViewIndex: number
+  readonly originatingView?: number
+  readonly type: SaViewType
 }
 
 export interface State {
-  saViews: SaView[]
-  currentSaViewIndex: number
+  readonly saViews: SaView[]
+  readonly currentSaViewIndex: number
 }
 export let defaultState: State = { 
   saViews: [{ 

@@ -3,6 +3,7 @@ import { StoreLib, UILib, UIStoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
+import { SaView } from 'UIStore/SaViews';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
@@ -12,16 +13,16 @@ SaGraphViews 0..1 - 0..* SaViews
 */
 
 export interface SaGraphView {
-  graphIndex: number
-  currentNode?: GraphNode
-  previousNode?: GraphNode
-  previousNodeNonPredicate?: GraphNode
-  previousNodePredicate?: GraphNode
+  readonly graphIndex: number
+  readonly currentNode?: GraphNode
+  readonly previousNode?: GraphNode
+  readonly previousNodeNonPredicate?: GraphNode
+  readonly previousNodePredicate?: GraphNode
 }
 
 export interface State {
-  graphs: Graph[]
-  saGraphViews: SaGraphView[]
+  readonly graphs: Graph[]
+  readonly saGraphViews: SaGraphView[]
 }
 export let defaultState: State = { 
   graphs: [new Graph()],
@@ -82,18 +83,23 @@ export const createChangeCurrentNodeAction = (saViewGraphIndex: number, graphNod
   ({ type: ActionType.ChangeCurrentNode, saViewGraphIndex: saViewGraphIndex, graphNode: graphNode });
 function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction): State {
   const saViewGraph = state.saGraphViews[action.saViewGraphIndex];
-  const newSaViewGraph = objectClone(saViewGraph);
+  let previousNode, previousNodeNonPredicate, previousNodePredicate;
   if (saViewGraph.currentNode) {
     if (saViewGraph.currentNode.getValue() != action.graphNode.getValue()) {
-      newSaViewGraph.previousNode = saViewGraph.currentNode;
-      if (newSaViewGraph.previousNode.position != 'p') {
-        newSaViewGraph.previousNodeNonPredicate = newSaViewGraph.previousNode
+      previousNode = saViewGraph.currentNode;
+      if (previousNode.position != 'p') {
+        previousNodeNonPredicate = previousNode;
       } else {
-        newSaViewGraph.previousNodePredicate = newSaViewGraph.previousNode
+        previousNodePredicate = previousNode;
       }
     }
   }
-  newSaViewGraph.currentNode = action.graphNode;
+  const newSaViewGraph = objectJoin(saViewGraph, { 
+    currentNode: action.graphNode, 
+    previousNode: previousNode, 
+    previousNodeNonPredicate: previousNodeNonPredicate,
+    previousNodePredicate: previousNodePredicate
+   });
   return objectJoin(state, { 
     saGraphViews: arrayImmutableSet(state.saGraphViews, action.saViewGraphIndex, newSaViewGraph)
   });

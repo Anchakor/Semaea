@@ -12,13 +12,13 @@ Dialogs 0..1 - 0..* SaViews
 */
 
 export interface DialogSaViewMapping {
-  dialogIndex: number
-  saViewIndex: number
+  readonly dialogIndex: number
+  readonly saViewIndex: number
 }
 
 export interface State {
-  viewMappings: DialogSaViewMapping[]
-  dialogs: Dialog[]
+  readonly viewMappings: DialogSaViewMapping[]
+  readonly dialogs: Dialog[]
 }
 export let defaultState: State = { 
   viewMappings: [],

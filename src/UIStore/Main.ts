@@ -6,11 +6,11 @@ import * as SaViews from './SaViews';
 import * as Dialogs from './Dialogs';
 
 export interface StoreState {
-  testing_: TestingView.State
-  graphs_: Graphs.State
-  modals_: Modals.State
-  saViews_: SaViews.State
-  dialogs_: Dialogs.State
+  readonly testing_: TestingView.State
+  readonly graphs_: Graphs.State
+  readonly modals_: Modals.State
+  readonly saViews_: SaViews.State
+  readonly dialogs_: Dialogs.State
 }
 const defaultState: StoreState = {
   testing_: TestingView.defaultState,

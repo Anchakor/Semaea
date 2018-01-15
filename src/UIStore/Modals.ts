@@ -12,7 +12,7 @@ export interface AlertModal extends Modal {
 }
 
 export interface State {
-  modals: Modal[]
+  readonly modals: Modal[]
 }
 export const defaultState: State = {
   modals: []
