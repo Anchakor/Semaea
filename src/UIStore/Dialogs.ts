@@ -51,11 +51,15 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
   // Dialog values
   const newDialog = { status: DialogStatus.Opened, type: DialogType.DeleteGraph } as DeleteGraphDialog;
   const dialogs = arrayImmutableAppend(state.dialogs_.dialogs, newDialog);
+  const newDialogIndex = dialogs.length - 1;
+
+  const newDialogSaViewMapping = { saViewIndex: newSaViewIndex, dialogIndex: newDialogIndex } as DialogSaViewMapping;
+  const viewMappings = arrayImmutableAppend(state.dialogs_.viewMappings, newDialogSaViewMapping);
 
   return objectJoin(state, { 
     graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews } as GraphsState),
     saViews_: objectJoin(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex } as SaViewsState),
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
+    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings } as State)
   } as StoreState);
 }
 //-dispatch:
