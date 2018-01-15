@@ -64,7 +64,11 @@ export const createCreateDeleteGraphDialogAction = (graphIndex: number, originat
   ({ type: ActionType.CreateDeleteGraphDialog, graphIndex: graphIndex, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDeleteGraphDialogAction) {
   return doCreateDialog(state, 
-    { status: DialogStatus.Opened, type: DialogType.DeleteGraph } as DeleteGraphDialog, action.originatingSaViewIndex);
+    { status: DialogStatus.Opened, 
+      type: DialogType.DeleteGraph,
+      graphToDeleteIndex: action.graphIndex
+    } as DeleteGraphDialog, 
+    action.originatingSaViewIndex);
 }
 //-dispatch:
 //CreateDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))

@@ -20,4 +20,5 @@ export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: Dial
 
 export interface DeleteGraphDialog extends Dialog {
   type: DialogType.DeleteGraph
+  graphToDeleteIndex: number
 }
