@@ -25,6 +25,33 @@ export let defaultState: State = {
   dialogs: [],
 };
 
+function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewIndex: number) {
+  // Creating a copy of SaView and SaGraphView
+  const originatingSaView = state.saViews_.saViews[originatingSaViewIndex];
+  const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
+
+  const newSaGraphView = objectClone(originatingSaGraphView);
+  const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
+  const newSaGraphViewIndex = saGraphViews.length - 1;
+
+  const newSaView = objectJoin(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: originatingSaViewIndex } as SaView)
+  const saViews = arrayImmutableAppend(state.saViews_.saViews, newSaView);
+  const newSaViewIndex = saViews.length - 1;
+
+  // Dialog values
+  const dialogs = arrayImmutableAppend(state.dialogs_.dialogs, dialog);
+  const newDialogIndex = dialogs.length - 1;
+
+  const newDialogSaViewMapping = { saViewIndex: newSaViewIndex, dialogIndex: newDialogIndex } as DialogSaViewMapping;
+  const viewMappings = arrayImmutableAppend(state.dialogs_.viewMappings, newDialogSaViewMapping);
+
+  return objectJoin(state, { 
+    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews } as GraphsState),
+    saViews_: objectJoin(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex } as SaViewsState),
+    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings } as State)
+  } as StoreState);
+}
+
 // Actions:
 
 // CreateDeleteGraphDialogAction
@@ -36,31 +63,8 @@ export interface CreateDeleteGraphDialogAction extends StoreLib.Action { type: A
 export const createCreateDeleteGraphDialogAction = (graphIndex: number, originatingSaViewIndex: number): CreateDeleteGraphDialogAction => 
   ({ type: ActionType.CreateDeleteGraphDialog, graphIndex: graphIndex, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDeleteGraphDialogAction) {
-    // Creating a copy of SaView and SaGraphView
-  const originatingSaView = state.saViews_.saViews[action.originatingSaViewIndex];
-  const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
-
-  const newSaGraphView = objectClone(originatingSaGraphView);
-  const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
-  const newSaGraphViewIndex = saGraphViews.length - 1;
-
-  const newSaView = objectJoin(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: action.originatingSaViewIndex } as SaView)
-  const saViews = arrayImmutableAppend(state.saViews_.saViews, newSaView);
-  const newSaViewIndex = saViews.length - 1;
-
-  // Dialog values
-  const newDialog = { status: DialogStatus.Opened, type: DialogType.DeleteGraph } as DeleteGraphDialog;
-  const dialogs = arrayImmutableAppend(state.dialogs_.dialogs, newDialog);
-  const newDialogIndex = dialogs.length - 1;
-
-  const newDialogSaViewMapping = { saViewIndex: newSaViewIndex, dialogIndex: newDialogIndex } as DialogSaViewMapping;
-  const viewMappings = arrayImmutableAppend(state.dialogs_.viewMappings, newDialogSaViewMapping);
-
-  return objectJoin(state, { 
-    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews } as GraphsState),
-    saViews_: objectJoin(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex } as SaViewsState),
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings } as State)
-  } as StoreState);
+  return doCreateDialog(state, 
+    { status: DialogStatus.Opened, type: DialogType.DeleteGraph } as DeleteGraphDialog, action.originatingSaViewIndex);
 }
 //-dispatch:
 //CreateDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))
