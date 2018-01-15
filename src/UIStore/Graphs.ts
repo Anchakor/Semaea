@@ -76,17 +76,17 @@ function doChangeSaGraphViewGraphAction(state: State, action: ChangeSaGraphViewG
 
 export enum ActionType { ChangeCurrentNode = 'ChangeCurrentNode' }
 export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ActionType.ChangeCurrentNode
-  saViewGraphIndex: number
+  saGraphViewIndex: number
   graphNode: GraphNode
 }
-export const createChangeCurrentNodeAction = (saViewGraphIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
-  ({ type: ActionType.ChangeCurrentNode, saViewGraphIndex: saViewGraphIndex, graphNode: graphNode });
+export const createChangeCurrentNodeAction = (saGraphViewIndex: number, graphNode: GraphNode): ChangeCurrentNodeAction => 
+  ({ type: ActionType.ChangeCurrentNode, saGraphViewIndex: saGraphViewIndex, graphNode: graphNode });
 function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction): State {
-  const saViewGraph = state.saGraphViews[action.saViewGraphIndex];
+  const saGraphView = state.saGraphViews[action.saGraphViewIndex];
   let previousNode, previousNodeNonPredicate, previousNodePredicate;
-  if (saViewGraph.currentNode) {
-    if (saViewGraph.currentNode.getValue() != action.graphNode.getValue()) {
-      previousNode = saViewGraph.currentNode;
+  if (saGraphView.currentNode) {
+    if (saGraphView.currentNode.getValue() != action.graphNode.getValue()) {
+      previousNode = saGraphView.currentNode;
       if (previousNode.position != 'p') {
         previousNodeNonPredicate = previousNode;
       } else {
@@ -94,14 +94,14 @@ function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction
       }
     }
   }
-  const newSaViewGraph = objectJoin(saViewGraph, { 
+  const newSaGraphView = objectJoin(saGraphView, { 
     currentNode: action.graphNode, 
     previousNode: previousNode, 
     previousNodeNonPredicate: previousNodeNonPredicate,
     previousNodePredicate: previousNodePredicate
    });
   return objectJoin(state, { 
-    saGraphViews: arrayImmutableSet(state.saGraphViews, action.saViewGraphIndex, newSaViewGraph)
+    saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, newSaGraphView)
   });
 }
 
