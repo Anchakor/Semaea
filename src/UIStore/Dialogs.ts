@@ -44,7 +44,7 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
-  const newSaView = objectJoin(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex } as SaView)
+  const newSaView = objectJoin(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: action.originatingSaViewIndex } as SaView)
   const saViews = arrayImmutableAppend(state.saViews_.saViews, newSaView);
   const newSaViewIndex = saViews.length - 1;
 
