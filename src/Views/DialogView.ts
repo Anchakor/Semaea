@@ -2,9 +2,10 @@ import { StoreState } from '../UIStore/Main';
 import { SaView, createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
-import { DialogType, Dialog } from '../Dialogs/Dialogs';
+import { DialogType, Dialog, DeleteGraphDialog } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
+import { DeleteGraphDialogView } from 'Views/Dialogs/DeleteGraphDialogView';
 
 /** Factory function for getting the apropriate functional component of a modal */
 function getModalView(props: Props, dialog: Dialog) {
@@ -13,8 +14,7 @@ function getModalView(props: Props, dialog: Dialog) {
   });
   switch (dialog.type) {
     case DialogType.DeleteGraph:
-      return h('div', {}, [ dialog.type, ' TEST ', dialog.status ]); // TODO
-      //return AlertModalView(modalProps as any);
+      return DeleteGraphDialogView(dialogProps as DialogProps<DeleteGraphDialog>);
     default:
       return DefaultDialogView(dialogProps);
   }
