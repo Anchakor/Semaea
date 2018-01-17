@@ -2,13 +2,13 @@ import { StoreState } from '../UIStore/Main';
 import { SaView, createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
-import { DialogType, Dialog, DeleteGraphDialog } from '../Dialogs/Dialogs';
+import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from 'Views/Dialogs/DeleteGraphDialogView';
 
-/** Factory function for getting the apropriate functional component of a modal */
-function getModalView(props: Props, dialog: Dialog) {
+/** Factory function for getting the apropriate functional component of a dialog */
+function getDialogView(props: Props, dialog: Dialog) {
   const dialogProps = objectJoinExtend(props, { 
     dialog: dialog
   });
@@ -39,9 +39,12 @@ export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, this.props.dialogSaViewMappings
-      .filter((mapping, i, arr) => mapping.saViewIndex == this.props.saViewIndex)
+      .filter((mapping, i, arr) => mapping.saViewIndex == this.props.saViewIndex
+        && this.props.dialogs.length > mapping.dialogIndex
+        && this.props.dialogs[mapping.dialogIndex]
+        && shouldDialogBeVisible(this.props.dialogs[mapping.dialogIndex]))
       .map((mapping, i, arr) => {
-        return getModalView(this.props, this.props.dialogs[mapping.dialogIndex]);
+        return getDialogView(this.props, this.props.dialogs[mapping.dialogIndex]);
       }));
   }
 }

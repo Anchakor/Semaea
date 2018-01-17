@@ -63,6 +63,7 @@ export interface CreateDeleteGraphDialogAction extends StoreLib.Action { type: A
 export const createCreateDeleteGraphDialogAction = (graphIndex: number, originatingSaViewIndex: number): CreateDeleteGraphDialogAction => 
   ({ type: ActionType.CreateDeleteGraphDialog, graphIndex: graphIndex, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDeleteGraphDialogAction) {
+  // FEATURE maybe reopen cancelled dialogs if they exist
   return doCreateDialog(state, 
     { status: DialogStatus.Opened, 
       type: DialogType.DeleteGraph,
@@ -72,6 +73,8 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
 }
 //-dispatch:
 //CreateDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))
+
+
 
 // Reducer:
 
