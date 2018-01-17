@@ -4,6 +4,7 @@ import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping } from '../UIStore/Dialogs';
+import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 
 /** Factory function for getting the apropriate functional component of a modal */
 function getModalView(props: Props, dialog: Dialog) {
@@ -15,8 +16,12 @@ function getModalView(props: Props, dialog: Dialog) {
       return h('div', {}, [ dialog.type, ' TEST ', dialog.status ]); // TODO
       //return AlertModalView(modalProps as any);
     default:
-    return h('div', {}, [ dialog.type, ' ', dialog.status ]);
+      return DefaultDialogView(dialogProps);
   }
+}
+
+export interface DialogProps<D extends Dialog> extends Props {
+  dialog: D
 }
 
 // View (component):
