@@ -13,14 +13,15 @@ function getModalView(props: Props, modal: Modals.Modal, modalIndex: number) {
   });
   switch (modal.type) {
     case Modals.ModalType.AlertModal:
-      return AlertModalView(modalProps as any);
+      return AlertModalView(modalProps as ModalProp<Modals.AlertModal>);
     default:
       return h('div');
   }
 }
 
-export interface ModalPropsBase extends Props {
+export interface ModalProp<M extends Modals.Modal> extends Props {
   modalIndex: number
+  modal: M
 }
 
 // View (component):
