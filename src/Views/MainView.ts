@@ -2,6 +2,7 @@ import { $, h, UIStoreLib } from '../External';
 import { Model } from '../Model';
 import { store } from '../UIStore/Main';
 import * as SaViewView from '../Views/SaViewView';
+import * as DialogView from '../Views/DialogView';
 import * as GraphView from '../Views/GraphView';
 import * as ModalsView from '../Views/ModalsView';
 import * as TestingView from '../Views/TestingView';
@@ -14,6 +15,7 @@ export class MainView {
       h('div', {}, [
         h(ModalsView.Component),
         h(SaViewView.Component),
+        h(DialogView.Component),
         h(GraphView.Component),
         h(TestingView.Component)
         ])
