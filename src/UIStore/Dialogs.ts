@@ -71,10 +71,23 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
     } as DeleteGraphDialog, 
     action.originatingSaViewIndex);
 }
-//-dispatch:
-//CreateDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))
 
-
+// CancelDialogAction
+export enum ActionType { CancelDialog = 'CancelDialog' }
+export interface CancelDialogAction extends StoreLib.Action { type: ActionType.CancelDialog
+  dialogIndex: number
+}
+export const createCancelDialogAction = (dialogIndex: number): CancelDialogAction => 
+  ({ type: ActionType.CancelDialog, dialogIndex: dialogIndex });
+function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
+  const dialog = state.dialogs_.dialogs[action.dialogIndex];
+  const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
+  const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
+  // TODO hide also the SaView?
+  return objectJoin(state, { 
+    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
+  } as StoreState);
+}
 
 // Reducer:
 
@@ -84,6 +97,8 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
     //  return doInitializeTestGraphAction(state);
     case ActionType.CreateDeleteGraphDialog:
       return doCreateDeleteGraphDialogAction(state, action as CreateDeleteGraphDialogAction);
+    case ActionType.CancelDialog:
+      return doCancelDialogAction(state, action as CancelDialogAction);
     default:
       return state;
   }

@@ -3,13 +3,14 @@ import { SaView, createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible } from '../Dialogs/Dialogs';
-import { DialogSaViewMapping } from '../UIStore/Dialogs';
+import { DialogSaViewMapping, createCancelDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from 'Views/Dialogs/DeleteGraphDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
-function getDialogView(props: Props, dialog: Dialog) {
+function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
   const dialogProps = objectJoinExtend(props, { 
+    dialogIndex: dialogIndex,
     dialog: dialog
   });
   switch (dialog.type) {
@@ -21,7 +22,14 @@ function getDialogView(props: Props, dialog: Dialog) {
 }
 
 export interface DialogProps<D extends Dialog> extends Props {
+  dialogIndex: number
   dialog: D
+}
+
+export function getDialogCancelButton(dialogProps: DialogProps<Dialog>) {
+  return h('button', { 
+    onclick: () => dialogProps.cancelDialog(dialogProps.dialogIndex)
+  }, 'Cancel')
 }
 
 // View (component):
@@ -32,6 +40,7 @@ export interface StateProps extends StoreState {
   dialogSaViewMappings: DialogSaViewMapping[]
 }
 export interface DispatchProps {
+  cancelDialog: (dialogIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -44,7 +53,7 @@ export class View extends UIComponent<Props, {}> {
         && this.props.dialogs[mapping.dialogIndex]
         && shouldDialogBeVisible(this.props.dialogs[mapping.dialogIndex]))
       .map((mapping, i, arr) => {
-        return getDialogView(this.props, this.props.dialogs[mapping.dialogIndex]);
+        return getDialogView(this.props, this.props.dialogs[mapping.dialogIndex], mapping.dialogIndex);
       }));
   }
 }
@@ -61,5 +70,6 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
+      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex))
     };
   });
