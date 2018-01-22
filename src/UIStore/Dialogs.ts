@@ -83,7 +83,6 @@ function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
   const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
-  // TODO hide also the SaView?
   return objectJoin(state, { 
     dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
   } as StoreState);
