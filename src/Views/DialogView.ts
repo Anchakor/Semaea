@@ -2,10 +2,12 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
-import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible } from '../Dialogs/Dialogs';
+import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping, createCancelDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
+import { AddTripleDialogView } from './Dialogs/AddTripleDialogView';
+import { InfernoChildren } from 'inferno/core/VNodes';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -16,6 +18,8 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
   switch (dialog.type) {
     case DialogType.DeleteGraph:
       return DeleteGraphDialogView(dialogProps as DialogProps<DeleteGraphDialog>);
+    case DialogType.AddTriple:
+      return h(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
     default:
       return DefaultDialogView(dialogProps);
   }
