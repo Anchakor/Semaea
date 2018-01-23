@@ -1,7 +1,4 @@
-
-export enum DialogType {
-  DeleteGraph = 'DeleteGraph'
-} // TODO
+import { Triple } from "Graphs/Triple";
 
 export enum Status { 
   Opened = 'Opened', 
@@ -23,7 +20,25 @@ export function shouldDialogBeVisible(dialog: Dialog): boolean {
     && dialog.status != Status.Cancelled
 }
 
+// DIALOGS:
+
+export enum DialogType {
+  DeleteGraph = 'DeleteGraph'
+}
+
 export interface DeleteGraphDialog extends Dialog {
   type: DialogType.DeleteGraph
   graphToDeleteIndex: number
 }
+
+// --
+
+export enum DialogType {
+  AddTriple = 'AddTriple'
+}
+
+export interface AddTripleDialog extends Dialog {
+  type: DialogType.AddTriple
+  triple: Triple
+}
+
