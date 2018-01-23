@@ -1,14 +1,14 @@
-import { Triple } from '../Graphs/Triple';
+import { Triple, TriplePosition } from '../Graphs/Triple';
 
 export class GraphNode {
   protected _triple: Triple
-  protected _position: string
+  protected _position: TriplePosition
   
-  public get position() : string {
+  public get position() : TriplePosition {
     return this._position;
   }
   
-  constructor(triple: Triple, position: string) {
+  constructor(triple: Triple, position: TriplePosition) {
     this._triple = triple;
     this._position = position;
   }

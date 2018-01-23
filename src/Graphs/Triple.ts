@@ -1,5 +1,7 @@
 import { IDeserializeObject } from '../Serialization/IDeserializeObject';
 
+export type TriplePosition = 's' | 'p' | 'o';
+
 export class Triple {
   s: string
   p: string
@@ -19,14 +21,14 @@ export class Triple {
     return (this.s == other.s && this.p == other.p && this.o == other.o);
   }
 
-  getNodeAtPosition(position: string): string {
+  getNodeAtPosition(position: TriplePosition): string {
     if (position == 's') return this.s;
     if (position == 'p') return this.p;
     if (position == 'o') return this.o;
     return '';
   }
 
-  setNodeAtPosition(position: string, value: string) {
+  setNodeAtPosition(position: TriplePosition, value: string) {
     if (position == 's') this.s = value;
     if (position == 'p') this.p = value;
     if (position == 'o') this.o = value;
