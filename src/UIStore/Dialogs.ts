@@ -6,7 +6,7 @@ import { State as SaViewsState } from './SaViews';
 import { State as GraphsState, SaGraphView } from './Graphs';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { SaView } from '../SaViews';
+import { SaView, getClosestVisibleSaViewIndex } from '../SaViews';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -68,9 +68,9 @@ function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
   const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
-  // TODO change current SaView
+  const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
   return objectJoin(state, { 
-    //saViews_: objectJoin(state.saViews_, { currentSaViewIndex } as SaViewsState)
+    saViews_: objectJoin(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex } as SaViewsState),
     dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
   } as StoreState);
 }
