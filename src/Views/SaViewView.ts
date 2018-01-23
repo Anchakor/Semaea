@@ -2,8 +2,7 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin } from '../Common';
-import { shouldDialogBeVisible } from '../Dialogs/Dialogs';
-import { SaView } from '../SaViews';
+import { SaView, shouldSaViewBeVisible } from '../SaViews';
 
 // View (component):
 
@@ -25,22 +24,10 @@ export class View extends UIComponent<Props, {}> {
   }
 
   private renderSaViewSwitchingBar() {
-    const shouldBeVisibleBasedOnLinkedDialogs = (saViewIndex: number) => {
-      // if the SaView is not linked to Dialogs which should not be visible
-      const linkedDialogs = this.props.dialogs_.viewMappings.filter((v, ix, arr) => {
-        return v.saViewIndex == saViewIndex;
-      });
-      if (linkedDialogs.length == 0) return true;
-      return linkedDialogs.filter((v, ix, arr) => {
-        const dialog = this.props.dialogs_.dialogs[v.dialogIndex];
-        if (!dialog) return false;
-        return shouldDialogBeVisible(dialog);
-      }).length > 0;
-    };
     return h('div', {}, [
       h('span', {}, "Views: ")
       ].concat(this.props.saViews.map((saView, saViewIndex) => saViewIndex)
-        .filter((saViewIndex) => shouldBeVisibleBasedOnLinkedDialogs(saViewIndex))
+        .filter((saViewIndex) => shouldSaViewBeVisible(saViewIndex, this.props))
         .map((saViewIndex) => {
           let tagClass: string = '';
           if (this.props.saViewIndex == saViewIndex) {
