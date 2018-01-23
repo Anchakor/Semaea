@@ -8,15 +8,9 @@ SaViews 0..* - 0..1 Dialogs
 SaViews 0..* - 0..1 SaGraphViews
 */
 
-export const BaseSaViewTypeConst = 'BaseSaView';
-export type BaseSaViewType = 'BaseSaView';
-
-export type SaViewType = BaseSaViewType
-
 export interface SaView {
   readonly saGraphViewIndex: number
   readonly originatingView?: number
-  readonly type: SaViewType
 }
 
 export interface State {
@@ -25,8 +19,7 @@ export interface State {
 }
 export let defaultState: State = { 
   saViews: [{ 
-    saGraphViewIndex: 0,
-    type: BaseSaViewTypeConst
+    saGraphViewIndex: 0
   }],
   currentSaViewIndex: 0
 };
