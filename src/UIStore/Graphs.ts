@@ -3,7 +3,7 @@ import { StoreLib, UILib, UIStoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { SaView } from 'UIStore/SaViews';
+import { SaView } from '../SaViews';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.

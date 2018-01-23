@@ -1,17 +1,13 @@
 import { SaGraphView } from './Graphs';
 import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
 import { StoreLib } from '../External';
+import { SaView } from '../SaViews';
 
 /* SaViews
 SaViews are the Semaea Views, the main UI views user can switch between
 SaViews 0..* - 0..1 Dialogs
 SaViews 0..* - 0..1 SaGraphViews
 */
-
-export interface SaView {
-  readonly saGraphViewIndex: number
-  readonly originatingView?: number
-}
 
 export interface State {
   readonly saViews: SaView[]

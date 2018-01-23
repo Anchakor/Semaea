@@ -6,9 +6,10 @@ import { createChangeCurrentNodeAction, SaGraphView, createChangeSaGraphViewGrap
 import { StoreState } from '../UIStore/Main';
 import * as EntityView from '../Views/EntityView';
 import { createShowAlertModalAction } from '../UIStore/Modals';
-import { SaView, createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
+import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { Graph } from '../Graphs/Graph';
-import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from 'UIStore/Dialogs';
+import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs';
+import { SaView } from '../SaViews';
 
 // View (component):
 

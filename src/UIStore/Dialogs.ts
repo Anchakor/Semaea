@@ -2,10 +2,11 @@ import { Dialog, DeleteGraphDialog, Status as DialogStatus, DialogType, AddTripl
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
 import { StoreLib } from '../External';
 import { StoreState } from './Main';
-import { State as SaViewsState, SaView } from './SaViews';
+import { State as SaViewsState } from './SaViews';
 import { State as GraphsState, SaGraphView } from './Graphs';
-import { GraphNode } from 'Graphs/GraphNode';
-import { Triple } from 'Graphs/Triple';
+import { GraphNode } from '../Graphs/GraphNode';
+import { Triple } from '../Graphs/Triple';
+import { SaView } from '../SaViews';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -67,7 +68,9 @@ function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
   const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
+  // TODO change current SaView
   return objectJoin(state, { 
+    //saViews_: objectJoin(state.saViews_, { currentSaViewIndex } as SaViewsState)
     dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
   } as StoreState);
 }

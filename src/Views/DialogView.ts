@@ -1,11 +1,11 @@
 import { StoreState } from '../UIStore/Main';
-import { SaView, createChangeSaViewAction } from '../UIStore/SaViews';
+import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping, createCancelDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
-import { DeleteGraphDialogView } from 'Views/Dialogs/DeleteGraphDialogView';
+import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {

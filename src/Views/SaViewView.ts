@@ -1,8 +1,9 @@
 import { StoreState } from '../UIStore/Main';
-import { SaView, createChangeSaViewAction } from '../UIStore/SaViews';
+import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin } from '../Common';
-import { shouldDialogBeVisible } from 'Dialogs/Dialogs';
+import { shouldDialogBeVisible } from '../Dialogs/Dialogs';
+import { SaView } from '../SaViews';
 
 // View (component):
 
