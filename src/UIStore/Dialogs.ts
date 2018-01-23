@@ -1,9 +1,11 @@
-import { Dialog, DeleteGraphDialog, Status as DialogStatus, DialogType } from '../Dialogs/Dialogs';
+import { Dialog, DeleteGraphDialog, Status as DialogStatus, DialogType, AddTripleDialog } from '../Dialogs/Dialogs';
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
 import { StoreLib } from '../External';
 import { StoreState } from './Main';
 import { State as SaViewsState, SaView } from './SaViews';
 import { State as GraphsState, SaGraphView } from './Graphs';
+import { GraphNode } from 'Graphs/GraphNode';
+import { Triple } from 'Graphs/Triple';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -54,6 +56,22 @@ function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewInde
 
 // Actions:
 
+// CancelDialogAction
+export enum ActionType { CancelDialog = 'CancelDialog' }
+export interface CancelDialogAction extends StoreLib.Action { type: ActionType.CancelDialog
+  dialogIndex: number
+}
+export const createCancelDialogAction = (dialogIndex: number): CancelDialogAction => 
+  ({ type: ActionType.CancelDialog, dialogIndex: dialogIndex });
+function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
+  const dialog = state.dialogs_.dialogs[action.dialogIndex];
+  const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
+  const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
+  return objectJoin(state, { 
+    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
+  } as StoreState);
+}
+
 // CreateDeleteGraphDialogAction
 export enum ActionType { CreateDeleteGraphDialog = 'CreateDeleteGraphDialog' }
 export interface CreateDeleteGraphDialogAction extends StoreLib.Action { type: ActionType.CreateDeleteGraphDialog
@@ -72,20 +90,37 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
     action.originatingSaViewIndex);
 }
 
-// CancelDialogAction
-export enum ActionType { CancelDialog = 'CancelDialog' }
-export interface CancelDialogAction extends StoreLib.Action { type: ActionType.CancelDialog
-  dialogIndex: number
+// CreateAddTripleDialogAction
+export enum ActionType { CreateAddTripleDialog = 'CreateAddTripleDialog' }
+export interface CreateAddTripleDialogAction extends StoreLib.Action { type: ActionType.CreateAddTripleDialog
+  graphNode: GraphNode
+  originatingSaViewIndex: number
 }
-export const createCancelDialogAction = (dialogIndex: number): CancelDialogAction => 
-  ({ type: ActionType.CancelDialog, dialogIndex: dialogIndex });
-function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
-  const dialog = state.dialogs_.dialogs[action.dialogIndex];
-  const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
-  const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
-  return objectJoin(state, { 
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
-  } as StoreState);
+export const createCreateAddTripleDialogAction = (GraphNode: GraphNode, originatingSaViewIndex: number): CreateAddTripleDialogAction => 
+  ({ type: ActionType.CreateAddTripleDialog, graphNode: GraphNode, originatingSaViewIndex: originatingSaViewIndex });
+function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripleDialogAction) {
+  let triple = new Triple('', '', '');
+  const sourceTriple = action.graphNode.getTriple();
+  switch (action.graphNode.position) {
+    case 'p':
+      triple.s = sourceTriple.getNodeAtPosition('s');
+      triple.p = sourceTriple.getNodeAtPosition('p');
+      break;
+    case 'o':
+      triple.s = sourceTriple.getNodeAtPosition('o');
+      break;
+    case 's':
+    default:
+      triple.s = sourceTriple.getNodeAtPosition('s');
+      break;
+  }
+  return doCreateDialog(state, 
+    { status: DialogStatus.Opened, 
+      type: DialogType.AddTriple,
+      triple: triple
+    } as AddTripleDialog, 
+    action.originatingSaViewIndex);
+  return state;
 }
 
 // Reducer:
@@ -94,10 +129,12 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
   switch (action.type) {
     //case InitializeTestGraphActionTypeConst:
     //  return doInitializeTestGraphAction(state);
-    case ActionType.CreateDeleteGraphDialog:
-      return doCreateDeleteGraphDialogAction(state, action as CreateDeleteGraphDialogAction);
     case ActionType.CancelDialog:
       return doCancelDialogAction(state, action as CancelDialogAction);
+    case ActionType.CreateDeleteGraphDialog:
+      return doCreateDeleteGraphDialogAction(state, action as CreateDeleteGraphDialogAction);
+    case ActionType.CreateAddTripleDialog:
+      return doCreateAddTripleDialogAction(state, action as CreateAddTripleDialogAction);
     default:
       return state;
   }

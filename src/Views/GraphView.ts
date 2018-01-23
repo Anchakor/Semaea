@@ -8,7 +8,7 @@ import * as EntityView from '../Views/EntityView';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { SaView, createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { Graph } from '../Graphs/Graph';
-import { createCreateDeleteGraphDialogAction } from 'UIStore/Dialogs';
+import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from 'UIStore/Dialogs';
 
 // View (component):
 
@@ -24,6 +24,7 @@ export interface DispatchProps {
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
   showAlertModal: (originatingGraphIndex: number, message: string) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
+  createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -105,6 +106,7 @@ export const Component = connect(
       changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
       changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
       showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
-      createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex))
+      createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex)),
+      createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex))
     };
   });
