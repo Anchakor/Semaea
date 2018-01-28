@@ -35,7 +35,10 @@ export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog
         onInput: (ev: Event) => this.setState({ o: (ev.target as HTMLInputElement).value } as State)
       }),
       h('button', {
-        onclick: () => alert('A triple was submitted: ' + new Triple(this.state.s, this.state.p, this.state.o).toString())
+        onclick: () => {
+          this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+          this.props.finishDialog(this.props.dialogIndex);
+        }
       }, 'Add'),
       ' ', getDialogCancelButton(this.props) ]);
   }

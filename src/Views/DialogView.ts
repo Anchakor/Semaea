@@ -3,18 +3,21 @@ import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog } from '../Dialogs/Dialogs';
-import { DialogSaViewMapping, createCancelDialogAction } from '../UIStore/Dialogs';
+import { DialogSaViewMapping, createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 import { AddTripleDialogView } from './Dialogs/AddTripleDialogView';
-import { InfernoChildren } from 'inferno/core/VNodes';
+import { createAddTripleAction } from '../UIStore/Graphs';
+import { Triple } from '../Graphs/Triple';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
-  const dialogProps = objectJoinExtend(props, { 
+  const dialogProps: DialogProps<Dialog> = objectJoinExtend(props, { 
     dialogIndex: dialogIndex,
-    dialog: dialog
-  });
+    dialog: dialog,
+    saGraphViewIndex: props.saViews_.saViews[props.saViewIndex].saGraphViewIndex, // TODO cleanup
+    graphIndex: props.graphs_.saGraphViews[props.saViews_.saViews[props.saViewIndex].saGraphViewIndex].graphIndex
+  } as DialogProps<Dialog>);
   switch (dialog.type) {
     case DialogType.DeleteGraph:
       return DeleteGraphDialogView(dialogProps as DialogProps<DeleteGraphDialog>);
@@ -28,6 +31,8 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
 export interface DialogProps<D extends Dialog> extends Props {
   dialogIndex: number
   dialog: D
+  saGraphViewIndex: number
+  graphIndex: number
 }
 
 export function getDialogCancelButton(dialogProps: DialogProps<Dialog>) {
@@ -45,6 +50,8 @@ export interface StateProps extends StoreState {
 }
 export interface DispatchProps {
   cancelDialog: (dialogIndex: number) => void
+  addTriple: (graphIndex: number, triple: Triple) => void
+  finishDialog: (dialogIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -74,6 +81,8 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
-      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex))
+      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
+      finishDialog: (dialogIndex: number) => dispatch(createFinishDialogAction(dialogIndex)),
+      addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple))
     };
   });
