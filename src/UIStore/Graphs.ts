@@ -105,6 +105,21 @@ function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction
   });
 }
 
+// AddTripleAction
+export enum ActionType { AddTriple = 'AddTriple' }
+export interface AddTripleAction extends StoreLib.Action { type: ActionType.AddTriple
+  graphIndex: number
+  triple: Triple
+}
+export const createAddTripleAction = (graphIndex: number, triple: Triple): AddTripleAction => 
+  ({ type: ActionType.AddTriple, graphIndex: graphIndex, triple: triple });
+export function doAddTripleAction(state: State, action: AddTripleAction) {
+  const graph = state.graphs[action.graphIndex];
+  const newGraph = graph.clone();
+  newGraph.addTriple(action.triple);
+  const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, newGraph);
+  return objectJoin(state, { graphs: newGraphs } as State);
+}
 
 // Reducer:
 
@@ -116,6 +131,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return doChangeSaGraphViewGraphAction(state, action as ChangeSaGraphViewGraphAction);
     case ActionType.ChangeCurrentNode:
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
+    case ActionType.AddTriple:
+      return doAddTripleAction(state, action as AddTripleAction);
     default:
       return state;
   }
