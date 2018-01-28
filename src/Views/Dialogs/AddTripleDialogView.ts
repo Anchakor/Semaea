@@ -16,7 +16,7 @@ export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog
   constructor(props: DialogProps<AddTripleDialog>) {
     super(props);
     const t = props.dialog.triple;
-    this.state = { s: t.s, p: t.p, o: t.o } as State;
+    this.state = { s: t.s, p: t.p, o: t.o };
   }
 
   render() {

@@ -38,13 +38,13 @@ export function listDirectorySimple(dirPath: string) {
 }
 
 export function listDirectory(dirPath: string) {
-  return listDirectoryCustom(dirPath, (entry) => {
+  return listDirectoryCustom(dirPath, (entry): IDirectoryEntry => {
     const entryPath = path.join(dirPath, entry);
     const stats = fs.statSync(entryPath);
     return { 
       kind: stats.isDirectory() ? 'directory' : 'file', 
-      name: entry 
-    } as IDirectoryEntry
+      name: entry
+    };
   });
 }
 

@@ -45,7 +45,9 @@ function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewInde
   const dialogs = arrayImmutableAppend(state.dialogs_.dialogs, dialog);
   const newDialogIndex = dialogs.length - 1;
 
-  const newDialogSaViewMapping = { saViewIndex: newSaViewIndex, dialogIndex: newDialogIndex } as DialogSaViewMapping;
+  const newDialogSaViewMapping: DialogSaViewMapping = { 
+    saViewIndex: newSaViewIndex, dialogIndex: newDialogIndex 
+  };
   const viewMappings = arrayImmutableAppend(state.dialogs_.viewMappings, newDialogSaViewMapping);
 
   return objectJoin(state, { 
@@ -103,11 +105,13 @@ export const createCreateDeleteGraphDialogAction = (graphIndex: number, originat
   ({ type: ActionType.CreateDeleteGraphDialog, graphIndex: graphIndex, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDeleteGraphDialogAction) {
   // FEATURE maybe reopen cancelled dialogs if they exist
+  const dialog: DeleteGraphDialog = { 
+    status: DialogStatus.Opened, 
+    type: DialogType.DeleteGraph,
+    graphToDeleteIndex: action.graphIndex
+  };
   return doCreateDialog(state, 
-    { status: DialogStatus.Opened, 
-      type: DialogType.DeleteGraph,
-      graphToDeleteIndex: action.graphIndex
-    } as DeleteGraphDialog, 
+    dialog, 
     action.originatingSaViewIndex);
 }
 
@@ -135,11 +139,13 @@ function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripl
       triple.s = sourceTriple.getNodeAtPosition('s');
       break;
   }
+  const dialog: AddTripleDialog = { 
+    status: DialogStatus.Opened, 
+    type: DialogType.AddTriple,
+    triple: triple
+  }
   return doCreateDialog(state, 
-    { status: DialogStatus.Opened, 
-      type: DialogType.AddTriple,
-      triple: triple
-    } as AddTripleDialog, 
+    dialog, 
     action.originatingSaViewIndex);
   return state;
 }

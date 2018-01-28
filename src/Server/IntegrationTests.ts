@@ -24,8 +24,8 @@ export function run() {
     .then((response) => {
       const expected = new Response.ListDirectoryResponse();
       { expected.listing = new Array<IDirectoryEntry>();
-        expected.listing.push({ 'kind': 'directory', 'name': 'tdir' } as IDirectoryEntry);
-        expected.listing.push({ 'kind': 'file', 'name': 'tfile.txt' } as IDirectoryEntry); }
+        expected.listing.push({ kind: 'directory', name: 'tdir' } as IDirectoryEntry);
+        expected.listing.push({ kind: 'file', name: 'tfile.txt' } as IDirectoryEntry); }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ListDirectoryResponse.');
     });
 
