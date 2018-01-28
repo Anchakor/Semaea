@@ -20,3 +20,6 @@ export const objectJoinExtend = <A,B>(a: A, b: B): A & B => Object.assign({}, a,
 
 /** Create a new object as a clone of `a` */
 export const objectClone = <A>(a: A): A => Object.assign({}, a);
+
+/** Create a new array as a clone of `a` */
+export const arrayClone = <A>(a: Array<A>): Array<A> => a.slice(0);
