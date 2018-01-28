@@ -75,6 +75,24 @@ function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   } as StoreState);
 }
 
+// FinishDialogAction
+export enum ActionType { FinishDialog = 'FinishDialog' }
+export interface FinishDialogAction extends StoreLib.Action { type: ActionType.FinishDialog
+  dialogIndex: number
+}
+export const createFinishDialogAction = (dialogIndex: number): FinishDialogAction => 
+  ({ type: ActionType.FinishDialog, dialogIndex: dialogIndex });
+function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
+  const dialog = state.dialogs_.dialogs[action.dialogIndex];
+  const newDialog = objectJoin(dialog, { status: DialogStatus.Finished } as Dialog)
+  const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
+  const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
+  return objectJoin(state, { 
+    saViews_: objectJoin(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex } as SaViewsState),
+    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
+  } as StoreState);
+}
+
 // CreateDeleteGraphDialogAction
 export enum ActionType { CreateDeleteGraphDialog = 'CreateDeleteGraphDialog' }
 export interface CreateDeleteGraphDialogAction extends StoreLib.Action { type: ActionType.CreateDeleteGraphDialog
@@ -134,6 +152,8 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
     //  return doInitializeTestGraphAction(state);
     case ActionType.CancelDialog:
       return doCancelDialogAction(state, action as CancelDialogAction);
+    case ActionType.FinishDialog:
+      return doFinishDialogAction(state, action as FinishDialogAction);
     case ActionType.CreateDeleteGraphDialog:
       return doCreateDeleteGraphDialogAction(state, action as CreateDeleteGraphDialogAction);
     case ActionType.CreateAddTripleDialog:
