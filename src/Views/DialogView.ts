@@ -12,11 +12,13 @@ import { Triple } from '../Graphs/Triple';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
+  const saGraphViewIndex = props.saViews_.saViews[props.saViewIndex].saGraphViewIndex;
+  const graphIndex = props.graphs_.saGraphViews[saGraphViewIndex].graphIndex;
   const dialogProps: DialogProps<Dialog> = objectJoinExtend(props, { 
     dialogIndex: dialogIndex,
     dialog: dialog,
-    saGraphViewIndex: props.saViews_.saViews[props.saViewIndex].saGraphViewIndex, // TODO cleanup
-    graphIndex: props.graphs_.saGraphViews[props.saViews_.saViews[props.saViewIndex].saGraphViewIndex].graphIndex
+    saGraphViewIndex: saGraphViewIndex,
+    graphIndex: graphIndex
   } as DialogProps<Dialog>);
   switch (dialog.type) {
     case DialogType.DeleteGraph:
