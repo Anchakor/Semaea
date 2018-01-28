@@ -2,6 +2,7 @@ import { IDeserializeObject } from '../Serialization/IDeserializeObject';
 import { deserialize } from '../Serialization/Serializer';
 import { Triple } from '../Graphs/Triple';
 import { GraphNode } from '../Graphs/GraphNode';
+import { arrayClone } from 'Common';
 
 export class Graph {
   protected _graph: Array<Triple>
@@ -16,6 +17,12 @@ export class Graph {
       x.addTriple(Triple.deserializeObject(t));
     });
     return x;
+  }
+
+  clone(): Graph {
+    let clone = new Graph();
+    clone._graph = arrayClone(this._graph);
+    return clone;
   }
   
   count(): number {
