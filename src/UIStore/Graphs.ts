@@ -38,6 +38,7 @@ defaultState = doInitializeTestGraphAction(defaultState);
 
 // Actions:
 
+// InitializeTestGraphAction
 export enum ActionType { InitializeTestGraph = 'InitializeTestGraph' }
 export interface InitializeTestGraphAction extends StoreLib.Action { type: ActionType.InitializeTestGraph
 }
@@ -60,6 +61,7 @@ function doInitializeTestGraphAction(state: State): State {
   return objectJoin(state, { graphs: newGraphs, saGraphViews: newViews });
 }
 
+// ChangeSaGraphViewGraphAction
 export enum ActionType { ChangeSaGraphViewGraph = 'ChangeSaGraphViewGraph' }
 export interface ChangeSaGraphViewGraphAction extends StoreLib.Action { type: ActionType.ChangeSaGraphViewGraph
   saGraphViewIndex: number
@@ -74,6 +76,7 @@ function doChangeSaGraphViewGraphAction(state: State, action: ChangeSaGraphViewG
     )});
 }
 
+// ChangeCurrentNodeAction
 export enum ActionType { ChangeCurrentNode = 'ChangeCurrentNode' }
 export interface ChangeCurrentNodeAction extends StoreLib.Action { type: ActionType.ChangeCurrentNode
   saGraphViewIndex: number

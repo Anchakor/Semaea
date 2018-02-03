@@ -35,6 +35,7 @@ function doChangeSaViewAction(state: State, action: ChangeSaViewAction) {
 //-dispatch:
 //ChangeSaView: (saViewIndex: number) => dispatch(createChangeSaViewAction(saViewIndex))
 
+// ChangeSaViewSaGraphViewAction
 export enum ActionType { ChangeSaViewSaGraphView = 'ChangeSaViewSaGraphView' }
 export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: ActionType.ChangeSaViewSaGraphView
   saViewIndex: number
