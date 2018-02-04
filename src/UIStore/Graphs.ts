@@ -124,6 +124,20 @@ export function doAddTripleAction(state: State, action: AddTripleAction) {
   return objectJoin(state, { graphs: newGraphs } as State);
 }
 
+// DeleteGraphAction
+export enum ActionType { DeleteGraph = 'DeleteGraph' }
+export interface DeleteGraphAction extends StoreLib.Action { type: ActionType.DeleteGraph
+  graphIndex: number
+}
+export const createDeleteGraphAction = (graphIndex: number): DeleteGraphAction => 
+  ({ type: ActionType.DeleteGraph, graphIndex: graphIndex });
+function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
+  // TODO implementation
+  const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, undefined);
+  return objectJoin(state, { graphs: newGraphs } as State);
+  return state;
+}
+
 // Reducer:
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
@@ -136,6 +150,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     case ActionType.AddTriple:
       return doAddTripleAction(state, action as AddTripleAction);
+    case ActionType.DeleteGraph:
+      return doDeleteGraphAction(state, action as DeleteGraphAction);
     default:
       return state;
   }

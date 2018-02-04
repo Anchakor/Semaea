@@ -7,7 +7,7 @@ import { DialogSaViewMapping, createCancelDialogAction, createFinishDialogAction
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 import { AddTripleDialogView } from './Dialogs/AddTripleDialogView';
-import { createAddTripleAction } from '../UIStore/Graphs';
+import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
 
 /** Factory function for getting the apropriate functional component of a dialog */
@@ -52,8 +52,9 @@ export interface StateProps extends StoreState {
 }
 export interface DispatchProps {
   cancelDialog: (dialogIndex: number) => void
-  addTriple: (graphIndex: number, triple: Triple) => void
   finishDialog: (dialogIndex: number) => void
+  addTriple: (graphIndex: number, triple: Triple) => void
+  deleteGraph: (graphIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -85,6 +86,7 @@ export const Component = connect(
     return {
       cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
       finishDialog: (dialogIndex: number) => dispatch(createFinishDialogAction(dialogIndex)),
-      addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple))
+      addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
+      deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
     };
   });
