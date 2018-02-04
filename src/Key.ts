@@ -1,4 +1,5 @@
 /** Check for keys pressed by like: Key.isUpArrow(e) */
+export function isSpacebar(e: KeyboardEvent) { return (e.keyCode == 32); }
 export function isBackspace(e: KeyboardEvent) { return (e.keyCode == 8); }
 export function isTab(e: KeyboardEvent) { return (e.keyCode == 9); }
 export function isEnter(e: KeyboardEvent) { return (e.keyCode == 13); }
