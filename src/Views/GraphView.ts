@@ -58,15 +58,18 @@ export class View extends UIComponent<Props, {}> {
   private renderGraphSwitchingBar() {
     return h('div', {}, [
       h('span', {}, "Graphs: ")
-    ].concat(this.props.graphs_.graphs.map((g, i) => {
+    ].concat(this.props.graphs_.graphs.map((graph, graphIndex) => graphIndex)
+      // Don't show deleted graphs (undefined)
+      .filter((graphIndex) => this.props.graphs_.graphs[graphIndex])
+      .map((graphIndex) => {
       let tagClass: string = '';
-      if (this.props.saGraphView.graphIndex == i) {
+      if (this.props.saGraphView.graphIndex == graphIndex) {
         tagClass = 'element-selected'
       }
       return h('button', { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentGraph(this.props.saView.saGraphViewIndex, i)
-      }, i.toString())
+        onclick: () => this.props.changeCurrentGraph(this.props.saView.saGraphViewIndex, graphIndex)
+      }, graphIndex.toString())
     })));
   }
 
