@@ -21,19 +21,19 @@ export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog
 
   render() {
     return h('div', {}, [ 
-      'Adding a triple; ', 
+      'Adding a triple: ', 
       h('input', { type: 'text', 
         value: this.state.s,
         onInput: (ev: Event) => this.setState({ s: (ev.target as HTMLInputElement).value } as State)
-      }),
+      }), ' ', 
       h('input', { type: 'text', 
         value: this.state.p,
         onInput: (ev: Event) => this.setState({ p: (ev.target as HTMLInputElement).value } as State)
-      }),
+      }), ' ', 
       h('input', { type: 'text', 
         value: this.state.o,
         onInput: (ev: Event) => this.setState({ o: (ev.target as HTMLInputElement).value } as State)
-      }),
+      }), ' ', 
       h('button', {
         onclick: () => {
           this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
