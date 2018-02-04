@@ -103,7 +103,7 @@ function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction
     previousNodeNonPredicate: previousNodeNonPredicate,
     previousNodePredicate: previousNodePredicate
    });
-  return objectJoin(state, { 
+  return objectJoin<State>(state, { 
     saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, newSaGraphView)
   });
 }
@@ -122,7 +122,7 @@ export function doAddTripleAction(state: State, action: AddTripleAction) {
   const newGraph = graph.clone();
   newGraph.addTriple(action.triple);
   const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, newGraph);
-  return objectJoin(state, { graphs: newGraphs } as State);
+  return objectJoin<State>(state, { graphs: newGraphs });
 }
 
 // DeleteGraphAction

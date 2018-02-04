@@ -50,7 +50,7 @@ export const Component = connect(
   (state: StoreState) => {
     const saViewIndex = state.saViews_.currentSaViewIndex;
     const saViews = state.saViews_.saViews;
-    return objectJoin(state as StateProps, { saViewIndex: saViewIndex, saViews: saViews });
+    return objectJoin<StateProps>(state as StateProps, { saViewIndex: saViewIndex, saViews: saViews });
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {

@@ -80,7 +80,7 @@ export const Component = connect(
     const saViewIndex = state.saViews_.currentSaViewIndex;
     const dialogs = state.dialogs_.dialogs;
     const dialogSaViewMappings = state.dialogs_.viewMappings;
-    return objectJoin(state as StateProps, { saViewIndex: saViewIndex, dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
+    return objectJoin<StateProps>(state as StateProps, { saViewIndex: saViewIndex, dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {

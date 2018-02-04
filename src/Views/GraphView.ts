@@ -102,7 +102,7 @@ export const Component = connect(
     const saView = state.saViews_.saViews[saViewIndex];
     const saGraphView = state.graphs_.saGraphViews[saView.saGraphViewIndex];
     const graph = state.graphs_.graphs[saGraphView.graphIndex];
-    return objectJoin(state as StateProps, { saViewIndex: saViewIndex, saView: saView, saGraphView: saGraphView, graph: graph });
+    return objectJoin<StateProps>(state as StateProps, { saViewIndex: saViewIndex, saView: saView, saGraphView: saGraphView, graph: graph });
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {

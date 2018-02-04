@@ -37,7 +37,7 @@ function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewInde
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
-  const newSaView = objectJoin(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: originatingSaViewIndex } as SaView)
+  const newSaView = objectJoin<SaView>(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: originatingSaViewIndex })
   const saViews = arrayImmutableAppend(state.saViews_.saViews, newSaView);
   const newSaViewIndex = saViews.length - 1;
 
@@ -50,11 +50,11 @@ function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewInde
   };
   const viewMappings = arrayImmutableAppend(state.dialogs_.viewMappings, newDialogSaViewMapping);
 
-  return objectJoin(state, { 
-    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews } as GraphsState),
-    saViews_: objectJoin(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex } as SaViewsState),
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings } as State)
-  } as StoreState);
+  return objectJoin<StoreState>(state, { 
+    graphs_: objectJoin<GraphsState>(state.graphs_, { saGraphViews: saGraphViews }),
+    saViews_: objectJoin<SaViewsState>(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex }),
+    dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings })
+  });
 }
 
 // Actions:
@@ -68,13 +68,13 @@ export const createCancelDialogAction = (dialogIndex: number): CancelDialogActio
   ({ type: ActionType.CancelDialog, dialogIndex: dialogIndex });
 function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
-  const newDialog = objectJoin(dialog, { status: DialogStatus.Cancelled } as Dialog)
+  const newDialog = objectJoin<Dialog>(dialog, { status: DialogStatus.Cancelled })
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
   const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
-  return objectJoin(state, { 
-    saViews_: objectJoin(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex } as SaViewsState),
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
-  } as StoreState);
+  return objectJoin<StoreState>(state, { 
+    saViews_: objectJoin<SaViewsState>(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex }),
+    dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs })
+  });
 }
 
 // FinishDialogAction
@@ -86,13 +86,13 @@ export const createFinishDialogAction = (dialogIndex: number): FinishDialogActio
   ({ type: ActionType.FinishDialog, dialogIndex: dialogIndex });
 function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
-  const newDialog = objectJoin(dialog, { status: DialogStatus.Finished } as Dialog)
+  const newDialog = objectJoin<Dialog>(dialog, { status: DialogStatus.Finished })
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
   const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
-  return objectJoin(state, { 
-    saViews_: objectJoin(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex } as SaViewsState),
-    dialogs_: objectJoin(state.dialogs_, { dialogs: dialogs } as State)
-  } as StoreState);
+  return objectJoin<StoreState>(state, { 
+    saViews_: objectJoin<SaViewsState>(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex }),
+    dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs })
+  });
 }
 
 // CreateDeleteGraphDialogAction

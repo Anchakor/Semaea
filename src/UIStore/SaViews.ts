@@ -30,7 +30,7 @@ export interface ChangeSaViewAction extends StoreLib.Action { type: ActionType.C
 export const createChangeSaViewAction = (saViewIndex: number): ChangeSaViewAction => 
   ({ type: ActionType.ChangeSaView, saViewIndex: saViewIndex });
 function doChangeSaViewAction(state: State, action: ChangeSaViewAction) {
-  return objectJoin(state, { currentSaViewIndex: action.saViewIndex } as State);
+  return objectJoin<State>(state, { currentSaViewIndex: action.saViewIndex });
 }
 //-dispatch:
 //ChangeSaView: (saViewIndex: number) => dispatch(createChangeSaViewAction(saViewIndex))
