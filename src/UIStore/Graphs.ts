@@ -132,10 +132,8 @@ export interface DeleteGraphAction extends StoreLib.Action { type: ActionType.De
 export const createDeleteGraphAction = (graphIndex: number): DeleteGraphAction => 
   ({ type: ActionType.DeleteGraph, graphIndex: graphIndex });
 function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
-  // TODO implementation
   const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, undefined);
   return objectJoin(state, { graphs: newGraphs } as State);
-  return state;
 }
 
 // Reducer:

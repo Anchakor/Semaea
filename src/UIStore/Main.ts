@@ -1,4 +1,4 @@
-import { StoreLib } from '../External';
+import { StoreLib, $ } from '../External';
 import * as TestingView from '../Views/TestingView';
 import * as Graphs from './Graphs';
 import * as Modals from './Modals';
@@ -23,6 +23,8 @@ const defaultState: StoreState = {
 // Reducer:
 
 const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState, action: StoreLib.Action) => {
+  setTimeout(() => { $('#graph').textContent = JSON.stringify(state); }, 1); // Debug
+
   var newState = Dialogs.reducer(state, action);
   if (newState != state) { return newState; } // TODO unit test this works
 

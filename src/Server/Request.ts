@@ -9,18 +9,18 @@ export type FilesystemRequest = ListDirectoryRequest | ReadFileRequest | WriteFi
 
 export class ListDirectoryRequest {
   kind: 'ListDirectoryRequest' = 'ListDirectoryRequest'
-  dirPath: string
+  dirPath: string = ''
 }
 
 export class ReadFileRequest {
   kind: 'ReadFileRequest' = 'ReadFileRequest'
-  filePath: string
+  filePath: string = ''
 }
 
 export class WriteFileRequest {
   kind: 'WriteFileRequest' = 'WriteFileRequest'
-  filePath: string
-  content: string
+  filePath: string = ''
+  content: string = ''
 }
 
 

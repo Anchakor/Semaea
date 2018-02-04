@@ -18,7 +18,7 @@ export type ResponseKind =  'ErrorResponse' | FilesystemResponseKind
 
 export class ErrorResponse {
   kind: 'ErrorResponse' = 'ErrorResponse'
-  message: string
+  message: string = ''
 }
 
 export type FilesystemResponse =      ListDirectoryResponse |   ReadFileResponse |    WriteFileResponse
@@ -26,12 +26,12 @@ export type FilesystemResponseKind =  'ListDirectoryResponse' | 'ReadFileRespons
 
 export class ListDirectoryResponse {
   kind: 'ListDirectoryResponse' = 'ListDirectoryResponse'
-  listing: IDirectoryEntry[]
+  listing: IDirectoryEntry[] = []
 }
 
 export class ReadFileResponse {
   kind: 'ReadFileResponse' = 'ReadFileResponse'
-  content: string
+  content: string = ''
 }
 
 export class WriteFileResponse {
