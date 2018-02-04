@@ -28,7 +28,10 @@ export function EntityView(props: Props) {
 
 function keydown(props: Props) {
   return (event: KeyboardEvent) => {
-    if (Key.isM(event)) {
+    if (Key.isSpacebar(event)) {
+      props.createDialogMenuDialog(props.saViewIndex);
+      event.preventDefault();
+    } else if (Key.isM(event)) {
       props.createDeleteGraphDialog(props.saGraphView.graphIndex, props.saViewIndex);
     } else if (Key.isN(event)) {
       props.createAddTripleDialog(props.graphNode, props.saViewIndex);

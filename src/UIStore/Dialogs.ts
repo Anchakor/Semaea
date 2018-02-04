@@ -6,6 +6,7 @@ import { State as SaViewsState } from './SaViews';
 import { State as GraphsState } from './Graphs';
 import { SaView, getClosestVisibleSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
+import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -97,7 +98,9 @@ function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
 // Reducer:
 
 export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
-  const newState = BasicGraphDialogs.reducer(state, action);
+  let newState = BasicGraphDialogs.reducer(state, action);
+  if (newState != state) { return newState; } // TODO unit test this works
+  newState = DialogMenuDialog.reducer(state, action);
   if (newState != state) { return newState; } // TODO unit test this works
 
   switch (action.type) {    

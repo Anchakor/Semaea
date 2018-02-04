@@ -38,3 +38,10 @@ export interface AddTripleDialog extends Dialog {
   triple: Triple
 }
 
+export enum DialogType {
+  DialogMenu = 'DialogMenu'
+}
+export interface DialogMenuDialog extends Dialog {
+  type: DialogType.DialogMenu
+  selectedDialog: DialogType | undefined
+}
