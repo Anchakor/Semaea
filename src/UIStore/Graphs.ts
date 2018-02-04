@@ -21,7 +21,7 @@ export interface SaGraphView {
 }
 
 export interface State {
-  readonly graphs: Graph[]
+  readonly graphs: (Graph | undefined)[]
   readonly saGraphViews: SaGraphView[]
 }
 export let defaultState: State = { 
@@ -118,6 +118,7 @@ export const createAddTripleAction = (graphIndex: number, triple: Triple): AddTr
   ({ type: ActionType.AddTriple, graphIndex: graphIndex, triple: triple });
 export function doAddTripleAction(state: State, action: AddTripleAction) {
   const graph = state.graphs[action.graphIndex];
+  if (!graph) return state;
   const newGraph = graph.clone();
   newGraph.addTriple(action.triple);
   const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, newGraph);
@@ -133,7 +134,7 @@ export const createDeleteGraphAction = (graphIndex: number): DeleteGraphAction =
   ({ type: ActionType.DeleteGraph, graphIndex: graphIndex });
 function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
   const newGraphs = arrayImmutableSet(state.graphs, action.graphIndex, undefined);
-  return objectJoin(state, { graphs: newGraphs } as State);
+  return objectJoin<State>(state, { graphs: newGraphs });
 }
 
 // Reducer:
