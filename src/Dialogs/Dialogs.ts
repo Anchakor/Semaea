@@ -25,18 +25,14 @@ export function shouldDialogBeVisible(dialog: Dialog): boolean {
 export enum DialogType {
   DeleteGraph = 'DeleteGraph'
 }
-
 export interface DeleteGraphDialog extends Dialog {
   type: DialogType.DeleteGraph
   graphToDeleteIndex: number
 }
 
-// --
-
 export enum DialogType {
   AddTriple = 'AddTriple'
 }
-
 export interface AddTripleDialog extends Dialog {
   type: DialogType.AddTriple
   triple: Triple

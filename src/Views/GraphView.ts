@@ -8,7 +8,7 @@ import * as EntityView from '../Views/EntityView';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { Graph } from '../Graphs/Graph';
-import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs';
+import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 import { SaView } from '../SaViews';
 
 // View (component):
