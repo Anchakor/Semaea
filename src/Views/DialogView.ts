@@ -2,13 +2,14 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
-import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog } from '../Dialogs/Dialogs';
+import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog } from '../Dialogs/Dialogs';
 import { DialogSaViewMapping, createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 import { AddTripleDialogView } from './Dialogs/AddTripleDialogView';
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
+import { DialogMenuDialogView } from 'Views/Dialogs/DialogMenuDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -21,6 +22,8 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
     graphIndex: graphIndex
   } as DialogProps<Dialog>);
   switch (dialog.type) {
+    case DialogType.DialogMenu:
+      return DialogMenuDialogView(dialogProps as DialogProps<DialogMenuDialog>);
     case DialogType.DeleteGraph:
       return DeleteGraphDialogView(dialogProps as DialogProps<DeleteGraphDialog>);
     case DialogType.AddTriple:
@@ -37,9 +40,12 @@ export interface DialogProps<D extends Dialog> extends Props {
   graphIndex: number
 }
 
-export function getDialogCancelButton(dialogProps: DialogProps<Dialog>) {
+export function getDialogCancelButton(dialogProps: DialogProps<Dialog>, additionalAction?: () => void) {
   return h('button', { 
-    onclick: () => dialogProps.cancelDialog(dialogProps.dialogIndex)
+    onclick: () => { 
+      if (additionalAction != undefined) additionalAction();
+      dialogProps.cancelDialog(dialogProps.dialogIndex);
+    }
   }, 'Cancel')
 }
 

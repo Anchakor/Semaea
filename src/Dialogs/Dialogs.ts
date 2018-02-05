@@ -44,4 +44,5 @@ export enum DialogType {
 export interface DialogMenuDialog extends Dialog {
   type: DialogType.DialogMenu
   selectedDialog: DialogType | undefined
+  createdGraphIndex: number
 }

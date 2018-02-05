@@ -16,12 +16,6 @@ export interface CreateDialogMenuDialogAction extends StoreLib.Action { type: Ac
 export const createCreateDialogMenuDialogAction = (originatingSaViewIndex: number): CreateDialogMenuDialogAction => 
   ({ type: ActionType.CreateDialogMenuDialog, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogMenuDialogAction) {
-  const dialog: DialogMenuDialog = { 
-    status: DialogStatus.Opened, 
-    type: DialogType.DialogMenu,
-    selectedDialog: undefined
-  };
-  
   const newGraph = new Graph();
   newGraph.addTriple(new Triple("Add triple", "a", "DialogMenuOption"));
   newGraph.addTriple(new Triple("Delete graph", "a", "DialogMenuOption"));
@@ -32,6 +26,13 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
   });
   const newGraphIndex = newGraphs.length - 1;
 
+  const dialog: DialogMenuDialog = { 
+    status: DialogStatus.Opened, 
+    type: DialogType.DialogMenu,
+    selectedDialog: undefined,
+    createdGraphIndex: newGraphIndex
+  };
+  
   return doCreateDialog(newState, 
     dialog, 
     action.originatingSaViewIndex,
