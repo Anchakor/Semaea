@@ -4,6 +4,9 @@ import { DialogMenuDialog, Status as DialogStatus, DialogType } from '../../Dial
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
+import { Graph } from 'Graphs/Graph';
+import { objectJoin, arrayImmutableAppend } from 'Common';
+import { State as GraphsState } from '../Graphs';
 
 // CreateDialogMenuDialogAction
 export enum ActionType { CreateDialogMenuDialog = 'CreateDialogMenuDialog' }
@@ -18,9 +21,21 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
     type: DialogType.DialogMenu,
     selectedDialog: undefined
   };
-  return doCreateDialog(state, 
+  
+  const newGraph = new Graph();
+  newGraph.addTriple(new Triple("Add triple", "a", "DialogMenuOption"));
+  newGraph.addTriple(new Triple("Delete graph", "a", "DialogMenuOption"));
+
+  const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
+  const newState = objectJoin<StoreState>(state, { 
+    graphs_: objectJoin<GraphsState>(state.graphs_, { graphs: newGraphs })
+  });
+  const newGraphIndex = newGraphs.length - 1;
+
+  return doCreateDialog(newState, 
     dialog, 
-    action.originatingSaViewIndex);
+    action.originatingSaViewIndex,
+    newGraphIndex);
 }
 
 // Reducer:
