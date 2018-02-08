@@ -1,29 +1,55 @@
-import { h } from '../External';
+import { h, UIComponent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
+import { objectJoinExtend } from 'Common';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
   saGraphView: SaGraphView
 }
 
-export function EntityView(props: Props) {
-  let tagClass: string = '';
-  if (props.saGraphView.currentNode && props.saGraphView.currentNode.getValue() == props.graphNode.getValue()) {
-    tagClass = 'element-otherOccurence';
+function isCurrentGraphNode(props: Props): boolean {
+  if (!props.saGraphView.currentNode) return false;
+  return props.saGraphView.currentNode.toString() == props.graphNode.toString();
+}
+
+function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
+  if (!props.saGraphView.currentNode) return false;
+  return props.saGraphView.currentNode.getValue() == props.graphNode.getValue();
+}
+
+export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
+  constructor(props?: Props, context?: any) { super(props, context); }
+  render() {
+    let innerProps = objectJoinExtend(this.props, {
+      onComponentDidMount: (e: HTMLElement) => { 
+        this.setState({ elem: e }); 
+      },
+      onComponentDidUpdate: (lastProps: Props, nextProps: Props) => { 
+        if (isCurrentGraphNode(nextProps) && this.state) 
+          this.state.elem.focus();
+      }
+    });
+    return h(EntityViewInner, innerProps);
   }
-  if (props.saGraphView.currentNode && props.saGraphView.currentNode.toString() == props.graphNode.toString()) {
-    tagClass = 'element-selected';
-  }
-  return h('span', { 
+}
+function EntityViewInner(props: Props) {
+  let spanProps = { 
     tabIndex: 0, 
-    class: tagClass, 
+    class: '',
     onkeydown: keydown(props),
     onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
     onfocus: () => props.changeCurrentNode(props.saView.saGraphViewIndex, props.graphNode)
-  }, props.graphNode.getValue());
+  };
+  if (isCurrentGraphNode(props)) {
+    spanProps.class = 'element-selected';
+  }
+  else if (isSomeOccurenceOfCurrentGraphNode(props)) {
+    spanProps.class = 'element-otherOccurence';
+  }
+  return h('span', spanProps, props.graphNode.getValue());
 }
 
 function keydown(props: Props) {
