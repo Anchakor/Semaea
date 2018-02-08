@@ -20,16 +20,16 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
     dialog: dialog,
     saGraphViewIndex: saGraphViewIndex,
     graphIndex: graphIndex
-  } as DialogProps<Dialog>);
+  });
   switch (dialog.type) {
     case DialogType.DialogMenu:
-      return DialogMenuDialogView(dialogProps as DialogProps<DialogMenuDialog>);
+      return h(DialogMenuDialogView, dialogProps);
     case DialogType.DeleteGraph:
-      return DeleteGraphDialogView(dialogProps as DialogProps<DeleteGraphDialog>);
+      return h(DeleteGraphDialogView, dialogProps);
     case DialogType.AddTriple:
-      return h(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
+      return h(AddTripleDialogView, dialogProps);
     default:
-      return DefaultDialogView(dialogProps);
+      return h(DefaultDialogView, dialogProps);
   }
 }
 
