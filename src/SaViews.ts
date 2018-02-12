@@ -3,7 +3,7 @@ import { StoreState } from './UIStore/Main';
 
 export interface SaView {
   readonly saGraphViewIndex: number
-  readonly originatingView?: number
+  readonly originatingSaViewIndex?: number
 }
 
 export function shouldSaViewBeVisible(saViewIndex: number, state: StoreState): boolean {
@@ -30,4 +30,19 @@ export function getClosestVisibleSaViewIndex(startingIndex: number, state: Store
     if (shouldSaViewBeVisible(ix, state)) return ix;
   }
   return undefined;
+}
+
+export function getOriginatingOrClosestSaViewIndex(startingIndex: number, state: StoreState): number | undefined {
+  let index = startingIndex;
+  while (true) {
+    const saView = state.saViews_.saViews[index];
+    if (!saView) break;
+    const originatingSaViewIndex = saView.originatingSaViewIndex;
+    if (!originatingSaViewIndex) break;
+    if (shouldSaViewBeVisible(originatingSaViewIndex, state)) 
+      return originatingSaViewIndex;
+    else
+      index = originatingSaViewIndex;
+  }
+  return getClosestVisibleSaViewIndex(startingIndex, state);
 }

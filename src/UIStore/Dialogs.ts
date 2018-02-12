@@ -4,7 +4,7 @@ import { StoreLib } from '../External';
 import { StoreState } from './Main';
 import { State as SaViewsState } from './SaViews';
 import { State as GraphsState, SaGraphView } from './Graphs';
-import { SaView, getClosestVisibleSaViewIndex } from '../SaViews';
+import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 
@@ -39,7 +39,7 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
-  const newSaView = objectJoin<SaView>(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingView: originatingSaViewIndex })
+  const newSaView = objectJoin<SaView>(originatingSaView, { saGraphViewIndex: newSaGraphViewIndex, originatingSaViewIndex: originatingSaViewIndex })
   const saViews = arrayImmutableAppend(state.saViews_.saViews, newSaView);
   const newSaViewIndex = saViews.length - 1;
 
@@ -72,7 +72,7 @@ function doCancelDialogAction(state: StoreState, action: CancelDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
   const newDialog = objectJoin<Dialog>(dialog, { status: DialogStatus.Cancelled })
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
-  const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
+  const newCurrentSaViewIndex = getOriginatingOrClosestSaViewIndex(state.saViews_.currentSaViewIndex, state);
   return objectJoin<StoreState>(state, { 
     saViews_: objectJoin<SaViewsState>(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex }),
     dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs })
@@ -90,7 +90,7 @@ function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
   const dialog = state.dialogs_.dialogs[action.dialogIndex];
   const newDialog = objectJoin<Dialog>(dialog, { status: DialogStatus.Finished })
   const dialogs = arrayImmutableSet(state.dialogs_.dialogs, action.dialogIndex, newDialog);
-  const newCurrentSaViewIndex = getClosestVisibleSaViewIndex(state.saViews_.currentSaViewIndex, state);
+  const newCurrentSaViewIndex = getOriginatingOrClosestSaViewIndex(state.saViews_.currentSaViewIndex, state);
   return objectJoin<StoreState>(state, { 
     saViews_: objectJoin<SaViewsState>(state.saViews_, { currentSaViewIndex: newCurrentSaViewIndex }),
     dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs })

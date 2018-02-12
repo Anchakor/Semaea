@@ -29,6 +29,7 @@ export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
       },
       onComponentDidUpdate: (lastProps: Props, nextProps: Props) => { 
         if (isCurrentGraphNode(nextProps) && this.state) 
+          // TODO fix refocusing from dialog forms etc.
           this.state.elem.focus();
       }
     });
@@ -54,6 +55,8 @@ function EntityViewInner(props: Props) {
 
 function keydown(props: Props) {
   return (event: KeyboardEvent) => {
+    // TODO dialog/graph keydown handling
+    // TODO esc to cancel dialogs
     if (Key.isSpacebar(event)) {
       props.createDialogMenuDialog(props.saViewIndex);
       event.preventDefault();
