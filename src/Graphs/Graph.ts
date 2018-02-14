@@ -55,4 +55,9 @@ export class Graph {
     this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
   }
 
+  getTripleAtIndex(index: number): Triple | undefined {
+    return (index >= 0 && index < this._graph.length)
+      ? this._graph[index]
+      : undefined;
+  }
 }

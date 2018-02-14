@@ -36,6 +36,14 @@ export let defaultState: State = {
 };
 defaultState = doInitializeTestGraphAction(defaultState);
 
+export function setCurrentNodeToFirstNode(saGraphView: SaGraphView, graphsState: State) {
+  const graph = graphsState.graphs[saGraphView.graphIndex];
+  if (!graph) return saGraphView;
+  const triple = graph.getTripleAtIndex(0);
+  if (!triple) return saGraphView;
+  return objectJoin<SaGraphView>(saGraphView, { currentNode: new GraphNode(triple, "s") });
+}
+
 // Actions:
 
 // InitializeTestGraphAction

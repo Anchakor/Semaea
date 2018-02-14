@@ -3,7 +3,7 @@ import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from
 import { StoreLib } from '../External';
 import { StoreState } from './Main';
 import { State as SaViewsState } from './SaViews';
-import { State as GraphsState, SaGraphView } from './Graphs';
+import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './Graphs';
 import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
@@ -33,9 +33,12 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
   const originatingSaView = state.saViews_.saViews[originatingSaViewIndex];
   const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
 
-  const newSaGraphView = (graphIndex == undefined) 
+  let newSaGraphView = (graphIndex == undefined) 
     ? objectClone(originatingSaGraphView)
     : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex });
+  if (graphIndex) {
+    newSaGraphView = setCurrentNodeToFirstNode(newSaGraphView, state.graphs_);
+  }
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
