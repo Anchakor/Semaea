@@ -39,7 +39,12 @@ export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog
           this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
           this.props.finishDialog(this.props.dialogIndex);
         }
-      }, 'Add'),
-      ' ', getDialogCancelButton(this.props) ]);
+      }, 'Add'), ' ', 
+      h('button', {
+        onclick: () => {
+          this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+        }
+      }, 'Add without closing'), ' ', 
+      getDialogCancelButton(this.props) ]);
   }
 }
