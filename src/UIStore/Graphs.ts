@@ -61,12 +61,14 @@ function doInitializeTestGraphAction(state: State): State {
   graph2.addTriple(new Triple('testS', 'testP', 'testO'));
 
   const newGraphs = [ graph, graph2 ];
-  const newViews = [
-    objectClone(defaultState.saGraphViews[0]),
-    objectJoin(defaultState.saGraphViews[0], { graphIndex: 1 })
+  const newSaGraphViews = [
+    objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 0, 
+      currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s") }),
+    objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 1, 
+      currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s") })
     ];
 
-  return objectJoin(state, { graphs: newGraphs, saGraphViews: newViews });
+  return objectJoin(state, { graphs: newGraphs, saGraphViews: newSaGraphViews });
 }
 
 // ChangeSaGraphViewGraphAction
