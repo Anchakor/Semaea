@@ -44,7 +44,7 @@ export class TestingView extends UIComponent<TestingViewProps, {}> {
   
   elem: any
   componentDidMount() {
-    this.elem.focus();
+    //this.elem.focus();
   }
 
   public render() {

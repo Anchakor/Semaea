@@ -7,7 +7,7 @@ import { objectJoinExtend } from 'Common';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
-  saGraphView: SaGraphView
+  shouldFocus?: boolean
 }
 
 function isCurrentGraphNode(props: Props): boolean {
