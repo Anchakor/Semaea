@@ -1,5 +1,4 @@
 import { Triple } from "Graphs/Triple";
-import { DialogSaViewMapping } from "UIStore/Dialogs";
 
 export enum Status { 
   Opened = 'Opened', 
@@ -10,6 +9,11 @@ export enum Status {
 export interface Dialog {
   type: DialogType
   status: Status
+}
+
+export interface DialogSaViewMapping {
+  readonly dialogIndex: number
+  readonly saViewIndex: number
 }
 
 // TODO move DialogSaViewMapping here

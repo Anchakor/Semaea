@@ -1,4 +1,4 @@
-import { Dialog, Status as DialogStatus } from '../Dialogs/Dialogs';
+import { Dialog, Status as DialogStatus, DialogSaViewMapping } from '../Dialogs/Dialogs';
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
 import { StoreLib } from '../External';
 import { StoreState } from './Main';
@@ -13,11 +13,6 @@ Dialogs are temporary UI views for doing some action.
 Dialogs create a new (clone) SaView, when SaView is closed, so is Dialog, when is Dialog closed, so is SaView (unless configured otherwise). Same for SaGraphView.
 Dialogs 0..1 - 0..* SaViews
 */
-
-export interface DialogSaViewMapping {
-  readonly dialogIndex: number
-  readonly saViewIndex: number
-}
 
 export interface State {
   readonly viewMappings: DialogSaViewMapping[]

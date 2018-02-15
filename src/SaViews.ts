@@ -1,6 +1,5 @@
 import { shouldDialogBeVisible, getDialogMappingsToSaView } from './Dialogs/Dialogs';
 import { StoreState } from './UIStore/Main';
-import { DialogSaViewMapping } from 'UIStore/Dialogs';
 
 export interface SaView {
   readonly saGraphViewIndex: number
