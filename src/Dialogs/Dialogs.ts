@@ -1,4 +1,5 @@
 import { Triple } from "Graphs/Triple";
+import { DialogSaViewMapping } from "UIStore/Dialogs";
 
 export enum Status { 
   Opened = 'Opened', 
@@ -11,6 +12,8 @@ export interface Dialog {
   status: Status
 }
 
+// TODO move DialogSaViewMapping here
+
 export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: DialogType): T[] => {
   return dialogs.filter((value: Dialog) => value.type == type) as T[];
 };
@@ -18,6 +21,12 @@ export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: Dial
 export function shouldDialogBeVisible(dialog: Dialog): boolean {
   return dialog.status != Status.Finished 
     && dialog.status != Status.Cancelled
+}
+
+export function getDialogMappingsToSaView(saViewIndex: number, viewMappings: DialogSaViewMapping[]) {
+  return viewMappings.filter((v, ix, arr) => {
+    return v.saViewIndex == saViewIndex;
+  });
 }
 
 // DIALOGS:

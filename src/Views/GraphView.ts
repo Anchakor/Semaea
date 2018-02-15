@@ -11,6 +11,7 @@ import { Graph } from '../Graphs/Graph';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 import { SaView } from '../SaViews';
 import { createCreateDialogMenuDialogAction } from 'UIStore/Dialogs/DialogMenuDialog';
+import { createCancelDialogAction } from 'UIStore/Dialogs';
 
 // View (component):
 
@@ -28,6 +29,7 @@ export interface DispatchProps {
   createDialogMenuDialog: (originatingSaViewIndex: number) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
+  cancelDialog: (dialogIndex: number) => void
 }
 export type Props = StateProps & DispatchProps
 
@@ -114,6 +116,7 @@ export const Component = connect(
       createDialogMenuDialog: (originatingSaViewIndex: number) => dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex)),
       showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
       createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex)),
-      createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex))
+      createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex)),
+      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
     };
   });

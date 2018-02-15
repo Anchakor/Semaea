@@ -4,6 +4,7 @@ import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
 import { objectJoinExtend } from 'Common';
+import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialogs';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -59,16 +60,27 @@ function EntityViewInner(props: Props) {
 function keydown(props: Props) {
   return (event: KeyboardEvent) => {
     // TODO dialog/graph keydown handling
-    // TODO esc to cancel dialogs
     if (Key.isSpacebar(event)) {
       props.createDialogMenuDialog(props.saViewIndex);
       event.preventDefault();
+    } else if (Key.isEscape(event)) {
+      cancelLinkedDialogs(props);
     } else if (Key.isM(event)) {
       props.createDeleteGraphDialog(props.saGraphView.graphIndex, props.saViewIndex);
     } else if (Key.isN(event)) {
       props.createAddTripleDialog(props.graphNode, props.saViewIndex);
     }
   }
+}
+
+function cancelLinkedDialogs(props: Props) {
+  const linkedDialogs = getDialogMappingsToSaView(props.saViewIndex, props.dialogs_.viewMappings);
+  if (linkedDialogs.length == 0) return;
+  linkedDialogs.every((v, i, a) => {
+    const dialog = props.dialogs_.dialogs[v.dialogIndex];
+    if (!dialog || !shouldDialogBeVisible(dialog)) return true;
+    props.cancelDialog(v.dialogIndex); return true;
+  });
 }
 
 /*

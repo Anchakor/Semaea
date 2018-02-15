@@ -1,5 +1,6 @@
-import { shouldDialogBeVisible } from './Dialogs/Dialogs';
+import { shouldDialogBeVisible, getDialogMappingsToSaView } from './Dialogs/Dialogs';
 import { StoreState } from './UIStore/Main';
+import { DialogSaViewMapping } from 'UIStore/Dialogs';
 
 export interface SaView {
   readonly saGraphViewIndex: number
@@ -8,9 +9,7 @@ export interface SaView {
 
 export function shouldSaViewBeVisible(saViewIndex: number, state: StoreState): boolean {
   // if the SaView is not linked to Dialogs which should not be visible
-  const linkedDialogs = state.dialogs_.viewMappings.filter((v, ix, arr) => {
-    return v.saViewIndex == saViewIndex;
-  });
+  const linkedDialogs = getDialogMappingsToSaView(saViewIndex, state.dialogs_.viewMappings);
   if (linkedDialogs.length == 0) return true;
   return linkedDialogs.filter((v, ix, arr) => {
     const dialog = state.dialogs_.dialogs[v.dialogIndex];
