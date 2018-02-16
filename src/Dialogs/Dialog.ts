@@ -7,8 +7,8 @@ export enum Status {
 }
 
 export interface Dialog {
-  type: DialogType
-  status: Status
+  readonly type: DialogType
+  readonly status: Status
 }
 
 export interface DialogSaViewMapping {
@@ -39,23 +39,23 @@ export enum DialogType {
   DeleteGraph = 'DeleteGraph'
 }
 export interface DeleteGraphDialog extends Dialog {
-  type: DialogType.DeleteGraph
-  graphToDeleteIndex: number
+  readonly type: DialogType.DeleteGraph
+  readonly graphToDeleteIndex: number
 }
 
 export enum DialogType {
   AddTriple = 'AddTriple'
 }
 export interface AddTripleDialog extends Dialog {
-  type: DialogType.AddTriple
-  triple: Triple
+  readonly type: DialogType.AddTriple
+  readonly triple: Triple
 }
 
 export enum DialogType {
   DialogMenu = 'DialogMenu'
 }
 export interface DialogMenuDialog extends Dialog {
-  type: DialogType.DialogMenu
-  selectedDialog: DialogType | undefined
-  createdGraphIndex: number
+  readonly type: DialogType.DialogMenu
+  readonly selectedDialog: DialogType | undefined
+  readonly createdGraphIndex: number
 }
