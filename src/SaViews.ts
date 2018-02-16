@@ -1,4 +1,4 @@
-import { shouldDialogBeVisible, getDialogMappingsToSaView } from './Dialogs/Dialogs';
+import { shouldDialogBeVisible, getDialogMappingsToSaView } from './Dialogs/Dialog';
 import { StoreState } from './UIStore/Main';
 
 export interface SaView {

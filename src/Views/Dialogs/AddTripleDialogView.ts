@@ -1,6 +1,6 @@
 import { h, UIComponent } from "../../External";
 import { DialogProps, getDialogCancelButton } from "../DialogView";
-import { AddTripleDialog } from "../../Dialogs/Dialogs";
+import { AddTripleDialog } from "../../Dialogs/Dialog";
 import { Triple } from "../../Graphs/Triple";
 import { objectJoin } from "Common";
 

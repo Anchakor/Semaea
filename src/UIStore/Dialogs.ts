@@ -1,4 +1,4 @@
-import { Dialog, Status as DialogStatus, DialogSaViewMapping } from '../Dialogs/Dialogs';
+import { Dialog, Status as DialogStatus, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
 import { StoreLib } from '../External';
 import { StoreState } from './Main';

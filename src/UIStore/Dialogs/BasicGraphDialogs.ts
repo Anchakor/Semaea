@@ -1,6 +1,6 @@
 import { StoreLib } from '../../External';
 import { StoreState } from '../Main';
-import { DeleteGraphDialog, Status as DialogStatus, DialogType, AddTripleDialog } from '../../Dialogs/Dialogs';
+import { DeleteGraphDialog, Status as DialogStatus, DialogType, AddTripleDialog } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';

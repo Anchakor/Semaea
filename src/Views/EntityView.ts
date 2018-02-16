@@ -4,7 +4,7 @@ import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
 import { objectJoinExtend } from 'Common';
-import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialogs';
+import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialog';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
