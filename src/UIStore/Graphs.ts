@@ -12,6 +12,8 @@ SaGraphViews 0..* - 1 Graph
 SaGraphViews 0..1 - 0..* SaViews
 */
 
+// TODO filtered graph view
+
 export interface SaGraphView {
   readonly graphIndex: number
   readonly currentNode?: GraphNode
@@ -20,8 +22,10 @@ export interface SaGraphView {
   readonly previousNodePredicate?: GraphNode
 }
 
+export type Graphs = (Graph | undefined)[];
+
 export interface State {
-  readonly graphs: (Graph | undefined)[]
+  readonly graphs: Graphs
   readonly saGraphViews: SaGraphView[]
 }
 export let defaultState: State = { 
@@ -147,6 +151,35 @@ function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
   return objectJoin<State>(state, { graphs: newGraphs });
 }
 
+// ChangeCurrentGraphNodeByOffsetAction
+export enum ActionType { ChangeCurrentGraphNodeByOffset = 'ChangeCurrentGraphNodeByOffset' }
+export interface ChangeCurrentGraphNodeByOffsetAction extends StoreLib.Action { type: ActionType.ChangeCurrentGraphNodeByOffset
+  saGraphViewIndex: number
+  offset: number
+}
+export const createChangeCurrentGraphNodeByOffsetAction = (saGraphViewIndex: number, offset: number): ChangeCurrentGraphNodeByOffsetAction => 
+  ({ type: ActionType.ChangeCurrentGraphNodeByOffset, saGraphViewIndex: saGraphViewIndex, offset: offset });
+function doChangeCurrentGraphNodeByOffsetAction(state: State, action: ChangeCurrentGraphNodeByOffsetAction) {
+  const saGraphView = state.saGraphViews[action.saGraphViewIndex];
+  const graphs = state.graphs;
+  const currentNode = saGraphView.currentNode;
+  if (!currentNode) return state;
+  const graph = graphs[saGraphView.graphIndex];
+  if (!graph || graph.count() < 1) return state;
+  const tripleIndex = graph.get().findIndex((triple) => currentNode.getTriple().equals(triple));
+  let newTripleIndex = (tripleIndex + action.offset) % graph.count();
+  while (newTripleIndex < 0) {
+    newTripleIndex += graph.count();
+  }
+  const newTriple = graph.getTripleAtIndex(newTripleIndex);
+  if (!newTriple) return state;
+  const newCurrentNode = new GraphNode(newTriple, currentNode.position);
+  const newSaGraphView = objectJoin<SaGraphView>(saGraphView, { currentNode: newCurrentNode });
+  return objectJoin<State>(state, { 
+    saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, newSaGraphView)
+  });
+}
+
 // Reducer:
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
@@ -161,6 +194,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return doAddTripleAction(state, action as AddTripleAction);
     case ActionType.DeleteGraph:
       return doDeleteGraphAction(state, action as DeleteGraphAction);
+    case ActionType.ChangeCurrentGraphNodeByOffset:
+      return doChangeCurrentGraphNodeByOffsetAction(state, action as ChangeCurrentGraphNodeByOffsetAction);
     default:
       return state;
   }

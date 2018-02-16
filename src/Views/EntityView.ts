@@ -65,6 +65,12 @@ function keydown(props: Props) {
       event.preventDefault();
     } else if (Key.isEscape(event)) {
       cancelLinkedDialogs(props);
+    } else if (Key.isDownArrow(event)) {
+      props.changeCurrentGraphNodeByOffset(props.saView.saGraphViewIndex, 1);
+      event.preventDefault();
+    } else if (Key.isUpArrow(event)) {
+      props.changeCurrentGraphNodeByOffset(props.saView.saGraphViewIndex, -1);
+      event.preventDefault();
     } else if (Key.isM(event)) {
       props.createDeleteGraphDialog(props.saGraphView.graphIndex, props.saViewIndex);
     } else if (Key.isN(event)) {
