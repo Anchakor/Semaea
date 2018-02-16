@@ -4,15 +4,10 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { Graph } from '../Graphs/Graph';
 import { SaView } from '../SaViews';
+import { createGraphDispatchProps, GraphDispatchProps } from 'Views/GraphDispatchProps';
 import * as EntityView from '../Views/EntityView';
 import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
-import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
-import { createShowAlertModalAction } from '../UIStore/Modals';
-import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
-import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
-import { createCreateDialogMenuDialogAction } from 'UIStore/Dialogs/DialogMenuDialog';
-import { createCancelDialogAction } from 'UIStore/Dialogs';
 
 // View (component):
 
@@ -22,18 +17,7 @@ export interface StateProps extends StoreState {
   saGraphView: SaGraphView
   graph: Graph
 }
-export interface DispatchProps {
-  changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
-  changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
-  changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
-  showAlertModal: (originatingGraphIndex: number, message: string) => void
-  createDialogMenuDialog: (originatingSaViewIndex: number) => void
-  createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
-  createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
-  cancelDialog: (dialogIndex: number) => void
-  changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
-}
-export type Props = StateProps & DispatchProps
+export type Props = StateProps & GraphDispatchProps
 
 export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
@@ -110,16 +94,6 @@ export const Component = connect(
     const graph = state.graphs_.graphs[saGraphView.graphIndex];
     return objectJoin<StateProps>(state as StateProps, { saViewIndex: saViewIndex, saView: saView, saGraphView: saGraphView, graph: graph });
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
-    return {
-      changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
-      changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
-      changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
-      createDialogMenuDialog: (originatingSaViewIndex: number) => dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex)),
-      showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
-      createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex)),
-      createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex)),
-      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
-      changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset)),
-    };
+  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): GraphDispatchProps => { 
+    return createGraphDispatchProps(dispatch);
   });
