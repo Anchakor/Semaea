@@ -4,7 +4,7 @@ import * as Response from '../Server/Response';
 import * as ServerClient from '../Server/Client';
 import { IDirectoryEntry } from '../Server/Filesystem';
 
-export function run() {
+export function runServerIntegrationTests() {
 
   Test.testAsync('Integration Request', function(assert, asyncDone) {
     const req = (new Request.UnrecognizedRequest());

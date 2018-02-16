@@ -4,7 +4,7 @@ import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import * as Serializer from '../Serialization/Serializer';
 
-export function run() {
+export function runGraphTests() {
 
   Test.test('Triple', function(assert) {
     const triple = new Triple('s', 'p', 'o');
