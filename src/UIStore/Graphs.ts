@@ -5,6 +5,7 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { SaView } from '../SaViews';
 import * as SaGraphViews from './Graphs/SaGraphViews';
+import { GraphFilter, SubjectBeginsWithGraphFilterCondition, GraphFilterConditionType } from './GraphFilters';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
@@ -21,6 +22,7 @@ export interface SaGraphView {
   readonly previousNode?: GraphNode
   readonly previousNodeNonPredicate?: GraphNode
   readonly previousNodePredicate?: GraphNode
+  readonly filter?: GraphFilter
 }
 
 export type Graphs = (Graph | undefined)[];
@@ -36,7 +38,8 @@ export let defaultState: State = {
     currentNode: undefined,
     previousNode: undefined,
     previousNodeNonPredicate: undefined,
-    previousNodePredicate: undefined
+    previousNodePredicate: undefined,
+    filter: undefined
   }],
 };
 defaultState = doInitializeTestGraphAction(defaultState);
@@ -68,7 +71,10 @@ function doInitializeTestGraphAction(state: State): State {
   const newGraphs = [ graph, graph2 ];
   const newSaGraphViews = [
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 0, 
-      currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s") }),
+      currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s"),
+      // TODO undo hardcoded filter
+      filter: { condition: { type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as SubjectBeginsWithGraphFilterCondition } as GraphFilter
+    }),
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 1, 
       currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s") })
     ];

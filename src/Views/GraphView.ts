@@ -8,6 +8,7 @@ import { createGraphDispatchProps, GraphDispatchProps } from 'Views/GraphDispatc
 import * as EntityView from '../Views/EntityView';
 import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
+import { getSaGraphViewFilteredTriples } from 'UIStore/GraphFilters';
 
 // View (component):
 
@@ -23,6 +24,7 @@ export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, [
+      // TODO render SaGraphView graph filter widget
       this.renderSaGraphViewSwitchingBar(),
       this.renderGraphSwitchingBar(),
       h('hr'),
@@ -67,7 +69,8 @@ export class View extends UIComponent<Props, {}> {
     if (!this.props.graph) {
       return h('div', {}, 'Viewed graph is undefined');
     }
-    return h('div', {}, this.props.graph.get().map((triple: Triple) => {
+    const triples = getSaGraphViewFilteredTriples(this.props.saGraphView, this.props.graph);
+    return h('div', {}, triples.map((triple: Triple) => {
       return h('div', {}, [
         renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
         renderLevelPosition(this.props, new GraphNode(triple, 'p')), ' ',
