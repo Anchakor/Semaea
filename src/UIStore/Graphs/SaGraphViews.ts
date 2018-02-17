@@ -5,6 +5,7 @@ import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { SaView } from '../../SaViews';
 import { State, SaGraphView } from '../Graphs';
+import { getSaGraphViewFilteredTriples } from 'UIStore/GraphFilters';
 
 // ChangeSaGraphViewGraphAction
 export enum ActionType { ChangeSaGraphViewGraph = 'ChangeSaGraphViewGraph' }
@@ -67,13 +68,15 @@ function doChangeCurrentGraphNodeByOffsetAction(state: State, action: ChangeCurr
   const currentNode = saGraphView.currentNode;
   if (!currentNode) return state;
   const graph = graphs[saGraphView.graphIndex];
-  if (!graph || graph.count() < 1) return state;
-  const tripleIndex = graph.get().findIndex((triple) => currentNode.getTriple().equals(triple));
-  let newTripleIndex = (tripleIndex + action.offset) % graph.count();
+  if (!graph) return state;
+  const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
+  if (triples.length < 1) return state;
+  const tripleIndex = triples.findIndex((triple) => currentNode.getTriple().equals(triple));
+  let newTripleIndex = (tripleIndex + action.offset) % triples.length;
   while (newTripleIndex < 0) {
-    newTripleIndex += graph.count();
+    newTripleIndex += triples.length;
   }
-  const newTriple = graph.getTripleAtIndex(newTripleIndex);
+  const newTriple = triples[newTripleIndex];
   if (!newTriple) return state;
   const newCurrentNode = new GraphNode(newTriple, currentNode.position);
   const newSaGraphView = objectJoin<SaGraphView>(saGraphView, { currentNode: newCurrentNode });
