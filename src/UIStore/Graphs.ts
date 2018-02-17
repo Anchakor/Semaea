@@ -5,7 +5,7 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { SaView } from '../SaViews';
 import * as SaGraphViews from './Graphs/SaGraphViews';
-import { GraphFilter, SubjectBeginsWithGraphFilterCondition, GraphFilterConditionType } from './GraphFilters';
+import { GraphFilter, SubjectBeginsWithGraphFilterCondition, GraphFilterConditionType, getSaGraphViewFilteredTriples } from './GraphFilters';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
@@ -47,7 +47,9 @@ defaultState = doInitializeTestGraphAction(defaultState);
 export function setCurrentNodeToFirstNode(saGraphView: SaGraphView, graphsState: State) {
   const graph = graphsState.graphs[saGraphView.graphIndex];
   if (!graph) return saGraphView;
-  const triple = graph.getTripleAtIndex(0);
+  const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
+  if (triples.length < 1) return saGraphView;
+  const triple = triples[0];
   if (!triple) return saGraphView;
   return objectJoin<SaGraphView>(saGraphView, { currentNode: new GraphNode(triple, "s") });
 }

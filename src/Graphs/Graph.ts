@@ -55,6 +55,9 @@ export class Graph {
     this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
   }
 
+  /**
+   * Ideally not used. Note that there is getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph)
+   */
   getTripleAtIndex(index: number): Triple | undefined {
     return (index >= 0 && index < this._graph.length)
       ? this._graph[index]
