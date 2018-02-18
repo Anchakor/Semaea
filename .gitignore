@@ -6,5 +6,6 @@ semaea.js
 plastiq*
 build-plastiq.sh
 .vscode/settings.json
+.*.swp
 test/*
 !test/static
