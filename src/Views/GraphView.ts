@@ -1,5 +1,5 @@
 import { objectJoin, objectJoinExtend } from '../Common';
-import { connect, h, StoreLib, UIComponent, hc } from '../External';
+import { connect, h, StoreLib, UIComponent, hc, hf } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { Graph } from '../Graphs/Graph';
@@ -9,6 +9,7 @@ import * as EntityView from '../Views/EntityView';
 import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
 import { getSaGraphViewFilteredTriples } from 'UIStore/GraphFilters';
+import { GraphFilterView } from 'Views/GraphFilterView';
 
 // View (component):
 
@@ -27,6 +28,7 @@ export class View extends UIComponent<Props, {}> {
       // TODO render SaGraphView graph filter widget
       this.renderSaGraphViewSwitchingBar(),
       this.renderGraphSwitchingBar(),
+      hf(GraphFilterView, this.props),
       h('hr'),
       this.renderCurrentGraph()
     ]);
