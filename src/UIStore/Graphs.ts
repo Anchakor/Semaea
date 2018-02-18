@@ -5,7 +5,7 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { SaView } from '../SaViews';
 import * as SaGraphViews from './Graphs/SaGraphViews';
-import { GraphFilter, SubjectBeginsWithGraphFilterCondition, GraphFilterConditionType, getSaGraphViewFilteredTriples } from './GraphFilters';
+import { GraphFilter, GraphFilterConditionSubjectBeginsWith, GraphFilterConditionType, getSaGraphViewFilteredTriples } from './GraphFilters';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
@@ -75,7 +75,7 @@ function doInitializeTestGraphAction(state: State): State {
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 0, 
       currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s"),
       // TODO undo hardcoded filter
-      filter: { condition: { type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as SubjectBeginsWithGraphFilterCondition } as GraphFilter
+      filter: { condition: { type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as GraphFilterConditionSubjectBeginsWith } as GraphFilter
     }),
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 1, 
       currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s") })

@@ -19,7 +19,7 @@ export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: G
 function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition): Triple[] {
   switch (condition.type) {
     case GraphFilterConditionType.SubjectBeginsWith:
-      const value = (condition as SubjectBeginsWithGraphFilterCondition).value;
+      const value = (condition as GraphFilterConditionSubjectBeginsWith).value;
       return graph.get().filter((triple) => triple.s.startsWith(value));
     default:
       return graph.get();
@@ -29,7 +29,7 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
 export enum GraphFilterConditionType {
   SubjectBeginsWith = 'SubjectBeginsWith'
 }
-export interface SubjectBeginsWithGraphFilterCondition {
+export interface GraphFilterConditionSubjectBeginsWith {
   readonly type: GraphFilterConditionType.SubjectBeginsWith
   readonly value: string
 }
