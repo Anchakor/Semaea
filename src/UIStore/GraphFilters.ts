@@ -3,7 +3,8 @@ import { Triple } from '../Graphs/Triple';
 import { SaGraphView } from './Graphs';
 
 export interface GraphFilter {
-  readonly condition: GraphFilterCondition
+  readonly conditions: GraphFilterCondition[];
+  readonly rootConditionIndex: number;
 }
 
 export interface GraphFilterCondition {
@@ -12,7 +13,7 @@ export interface GraphFilterCondition {
 
 export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph): Triple[] {
   return (saGraphView.filter)
-  ? applyGraphFilterCondition(graph, saGraphView.filter.condition)
+  ? applyGraphFilterCondition(graph, saGraphView.filter.conditions[saGraphView.filter.rootConditionIndex])
   : graph.get();
 }
 

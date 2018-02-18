@@ -75,7 +75,7 @@ function doInitializeTestGraphAction(state: State): State {
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 0, 
       currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s"),
       // TODO undo hardcoded filter
-      filter: { condition: { type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as GraphFilterConditionSubjectBeginsWith } as GraphFilter
+      filter: { conditions: [{ type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as GraphFilterConditionSubjectBeginsWith], rootConditionIndex: 0 } as GraphFilter
     }),
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 1, 
       currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s") })

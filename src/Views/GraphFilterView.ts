@@ -5,7 +5,7 @@ import { objectJoinExtend } from "Common";
 
 export function GraphFilterView(props: Props) {
   if (!props.saGraphView.filter) return h('');
-  const condition = props.saGraphView.filter.condition;
+  const condition = props.saGraphView.filter.conditions[props.saGraphView.filter.rootConditionIndex];
   if (condition.type == GF.GraphFilterConditionType.SubjectBeginsWith) {
     const c = condition as GF.GraphFilterConditionSubjectBeginsWith;
     const p = objectJoinExtend(props, { condition: c });
