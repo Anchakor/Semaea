@@ -1,8 +1,9 @@
-import { h, UIComponent } from "../../External";
+import { h, UIComponent, connect, StoreLib } from "../../External";
 import { DialogProps, getDialogCancelButton } from "../DialogView";
 import { AddTripleDialog } from "../../Dialogs/Dialog";
 import { Triple } from "../../Graphs/Triple";
 import { objectJoin } from "Common";
+import { StoreState } from "UIStore/Main";
 
 interface State {
   s: string
@@ -10,7 +11,7 @@ interface State {
   o: string
 }
 
-export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog>, State> {
+export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
   state: State = { s: "", p: "", o: "" };
 
   public constructor(props?: DialogProps<AddTripleDialog>, context?: any) {
@@ -49,3 +50,15 @@ export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog
       getDialogCancelButton(this.props) ]);
   }
 }
+
+
+// Component (container component):
+
+export const Component = connect(
+  View,
+  (state: StoreState, ownProps?: DialogProps<AddTripleDialog>) => {
+    return {};
+  },
+  (dispatch: <A extends StoreLib.Action>(action: A) => void) => { 
+    return {};
+  });

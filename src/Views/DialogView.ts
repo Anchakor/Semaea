@@ -6,7 +6,7 @@ import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTriple
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
-import { AddTripleDialogView } from './Dialogs/AddTripleDialogView';
+import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView';
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from 'Views/Dialogs/DialogMenuDialogView';
