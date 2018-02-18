@@ -1,4 +1,4 @@
-import { $, h, UIStoreLib } from '../External';
+import { $, h, UIStoreLib, hc, hc2 } from '../External';
 import { Model } from '../Model';
 import { store } from '../UIStore/Main';
 import * as SaViewView from '../Views/SaViewView';
@@ -11,13 +11,13 @@ export class MainView {
   static render(model: Model) {
     MainView.focusElemIdToFocus(model);
     
-    return h(UIStoreLib.Provider, { store: store }, 
+    return hc2(UIStoreLib.Provider, { store: store, children: undefined }, 
       h('div', {}, [
-        h(ModalsView.Component),
-        h(SaViewView.Component),
-        h(DialogView.Component),
-        h(GraphView.Component),
-        h(TestingView.Component)
+        hc(ModalsView.Component),
+        hc(SaViewView.Component),
+        hc(DialogView.Component),
+        hc(GraphView.Component),
+        hc(TestingView.Component)
         ])
       );
   }

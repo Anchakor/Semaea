@@ -1,5 +1,5 @@
 import { objectJoin, objectJoinExtend } from '../Common';
-import { connect, h, StoreLib, UIComponent } from '../External';
+import { connect, h, StoreLib, UIComponent, hc } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { Graph } from '../Graphs/Graph';
@@ -81,7 +81,7 @@ export class View extends UIComponent<Props, {}> {
 }
 
 function renderLevelPosition(props: Props, graphNode: GraphNode) {
-  return h(EntityView.EntityView, objectJoinExtend(props, { 
+  return hc(EntityView.EntityView, objectJoinExtend(props, { 
     graphNode: graphNode
    })); 
 }

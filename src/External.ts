@@ -12,8 +12,21 @@ export { Inferno as UILib };
 export { InfernoComponent as UIComponent };
 export type VNode = Inferno.VNode;
 
-export { InfernoHyperscript as h };
+//export { InfernoHyperscript as h };
 export const linkEvent = Inferno.linkEvent;
+export function h(_tag: string | VNode | (() => VNode), _props?: any, _children?: Inferno.InfernoChildren): VNode {
+  return InfernoHyperscript(_tag, _props, _children);
+}
+export function hf<P>(_tag: ((props: P) => VNode), _props: P, _children?: Inferno.InfernoChildren): VNode {
+  return InfernoHyperscript(_tag, _props, _children);
+}
+export function hc<P,S>(_tag: (new () => InfernoComponent<P, S>), _props?: P, _children?: Inferno.InfernoChildren): VNode {
+  return InfernoHyperscript(_tag, _props, _children);
+}
+export function hc2<P,S>(_tag: (new (p: P, c?: any) => InfernoComponent<P, S>), _props: P, _children?: Inferno.InfernoChildren): VNode {
+  return InfernoHyperscript(_tag, _props, _children);
+}
+
 
 export { Redux as StoreLib };
 export { InfernoRedux as UIStoreLib };

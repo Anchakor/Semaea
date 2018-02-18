@@ -1,6 +1,6 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent } from '../External';
+import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
@@ -23,13 +23,13 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
   });
   switch (dialog.type) {
     case DialogType.DialogMenu:
-      return h(DialogMenuDialogView, dialogProps);
+      return hf(DialogMenuDialogView, dialogProps as DialogProps<DialogMenuDialog>);
     case DialogType.DeleteGraph:
-      return h(DeleteGraphDialogView, dialogProps);
+      return hf(DeleteGraphDialogView, dialogProps as DialogProps<DeleteGraphDialog>);
     case DialogType.AddTriple:
-      return h(AddTripleDialogView, dialogProps);
+      return hc(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
     default:
-      return h(DefaultDialogView, dialogProps);
+      return hf(DefaultDialogView, dialogProps as DialogProps<Dialog>);
   }
 }
 

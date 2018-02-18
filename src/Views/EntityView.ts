@@ -1,4 +1,4 @@
-import { h, UIComponent } from '../External';
+import { h, UIComponent, hf } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
@@ -37,7 +37,7 @@ export class EntityView extends UIComponent<Props, { elem: HTMLElement, wasFocus
         }
       }
     });
-    return h(EntityViewInner, innerProps);
+    return hf(EntityViewInner, innerProps);
   }
 }
 function EntityViewInner(props: Props) {

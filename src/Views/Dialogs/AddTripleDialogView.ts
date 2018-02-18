@@ -11,10 +11,11 @@ interface State {
 }
 
 export class AddTripleDialogView extends UIComponent<DialogProps<AddTripleDialog>, State> {
-  state: State
+  state: State = { s: "", p: "", o: "" };
 
-  constructor(props: DialogProps<AddTripleDialog>) {
-    super(props);
+  public constructor(props?: DialogProps<AddTripleDialog>, context?: any) {
+    super(props, context);
+    if (!props) return;
     const t = props.dialog.triple;
     this.state = { s: t.s, p: t.p, o: t.o };
   }
