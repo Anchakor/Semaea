@@ -7,6 +7,7 @@ import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './
 import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
+import { GraphFilter, GraphFilterConditionType, GraphFilterConditionSubjectContains } from 'UIStore/GraphFilters';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -29,8 +30,8 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
   const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
 
   let newSaGraphView = (graphIndex == undefined) 
-    ? objectClone(originatingSaGraphView)
-    : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex });
+    ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: createDialogGraphFilter() })
+    : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: createDialogGraphFilter() });
   if (graphIndex) {
     newSaGraphView = setCurrentNodeToFirstNode(newSaGraphView, state.graphs_);
   }
@@ -55,6 +56,15 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
     saViews_: objectJoin<SaViewsState>(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex }),
     dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings })
   });
+}
+
+export function createDialogGraphFilter(): GraphFilter {
+  const c: GraphFilterConditionSubjectContains = { 
+    type: GraphFilterConditionType.SubjectContains,
+    value: ''
+  };
+  const f: GraphFilter = { conditions: [ c ], rootConditionIndex: 0 };
+  return f;
 }
 
 // Actions:
