@@ -18,10 +18,14 @@ export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: G
 }
 
 function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition): Triple[] {
+  let stringValue: string;
   switch (condition.type) {
     case GraphFilterConditionType.SubjectBeginsWith:
-      const value = (condition as GraphFilterConditionSubjectBeginsWith).value;
-      return graph.get().filter((triple) => triple.s.startsWith(value));
+       stringValue = (condition as GraphFilterConditionSubjectBeginsWith).value;
+      return graph.get().filter((triple) => triple.s.startsWith(stringValue));
+    case GraphFilterConditionType.SubjectContains:
+      stringValue = (condition as GraphFilterConditionSubjectContains).value;
+      return graph.get().filter((triple) => triple.s.includes(stringValue));
     default:
       return graph.get();
   }
@@ -32,5 +36,13 @@ export enum GraphFilterConditionType {
 }
 export interface GraphFilterConditionSubjectBeginsWith {
   readonly type: GraphFilterConditionType.SubjectBeginsWith
+  readonly value: string
+}
+
+export enum GraphFilterConditionType {
+  SubjectContains = 'SubjectContains'
+}
+export interface GraphFilterConditionSubjectContains {
+  readonly type: GraphFilterConditionType.SubjectContains
   readonly value: string
 }

@@ -4,12 +4,12 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { Graph } from '../Graphs/Graph';
 import { SaView } from '../SaViews';
-import { createGraphDispatchProps, GraphDispatchProps } from 'Views/GraphDispatchProps';
-import * as EntityView from '../Views/EntityView';
 import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
-import { getSaGraphViewFilteredTriples } from 'UIStore/GraphFilters';
-import { GraphFilterView } from 'Views/GraphFilterView';
+import { createGraphDispatchProps, GraphDispatchProps } from './GraphDispatchProps';
+import * as EntityView from './EntityView';
+import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
+import { GraphFilterComponent } from './GraphFilterView';
 
 // View (component):
 
@@ -25,10 +25,9 @@ export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, [
-      // TODO render SaGraphView graph filter widget
       this.renderSaGraphViewSwitchingBar(),
       this.renderGraphSwitchingBar(),
-      hf(GraphFilterView, this.props),
+      hc(GraphFilterComponent, this.props),
       h('hr'),
       this.renderCurrentGraph()
     ]);
