@@ -13,6 +13,20 @@ function renderFilter<Condition extends GF.GraphFilterCondition>(
   ]);
 }
 
+function isGraphFilterConditionOfType<C extends GF.GraphFilterCondition>(
+    condition: GF.GraphFilterCondition, type: GF.GraphFilterConditionType): condition is C {
+  return (condition.type == type);
+}
+
+function tryRenderCondition<C extends GF.GraphFilterCondition>(props: Props, 
+    c: GF.GraphFilterCondition, 
+    type: GF.GraphFilterConditionType, 
+    view: ((p: Props & { condition: C }) => VNode)): VNode | undefined {
+  if (!isGraphFilterConditionOfType<C>(c, type)) return undefined;
+  const p = objectJoinExtend(props, { condition: c });
+  return renderFilter(view, p);
+}
+
 type Props = GraphViewProps;
 
 class GraphFilterView extends UIComponent<Props, {}> {
@@ -22,15 +36,12 @@ class GraphFilterView extends UIComponent<Props, {}> {
   render() {
     if (!this.props.saGraphView.filter) return h('');
     const condition = this.props.saGraphView.filter.conditions[this.props.saGraphView.filter.rootConditionIndex];
-    if (condition.type == GF.GraphFilterConditionType.SubjectBeginsWith) {
-      const c = condition as GF.GraphFilterConditionSubjectBeginsWith;
-      const p = objectJoinExtend(this.props, { condition: c });
-      return renderFilter(GraphFilterConditionSubjectBeginsWithView, p);
-    } else if (condition.type == GF.GraphFilterConditionType.SubjectContains) {
-      const c = condition as GF.GraphFilterConditionSubjectContains;
-      const p = objectJoinExtend(this.props, { condition: c });
-      return renderFilter(GraphFilterConditionSubjectContainsView, p);
-    }
+    let v = tryRenderCondition<GF.GraphFilterConditionSubjectBeginsWith>(this.props, condition,
+      GF.GraphFilterConditionType.SubjectBeginsWith, GraphFilterConditionSubjectBeginsWithView);
+    if (v) return v;
+    v = tryRenderCondition<GF.GraphFilterConditionSubjectContains>(this.props, condition,
+      GF.GraphFilterConditionType.SubjectContains, GraphFilterConditionSubjectContainsView);
+    if (v) return v;
     return h('');
   }
 }
