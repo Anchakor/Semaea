@@ -31,18 +31,20 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
   }
 }
 
+export interface GraphFilterConditionWithStringValue {
+  readonly value: string
+}
+
 export enum GraphFilterConditionType {
   SubjectBeginsWith = 'SubjectBeginsWith'
 }
-export interface GraphFilterConditionSubjectBeginsWith {
+export interface GraphFilterConditionSubjectBeginsWith extends GraphFilterConditionWithStringValue {
   readonly type: GraphFilterConditionType.SubjectBeginsWith
-  readonly value: string
 }
 
 export enum GraphFilterConditionType {
   SubjectContains = 'SubjectContains'
 }
-export interface GraphFilterConditionSubjectContains {
+export interface GraphFilterConditionSubjectContains extends GraphFilterConditionWithStringValue {
   readonly type: GraphFilterConditionType.SubjectContains
-  readonly value: string
 }

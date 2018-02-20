@@ -1,8 +1,17 @@
-import { UIComponent, h, hc, connect, StoreLib, hf } from "External";
+import { UIComponent, h, hc, connect, StoreLib, hf, VNode } from "External";
 import { Props as GraphViewProps } from "Views/GraphView";
 import * as GF from "UIStore/GraphFilters";
 import { objectJoinExtend } from "Common";
 import { StoreState } from "UIStore/Main";
+
+function renderFilter<Condition extends GF.GraphFilterCondition>(
+    funcComp: (props: Props & { condition: Condition }) => VNode, 
+    p: Props & { condition: Condition }): VNode {
+  return h('div', {}, [
+    "Filter: ",
+    hf(funcComp, p)
+  ]);
+}
 
 type Props = GraphViewProps;
 
@@ -16,17 +25,11 @@ class GraphFilterView extends UIComponent<Props, {}> {
     if (condition.type == GF.GraphFilterConditionType.SubjectBeginsWith) {
       const c = condition as GF.GraphFilterConditionSubjectBeginsWith;
       const p = objectJoinExtend(this.props, { condition: c });
-      return h('div', {}, [
-        "Filter: ",
-        hf(GraphFilterConditionSubjectBeginsWithView, p)
-      ]);
+      return renderFilter(GraphFilterConditionSubjectBeginsWithView, p);
     } else if (condition.type == GF.GraphFilterConditionType.SubjectContains) {
       const c = condition as GF.GraphFilterConditionSubjectContains;
       const p = objectJoinExtend(this.props, { condition: c });
-      return h('div', {}, [
-        "Filter: ",
-        hf(GraphFilterConditionSubjectContainsView, p)
-      ]);
+      return renderFilter(GraphFilterConditionSubjectContainsView, p);
     }
     return h('');
   }
@@ -40,6 +43,7 @@ export const GraphFilterComponent = connect(
     return {};
   });
 
+// GraphFilterConditionViews
 
 type PropsSubjectBeginsWithView = Props & { condition: GF.GraphFilterConditionSubjectBeginsWith }
 function GraphFilterConditionSubjectBeginsWithView(props: PropsSubjectBeginsWithView) {
