@@ -31,7 +31,7 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
   }
 }
 
-export interface GraphFilterConditionWithStringValue {
+export interface GraphFilterConditionWithStringValue extends GraphFilterCondition {
   readonly value: string
 }
 
