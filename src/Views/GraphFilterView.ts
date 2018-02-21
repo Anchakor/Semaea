@@ -5,8 +5,8 @@ import { objectJoinExtend } from "Common";
 import { StoreState } from "UIStore/Main";
 
 function renderFilter<Condition extends GF.GraphFilterCondition>(
-    funcComp: (props: Props & { condition: Condition }) => VNode, 
-    p: Props & { condition: Condition }): VNode {
+    funcComp: (props: ConditionViewPropsBase & { condition: Condition }) => VNode, 
+    p: ConditionViewPropsBase & { condition: Condition }): VNode {
   return h('div', {}, [
     "Filter: ",
     hf(funcComp, p)
@@ -20,14 +20,16 @@ function isGraphFilterConditionOfType<C extends GF.GraphFilterCondition>(
 
 function tryRenderCondition<C extends GF.GraphFilterCondition>(props: Props, 
     c: GF.GraphFilterCondition, 
+    cIndex: number,
     type: GF.GraphFilterConditionType, 
-    view: ((p: Props & { condition: C }) => VNode)): VNode | undefined {
+    view: ((p: ConditionViewPropsBase & { condition: C }) => VNode)): VNode | undefined {
   if (!isGraphFilterConditionOfType<C>(c, type)) return undefined;
-  const p = objectJoinExtend(props, { condition: c });
+  const p = objectJoinExtend(props, { condition: c, conditionIndex: cIndex });
   return renderFilter(view, p);
 }
 
-type Props = GraphViewProps;
+type Props = GraphViewProps & DispatchProps;
+type ConditionViewPropsBase = Props & { conditionIndex: number }
 
 class GraphFilterView extends UIComponent<Props, {}> {
   constructor(props: Props, context: any) {
@@ -35,11 +37,12 @@ class GraphFilterView extends UIComponent<Props, {}> {
   }
   render() {
     if (!this.props.saGraphView.filter) return h('');
-    const condition = this.props.saGraphView.filter.conditions[this.props.saGraphView.filter.rootConditionIndex];
-    let v = tryRenderCondition<GF.GraphFilterConditionSubjectBeginsWith>(this.props, condition,
+    const conditionIndex = this.props.saGraphView.filter.rootConditionIndex;
+    const condition = this.props.saGraphView.filter.conditions[conditionIndex];
+    let v = tryRenderCondition<GF.GraphFilterConditionSubjectBeginsWith>(this.props, condition, conditionIndex,
       GF.GraphFilterConditionType.SubjectBeginsWith, GraphFilterConditionSubjectBeginsWithView);
     if (v) return v;
-    v = tryRenderCondition<GF.GraphFilterConditionSubjectContains>(this.props, condition,
+    v = tryRenderCondition<GF.GraphFilterConditionSubjectContains>(this.props, condition, conditionIndex,
       GF.GraphFilterConditionType.SubjectContains, GraphFilterConditionSubjectContainsView);
     if (v) return v;
     return h('');
@@ -51,19 +54,37 @@ export const GraphFilterComponent = connect(
     return {};
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps: GraphViewProps) => { 
-    return {};
-  });
+    return {
+      changeGraphFilterConditionStringValue: (saGraphViewIndex: number, conditionIndex: number, newValue: string) => {
+        const action: GF.ChangeGraphFilterConditionStringValueAction = { type: GF.ActionType.ChangeGraphFilterConditionStringValue,
+          saGraphViewIndex: saGraphViewIndex, conditionIndex: conditionIndex, newValue: newValue
+        }; dispatch(action); 
+      }
+    };
+  }
+);
+
+type DispatchProps = {
+  changeGraphFilterConditionStringValue: (saGraphViewIndex: number, conditionIndex: number, newValue: string) => void
+}
 
 // GraphFilterConditionViews
 
-type PropsSubjectBeginsWithView = Props & { condition: GF.GraphFilterConditionSubjectBeginsWith }
+type PropsSubjectBeginsWithView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectBeginsWith }
 function GraphFilterConditionSubjectBeginsWithView(props: PropsSubjectBeginsWithView) {
   if (props.condition.type != GF.GraphFilterConditionType.SubjectBeginsWith) return h('');
   return h('span', {}, 'testing');
 }
 
-type PropsSubjectContainsView = Props & { condition: GF.GraphFilterConditionSubjectContains }
+type PropsSubjectContainsView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectContains }
 function GraphFilterConditionSubjectContainsView(props: PropsSubjectContainsView) {
   if (props.condition.type != GF.GraphFilterConditionType.SubjectContains) return h('');
-  return h('span', {}, 'testing2');
+  return h('span', {
+    onclick: () => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, "triple")
+  }, 'testing2 '+props.condition.value);
+}
+
+type PropsStringValueView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionStringValue }
+function GraphFilterConditionStringValueView(props: PropsStringValueView) {
+
 }

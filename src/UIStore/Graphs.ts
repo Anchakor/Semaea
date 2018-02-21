@@ -5,7 +5,7 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { SaView } from '../SaViews';
 import * as SaGraphViews from './Graphs/SaGraphViews';
-import { GraphFilter, GraphFilterConditionSubjectBeginsWith, GraphFilterConditionType, getSaGraphViewFilteredTriples } from './GraphFilters';
+import * as GraphFilters from './GraphFilters';
 
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
@@ -22,7 +22,7 @@ export interface SaGraphView {
   readonly previousNode?: GraphNode
   readonly previousNodeNonPredicate?: GraphNode
   readonly previousNodePredicate?: GraphNode
-  readonly filter?: GraphFilter
+  readonly filter?: GraphFilters.GraphFilter
 }
 
 export type Graphs = (Graph | undefined)[];
@@ -47,7 +47,7 @@ defaultState = doInitializeTestGraphAction(defaultState);
 export function setCurrentNodeToFirstNode(saGraphView: SaGraphView, graphsState: State) {
   const graph = graphsState.graphs[saGraphView.graphIndex];
   if (!graph) return saGraphView;
-  const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
+  const triples = GraphFilters.getSaGraphViewFilteredTriples(saGraphView, graph);
   if (triples.length < 1) return saGraphView;
   const triple = triples[0];
   if (!triple) return saGraphView;
@@ -75,7 +75,7 @@ function doInitializeTestGraphAction(state: State): State {
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 0, 
       currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s"),
       // TODO undo hardcoded filter
-      filter: { conditions: [{ type: GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as GraphFilterConditionSubjectBeginsWith], rootConditionIndex: 0 } as GraphFilter
+      filter: { conditions: [{ type: GraphFilters.GraphFilterConditionType.SubjectBeginsWith, value: "testS" } as GraphFilters.GraphFilterConditionSubjectBeginsWith], rootConditionIndex: 0 } as GraphFilters.GraphFilter
     }),
     objectJoin<SaGraphView>(defaultState.saGraphViews[0], { graphIndex: 1, 
       currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s") })
@@ -117,6 +117,8 @@ function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   let newState = SaGraphViews.reducer(state, action);
+  if (newState != state) { return newState; } // TODO unit test this works
+  newState = GraphFilters.reducer(state, action);
   if (newState != state) { return newState; } // TODO unit test this works
 
   switch (action.type) {

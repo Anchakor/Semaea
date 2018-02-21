@@ -1,6 +1,8 @@
 import { Graph } from '../Graphs/Graph';
 import { Triple } from '../Graphs/Triple';
-import { SaGraphView } from './Graphs';
+import { SaGraphView, State } from './Graphs';
+import { StoreLib } from '../External';
+import { objectJoin, arrayImmutableSet } from '../Common';
 
 export interface GraphFilter {
   readonly conditions: GraphFilterCondition[];
@@ -31,20 +33,57 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
   }
 }
 
-export interface GraphFilterConditionWithStringValue extends GraphFilterCondition {
+export interface GraphFilterConditionStringValue extends GraphFilterCondition {
   readonly value: string
+}
+function isStringValueCondition(condition: GraphFilterCondition): condition is GraphFilterConditionStringValue {
+  return (condition.type === GraphFilterConditionType.SubjectBeginsWith
+    || condition.type === GraphFilterConditionType.SubjectContains);
 }
 
 export enum GraphFilterConditionType {
   SubjectBeginsWith = 'SubjectBeginsWith'
 }
-export interface GraphFilterConditionSubjectBeginsWith extends GraphFilterConditionWithStringValue {
+export interface GraphFilterConditionSubjectBeginsWith extends GraphFilterConditionStringValue {
   readonly type: GraphFilterConditionType.SubjectBeginsWith
 }
 
 export enum GraphFilterConditionType {
   SubjectContains = 'SubjectContains'
 }
-export interface GraphFilterConditionSubjectContains extends GraphFilterConditionWithStringValue {
+export interface GraphFilterConditionSubjectContains extends GraphFilterConditionStringValue {
   readonly type: GraphFilterConditionType.SubjectContains
+}
+
+// Actions:
+
+// ChangeGraphFilterConditionStringValueAction
+export enum ActionType { ChangeGraphFilterConditionStringValue = 'ChangeGraphFilterConditionStringValue' }
+export interface ChangeGraphFilterConditionStringValueAction extends StoreLib.Action { type: ActionType.ChangeGraphFilterConditionStringValue
+  saGraphViewIndex: number
+  conditionIndex: number
+  newValue: string
+}
+function doChangeGraphFilterConditionStringValueAction(state: State, action: ChangeGraphFilterConditionStringValueAction): State {
+  const saGraphView = state.saGraphViews[action.saGraphViewIndex];
+  if (!saGraphView || !saGraphView.filter) return state;
+  const condition = saGraphView.filter.conditions[action.conditionIndex];
+  if (!condition || !isStringValueCondition(condition)) return state;
+  const newCondition = objectJoin<GraphFilterConditionStringValue>(condition, { value: action.newValue });
+  const newFilter = objectJoin<GraphFilter>(saGraphView.filter, {
+    conditions: arrayImmutableSet(saGraphView.filter.conditions, action.conditionIndex, newCondition)
+  });
+  const newSaGraphView = objectJoin<SaGraphView>(saGraphView, { filter: newFilter });
+  return objectJoin<State>(state, { saGraphViews: arrayImmutableSet(state.saGraphViews, action.saGraphViewIndex, newSaGraphView) });
+}
+
+// Reducer:
+
+export const reducer: StoreLib.Reducer<State> = (state: State, action: StoreLib.Action) => {
+  switch (action.type) {
+    case ActionType.ChangeGraphFilterConditionStringValue:
+      return doChangeGraphFilterConditionStringValueAction(state, action as ChangeGraphFilterConditionStringValueAction);
+    default:
+      return state;
+  }
 }
