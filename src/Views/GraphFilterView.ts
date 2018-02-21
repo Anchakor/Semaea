@@ -73,15 +73,27 @@ type DispatchProps = {
 type PropsSubjectBeginsWithView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectBeginsWith }
 function GraphFilterConditionSubjectBeginsWithView(props: PropsSubjectBeginsWithView) {
   if (props.condition.type != GF.GraphFilterConditionType.SubjectBeginsWith) return h('');
-  return h('span', {}, 'testing');
+  return h('div', {}, [
+    h('span', {}, 'Subject begins with: '),
+    h('input', {
+      type: 'text',
+      oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
+      value: props.condition.value
+    })
+  ]);
 }
 
 type PropsSubjectContainsView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectContains }
 function GraphFilterConditionSubjectContainsView(props: PropsSubjectContainsView) {
   if (props.condition.type != GF.GraphFilterConditionType.SubjectContains) return h('');
-  return h('span', {
-    onclick: () => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, "triple")
-  }, 'testing2 '+props.condition.value);
+  return h('div', {}, [
+    h('span', {}, 'Subject contains: '),
+    h('input', {
+      type: 'text',
+      oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
+      value: props.condition.value
+    })
+  ]);
 }
 
 type PropsStringValueView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionStringValue }
