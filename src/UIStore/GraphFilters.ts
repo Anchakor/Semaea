@@ -24,10 +24,10 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
   switch (condition.type) {
     case GraphFilterConditionType.SubjectBeginsWith:
        stringValue = (condition as GraphFilterConditionSubjectBeginsWith).value;
-      return graph.get().filter((triple) => triple.s.startsWith(stringValue));
+      return graph.get().filter((triple) => triple.s.toLowerCase().startsWith(stringValue.toLowerCase()));
     case GraphFilterConditionType.SubjectContains:
       stringValue = (condition as GraphFilterConditionSubjectContains).value;
-      return graph.get().filter((triple) => triple.s.includes(stringValue));
+      return graph.get().filter((triple) => triple.s.toLowerCase().includes(stringValue.toLowerCase()));
     default:
       return graph.get();
   }

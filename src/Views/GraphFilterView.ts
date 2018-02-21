@@ -75,6 +75,7 @@ function renderConditionStringValueInputField(label: string, props: ConditionVie
     h('span', {}, label),
     h('input', {
       type: 'text',
+      // TODO pass enter, esc keys to dialog handling
       oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
       value: props.condition.value
     })
