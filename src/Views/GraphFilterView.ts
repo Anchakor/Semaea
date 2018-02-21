@@ -1,14 +1,14 @@
-import { UIComponent, h, hc, connect, StoreLib, hf, VNode } from "External";
-import { Props as GraphViewProps } from "Views/GraphView";
-import * as GF from "UIStore/GraphFilters";
-import { objectJoinExtend } from "Common";
-import { StoreState } from "UIStore/Main";
+import { UIComponent, h, hc, connect, StoreLib, hf, VNode } from '../External';
+import { Props as GraphViewProps } from './GraphView';
+import * as GF from '../UIStore/GraphFilters';
+import { objectJoinExtend } from '../Common';
+import { StoreState } from '../UIStore/Main';
 
 function renderFilter<Condition extends GF.GraphFilterCondition>(
     funcComp: (props: ConditionViewPropsBase & { condition: Condition }) => VNode, 
     p: ConditionViewPropsBase & { condition: Condition }): VNode {
   return h('div', {}, [
-    "Filter: ",
+    'Filter: ',
     hf(funcComp, p)
   ]);
 }
@@ -91,9 +91,4 @@ type PropsSubjectContainsView = ConditionViewPropsBase & { condition: GF.GraphFi
 function GraphFilterConditionSubjectContainsView(props: PropsSubjectContainsView) {
   if (props.condition.type != GF.GraphFilterConditionType.SubjectContains) return h('');
   return renderConditionStringValueInputField('Subject contains: ', props);
-}
-
-type PropsStringValueView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionStringValue }
-function GraphFilterConditionStringValueView(props: PropsStringValueView) {
-
 }
