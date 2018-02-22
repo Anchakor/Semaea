@@ -4,6 +4,12 @@ import { SaGraphView, State } from './Graphs';
 import { StoreLib } from '../External';
 import { objectJoin, arrayImmutableSet } from '../Common';
 
+/*
+GraphFilters and GraphFilterConditions
+GraphFilter defines how Graph is filtered to display only part of it in SaGraphView.
+GraphFilterConditions define how Graph is filtered, some being container conditions which link to other conditions (AND, OR operations) forming a hierarchy.
+*/
+
 export interface GraphFilter {
   readonly conditions: GraphFilterCondition[];
   readonly rootConditionIndex: number;

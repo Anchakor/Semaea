@@ -10,11 +10,10 @@ import * as GraphFilters from './GraphFilters';
 /* Graphs and SaGraphViews
 Graphs are the data being displayed in Semaea in one SaGraphView.
 SaGraphView has the information about how is a Graph being displayed by Semaea.
+SaGraphView can be filtered to show only part of a Graph.
 SaGraphViews 0..* - 1 Graph
 SaGraphViews 0..1 - 0..* SaViews
 */
-
-// TODO filtered graph view
 
 export interface SaGraphView {
   readonly graphIndex: number
