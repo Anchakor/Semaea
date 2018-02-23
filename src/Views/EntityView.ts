@@ -44,6 +44,7 @@ function EntityViewInner(props: Props) {
   let spanProps = { 
     tabIndex: 0, 
     class: '',
+    onkeyup: keyup(props),
     onkeydown: keydown(props),
     onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
     onfocus: () => props.changeCurrentNode(props.saView.saGraphViewIndex, props.graphNode)
@@ -57,7 +58,7 @@ function EntityViewInner(props: Props) {
   return h('span', spanProps, props.graphNode.getValue());
 }
 
-function keydown(props: Props) {
+function keyup(props: Props) {
   return (event: KeyboardEvent) => {
     // TODO dialog/graph keydown handling
     if (Key.isSpacebar(event)) {
@@ -75,6 +76,15 @@ function keydown(props: Props) {
       props.createDeleteGraphDialog(props.saGraphView.graphIndex, props.saViewIndex);
     } else if (Key.isN(event)) {
       props.createAddTripleDialog(props.graphNode, props.saViewIndex);
+    }
+  }
+}
+function keydown(props: Props) {
+  return (event: KeyboardEvent) => {
+    if (Key.isSpacebar(event)
+      || Key.isDownArrow(event)
+      || Key.isUpArrow(event)) {
+      event.preventDefault();
     }
   }
 }
