@@ -16,6 +16,7 @@ export interface State {
 }
 export const defaultState: State = { 
   changeFocusTo: FocusTargetAreas.GraphView
+  // TODO previous focus & action for returning focus
 };
 
 // Actions:
