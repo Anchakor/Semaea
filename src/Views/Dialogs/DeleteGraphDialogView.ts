@@ -1,6 +1,6 @@
-import { h } from "../../External";
-import { DialogProps, getDialogCancelButton } from "../DialogView";
-import { DeleteGraphDialog } from "../../Dialogs/Dialog";
+import { h, hc } from '../../External';
+import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { DeleteGraphDialog } from '../../Dialogs/Dialog';
 
 export function DeleteGraphDialogView(props: DialogProps<DeleteGraphDialog>) {
   return h('div', {}, [ 'Delete graph at index: ', props.dialog.graphToDeleteIndex, ' ',
@@ -10,5 +10,5 @@ export function DeleteGraphDialogView(props: DialogProps<DeleteGraphDialog>) {
         props.finishDialog(props.dialogIndex);
       }
     }, 'Delete'),
-    ' ', getDialogCancelButton(props) ]);
+    ' ', hc(DialogCancelButtonView, props) ]);
 }

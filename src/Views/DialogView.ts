@@ -41,11 +41,29 @@ export interface DialogProps<D extends Dialog> extends Props {
   graphIndex: number
 }
 
-export function getDialogCancelButton(dialogProps: DialogProps<Dialog>, additionalAction?: () => void) {
+type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
+export class DialogCancelButtonView extends UIComponent<DialogCancelButtonProps, { elem: HTMLElement }> {
+  constructor(props?: DialogCancelButtonProps, context?: any) { super(props, context); }
+  render() {
+    let innerProps = objectJoinExtend(this.props, {
+      onComponentDidMount: (e: HTMLElement) => { 
+        this.setState({ elem: e }); 
+      },
+      onComponentDidUpdate: (lastProps: DialogCancelButtonProps, nextProps: DialogCancelButtonProps) => { 
+        if (this.state && this.props.focus_.changeFocusTo 
+          && this.props.focus_.changeFocusTo == FocusTargetAreas.Dialog) {
+            this.state.elem.focus();
+            this.props.acknowledgeFocusChange();
+        }
+      }
+    });
+    return hf(DialogCancelButtonViewInner, innerProps);
+  }
+}
+function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', { 
-    // TODO get focus and dialogProps.acknowledgeFocusChange on update
     onclick: () => { 
-      if (additionalAction != undefined) additionalAction();
+      if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
       dialogProps.cancelDialog(dialogProps.dialogIndex);
     }
   }, 'Cancel')

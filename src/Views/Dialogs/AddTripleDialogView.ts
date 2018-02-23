@@ -1,9 +1,9 @@
-import { h, UIComponent, connect, StoreLib } from "../../External";
-import { DialogProps, getDialogCancelButton } from "../DialogView";
-import { AddTripleDialog } from "../../Dialogs/Dialog";
-import { Triple } from "../../Graphs/Triple";
-import { objectJoin } from "Common";
-import { StoreState } from "UIStore/Main";
+import { h, UIComponent, connect, StoreLib, hc } from '../../External';
+import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { AddTripleDialog } from '../../Dialogs/Dialog';
+import { Triple } from '../../Graphs/Triple';
+import { objectJoin } from '../../Common';
+import { StoreState } from '../../UIStore/Main';
 
 interface State {
   s: string
@@ -47,7 +47,7 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
           this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
         }
       }, 'Add without closing'), ' ', 
-      getDialogCancelButton(this.props) ]);
+      hc(DialogCancelButtonView, this.props) ]);
   }
 }
 
