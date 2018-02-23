@@ -4,6 +4,7 @@ import * as Graphs from './Graphs';
 import * as Modals from './Modals';
 import * as SaViews from './SaViews';
 import * as Dialogs from './Dialogs';
+import * as Focus from './Focus';
 
 export interface StoreState {
   readonly testing_: TestingView.State
@@ -11,13 +12,15 @@ export interface StoreState {
   readonly modals_: Modals.State
   readonly saViews_: SaViews.State
   readonly dialogs_: Dialogs.State
+  readonly focus_: Focus.State
 }
 const defaultState: StoreState = {
   testing_: TestingView.defaultState,
   graphs_: Graphs.defaultState,
   modals_: Modals.defaultState,
   saViews_: SaViews.defaultState,
-  dialogs_: Dialogs.defaultState
+  dialogs_: Dialogs.defaultState,
+  focus_: Focus.defaultState
 };
 
 // Reducer:
@@ -33,7 +36,8 @@ const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState,
     graphs_: Graphs.reducer(state.graphs_, action),
     modals_: Modals.reducer(state.modals_, action),
     saViews_: SaViews.reducer(state.saViews_, action),
-    dialogs_: state.dialogs_
+    dialogs_: state.dialogs_,
+    focus_: Focus.reducer(state.focus_, action)
   }
 }
 
