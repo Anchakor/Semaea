@@ -19,7 +19,7 @@ export interface State {
   readonly viewMappings: DialogSaViewMapping[]
   readonly dialogs: Dialog[]
 }
-export let defaultState: State = { 
+export const defaultState: State = { 
   viewMappings: [],
   dialogs: [],
 };

@@ -13,7 +13,7 @@ export interface State {
   readonly saViews: SaView[]
   readonly currentSaViewIndex: number
 }
-export let defaultState: State = { 
+export const defaultState: State = { 
   saViews: [{ 
     saGraphViewIndex: 0
   }],
