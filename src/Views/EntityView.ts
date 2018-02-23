@@ -5,6 +5,7 @@ import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
 import { objectJoinExtend } from 'Common';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialog';
+import { FocusTargetAreas } from 'UIStore/Focus';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -21,7 +22,7 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
   return props.saGraphView.currentNode.getValue() == props.graphNode.getValue();
 }
 
-export class EntityView extends UIComponent<Props, { elem: HTMLElement, wasFocused: boolean }> {
+export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
   constructor(props?: Props, context?: any) { super(props, context); }
   render() {
     let innerProps = objectJoinExtend(this.props, {
@@ -29,11 +30,10 @@ export class EntityView extends UIComponent<Props, { elem: HTMLElement, wasFocus
         this.setState({ elem: e }); 
       },
       onComponentDidUpdate: (lastProps: Props, nextProps: Props) => { 
-        if (isCurrentGraphNode(nextProps) && this.state && !this.state.wasFocused) {
-          this.state.elem.focus();
-          this.setState({ wasFocused: true });
-        } else if (this.state && this.state.wasFocused && !isCurrentGraphNode(nextProps)) {
-          this.setState({ wasFocused: false });
+        if (isCurrentGraphNode(nextProps) && this.state && this.props.focus_.changeFocusTo 
+          && this.props.focus_.changeFocusTo == FocusTargetAreas.GraphView) {
+            this.state.elem.focus();
+            this.props.acknowledgeFocusChange();
         }
       }
     });

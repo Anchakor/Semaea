@@ -43,6 +43,7 @@ export interface DialogProps<D extends Dialog> extends Props {
 
 export function getDialogCancelButton(dialogProps: DialogProps<Dialog>, additionalAction?: () => void) {
   return h('button', { 
+    // TODO get focus and dialogProps.acknowledgeFocusChange on update
     onclick: () => { 
       if (additionalAction != undefined) additionalAction();
       dialogProps.cancelDialog(dialogProps.dialogIndex);
@@ -72,6 +73,7 @@ export interface StateProps extends StoreState {
 export interface DispatchProps {
   cancelDialog: (dialogIndex: number) => void
   finishDialog: (dialogIndex: number) => void
+  acknowledgeFocusChange: () => void,
   addTriple: (graphIndex: number, triple: Triple) => void
   deleteGraph: (graphIndex: number) => void
 }
@@ -105,6 +107,7 @@ export const Component = connect(
     return {
       cancelDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createCancelDialogAction(dialogIndex)),
       finishDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createFinishDialogAction(dialogIndex)),
+      acknowledgeFocusChange: () => { const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: undefined }; dispatch(changeFocusAction) },
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
     };

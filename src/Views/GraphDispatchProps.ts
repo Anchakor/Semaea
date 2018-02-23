@@ -7,6 +7,7 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
 import { dispatchDialogCreation } from './DialogView';
+import { SetChangeFocusToAction, ActionType, FocusTargetAreas } from '../UIStore/Focus';
 
 export interface GraphDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
@@ -18,6 +19,7 @@ export interface GraphDispatchProps {
   createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
   cancelDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
+  acknowledgeFocusChange: () => void
 }
 
 export function createGraphDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): GraphDispatchProps {
@@ -31,5 +33,6 @@ export function createGraphDispatchProps(dispatch: <A extends StoreLib.Action>(a
     createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatchDialogCreation(dispatch, createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex)),
     cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
     changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset)),
+    acknowledgeFocusChange: () => { const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: undefined }; dispatch(changeFocusAction) },
   };
 }
