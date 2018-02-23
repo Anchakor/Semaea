@@ -9,7 +9,8 @@ import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView';
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
-import { DialogMenuDialogView } from 'Views/Dialogs/DialogMenuDialogView';
+import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
+import { SetChangeFocusToAction, ActionType, FocusTargetAreas } from '../UIStore/Focus';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -47,6 +48,18 @@ export function getDialogCancelButton(dialogProps: DialogProps<Dialog>, addition
       dialogProps.cancelDialog(dialogProps.dialogIndex);
     }
   }, 'Cancel')
+}
+
+export function dispatchDialogCreation<A2 extends StoreLib.Action>(dispatch: <A extends StoreLib.Action>(action: A) => void, action: A2): void {
+  const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: FocusTargetAreas.Dialog };
+  dispatch(action);
+  dispatch(changeFocusAction);
+}
+
+export function dispatchDialogCompletion<A2 extends StoreLib.Action>(dispatch: <A extends StoreLib.Action>(action: A) => void, action: A2): void {
+  const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: FocusTargetAreas.GraphView };
+  dispatch(action);
+  dispatch(changeFocusAction);
 }
 
 // View (component):
@@ -90,8 +103,8 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
-      cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
-      finishDialog: (dialogIndex: number) => dispatch(createFinishDialogAction(dialogIndex)),
+      cancelDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createCancelDialogAction(dialogIndex)),
+      finishDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createFinishDialogAction(dialogIndex)),
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
     };
