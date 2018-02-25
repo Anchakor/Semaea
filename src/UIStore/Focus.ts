@@ -26,6 +26,9 @@ export enum ActionType { SetChangeFocusTo = 'SetChangeFocusTo' }
 export interface SetChangeFocusToAction extends StoreLib.Action { type: ActionType.SetChangeFocusTo
   changeFocusTo?: FocusTargetAreas
 }
+export const SetChangeFocusToActionDefault: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo,
+  changeFocusTo: undefined
+};
 function doSetChangeFocusToAction(state: State, action: SetChangeFocusToAction) {
   const newState: State = { changeFocusTo: action.changeFocusTo };
   return objectJoin<State>(state, newState);
