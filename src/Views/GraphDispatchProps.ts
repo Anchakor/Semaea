@@ -41,13 +41,15 @@ export function createGraphDispatchProps(dispatch: <A extends StoreLib.Action>(a
       dispatch(createSetChangeFocusToDialogAction());
     },
     createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => {
-      dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex))
+      dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex));
       dispatch(createSetChangeFocusToDialogAction());
     },
     cancelDialog: (dialogIndex: number) => 
       dispatch(createCancelDialogAction(dialogIndex)),
-    changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => 
-      dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset)),
+    changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => {
+      dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset));
+      dispatch(createSetChangeFocusToGraphViewAction());
+    },
     acknowledgeFocusChange: () => 
       dispatch(createSetChangeFocusToNoneAction()),
   };
