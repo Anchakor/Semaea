@@ -16,7 +16,7 @@ export interface State {
 }
 export const defaultState: State = { 
   changeFocusTo: FocusTargetAreas.GraphView
-  // TODO previous focus & action for returning focus
+  // TODO previous focus & action for returning focus (or focus per view?)
 };
 
 // Actions:
@@ -26,9 +26,12 @@ export enum ActionType { SetChangeFocusTo = 'SetChangeFocusTo' }
 export interface SetChangeFocusToAction extends StoreLib.Action { type: ActionType.SetChangeFocusTo
   changeFocusTo?: FocusTargetAreas
 }
-export const SetChangeFocusToActionDefault: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo,
+export const createSetChangeFocusToAction = (partialAction: Partial<SetChangeFocusToAction>) => objectJoin<SetChangeFocusToAction>({ type: ActionType.SetChangeFocusTo,
   changeFocusTo: undefined
-};
+}, partialAction);
+export const createSetChangeFocusToGraphViewAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTargetAreas.GraphView });
+export const createSetChangeFocusToDialogAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTargetAreas.Dialog });
+export const createSetChangeFocusToNoneAction = () => createSetChangeFocusToAction({ changeFocusTo: undefined });
 function doSetChangeFocusToAction(state: State, action: SetChangeFocusToAction) {
   const newState: State = { changeFocusTo: action.changeFocusTo };
   return objectJoin<State>(state, newState);

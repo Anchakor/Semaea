@@ -6,8 +6,7 @@ import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
-import { dispatchDialogCreation } from './DialogView';
-import { SetChangeFocusToAction, SetChangeFocusToActionDefault } from '../UIStore/Focus';
+import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
 import { objectJoin } from "Common";
 
 export interface GraphDispatchProps {
@@ -25,15 +24,31 @@ export interface GraphDispatchProps {
 
 export function createGraphDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): GraphDispatchProps {
   return {
-    changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
-    changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
-    changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
-    createDialogMenuDialog: (originatingSaViewIndex: number) => dispatchDialogCreation(dispatch, createCreateDialogMenuDialogAction(originatingSaViewIndex)), // TODO change to graphview focus
-    showAlertModal: (originatingGraphIndex: number, message: string) => dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
-    createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => dispatchDialogCreation(dispatch, createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex)),
-    createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => dispatchDialogCreation(dispatch, createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex)),
-    cancelDialog: (dialogIndex: number) => dispatch(createCancelDialogAction(dialogIndex)),
-    changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset)),
-    acknowledgeFocusChange: () => dispatch(objectJoin<SetChangeFocusToAction>(SetChangeFocusToActionDefault, { changeFocusTo: undefined })),
+    changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => 
+      dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
+    changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => 
+      dispatch(createChangeSaViewSaGraphViewAction(saViewIndex, saGraphViewIndex)),
+    changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => 
+      dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
+    createDialogMenuDialog: (originatingSaViewIndex: number) => {
+      dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex));
+      dispatch(createSetChangeFocusToGraphViewAction());
+    },
+    showAlertModal: (originatingGraphIndex: number, message: string) => 
+      dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
+    createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => {
+      dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex));
+      dispatch(createSetChangeFocusToDialogAction());
+    },
+    createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => {
+      dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex))
+      dispatch(createSetChangeFocusToDialogAction());
+    },
+    cancelDialog: (dialogIndex: number) => 
+      dispatch(createCancelDialogAction(dialogIndex)),
+    changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => 
+      dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset)),
+    acknowledgeFocusChange: () => 
+      dispatch(createSetChangeFocusToNoneAction()),
   };
 }

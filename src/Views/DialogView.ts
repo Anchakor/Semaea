@@ -10,7 +10,7 @@ import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView'
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
-import { SetChangeFocusToAction, ActionType, FocusTargetAreas } from '../UIStore/Focus';
+import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTargetAreas } from '../UIStore/Focus';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -69,18 +69,6 @@ function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   }, 'Cancel')
 }
 
-export function dispatchDialogCreation<A2 extends StoreLib.Action>(dispatch: <A extends StoreLib.Action>(action: A) => void, action: A2): void {
-  const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: FocusTargetAreas.Dialog };
-  dispatch(action);
-  dispatch(changeFocusAction);
-}
-
-export function dispatchDialogCompletion<A2 extends StoreLib.Action>(dispatch: <A extends StoreLib.Action>(action: A) => void, action: A2): void {
-  const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: FocusTargetAreas.GraphView };
-  dispatch(action);
-  dispatch(changeFocusAction);
-}
-
 // View (component):
 
 export interface StateProps extends StoreState {
@@ -123,9 +111,15 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return {
-      cancelDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createCancelDialogAction(dialogIndex)),
-      finishDialog: (dialogIndex: number) => dispatchDialogCompletion(dispatch, createFinishDialogAction(dialogIndex)),
-      acknowledgeFocusChange: () => { const changeFocusAction: SetChangeFocusToAction = { type: ActionType.SetChangeFocusTo, changeFocusTo: undefined }; dispatch(changeFocusAction) },
+      cancelDialog: (dialogIndex: number) => {
+        dispatch(createCancelDialogAction(dialogIndex));
+        dispatch(createSetChangeFocusToGraphViewAction());
+      },
+      finishDialog: (dialogIndex: number) => {
+        dispatch(createFinishDialogAction(dialogIndex));
+        dispatch(createSetChangeFocusToGraphViewAction());
+      },
+      acknowledgeFocusChange: () => dispatch(createSetChangeFocusToNoneAction()),
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
     };
