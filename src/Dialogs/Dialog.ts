@@ -16,8 +16,6 @@ export interface DialogSaViewMapping {
   readonly saViewIndex: number
 }
 
-// TODO move DialogSaViewMapping here
-
 export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: DialogType): T[] => {
   return dialogs.filter((value: Dialog) => value.type == type) as T[];
 };

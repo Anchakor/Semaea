@@ -116,9 +116,9 @@ function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
   let newState = SaGraphViews.reducer(state, action);
-  if (newState != state) { return newState; } // TODO unit test this works
+  if (newState != state) { return newState; }
   newState = GraphFilters.reducer(state, action);
-  if (newState != state) { return newState; } // TODO unit test this works
+  if (newState != state) { return newState; }
 
   switch (action.type) {
     case ActionType.InitializeTestGraph:

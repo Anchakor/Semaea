@@ -109,9 +109,9 @@ function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
 
 export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   let newState = BasicGraphDialogs.reducer(state, action);
-  if (newState != state) { return newState; } // TODO unit test this works
+  if (newState != state) { return newState; }
   newState = DialogMenuDialog.reducer(state, action);
-  if (newState != state) { return newState; } // TODO unit test this works
+  if (newState != state) { return newState; }
 
   switch (action.type) {    
     case ActionType.CancelDialog:

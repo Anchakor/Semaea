@@ -29,7 +29,7 @@ const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState,
   setTimeout(() => { $('#graph').textContent = JSON.stringify(state); }, 1); // Debug
 
   var newState = Dialogs.reducer(state, action);
-  if (newState != state) { return newState; } // TODO unit test this works
+  if (newState != state) { return newState; }
 
   return {
     testing_: TestingView.reducer(state.testing_, action),
