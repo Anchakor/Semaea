@@ -38,13 +38,13 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
       }), ' ', 
       h('button', {
         onclick: () => {
-          this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+          this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
           this.props.finishDialog(this.props.dialogIndex);
         }
       }, 'Add'), ' ', 
       h('button', {
         onclick: () => {
-          this.props.addTriple(this.props.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+          this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
         }
       }, 'Add without closing'), ' ', 
       hc(DialogCancelButtonView, this.props) ]);

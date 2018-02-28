@@ -10,14 +10,12 @@ import { createGraphDispatchProps, GraphDispatchProps } from './GraphDispatchPro
 import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
+import { CurrentProps, getCurrentProps } from './CurrentProps';
 
 // View (component):
 
 export interface StateProps extends StoreState {
-  saViewIndex: number
-  saView: SaView
-  saGraphView: SaGraphView
-  graph: Graph
+  current: CurrentProps
 }
 export type Props = StateProps & GraphDispatchProps
 
@@ -38,12 +36,12 @@ export class View extends UIComponent<Props, {}> {
       h('span', {}, "Graph Views: ")
     ].concat(this.props.graphs_.saGraphViews.map((g, i) => {
       let tagClass: string = '';
-      if (this.props.saView.saGraphViewIndex == i) {
+      if (this.props.current.saView.saGraphViewIndex == i) {
         tagClass = 'element-selected'
       }
       return h('button', { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentSaGraphView(this.props.saViewIndex, i)
+        onclick: () => this.props.changeCurrentSaGraphView(this.props.current.saViewIndex, i)
       }, i.toString())
     })));
   }
@@ -56,21 +54,21 @@ export class View extends UIComponent<Props, {}> {
       .filter((graphIndex) => this.props.graphs_.graphs[graphIndex])
       .map((graphIndex) => {
       let tagClass: string = '';
-      if (this.props.saGraphView.graphIndex == graphIndex) {
+      if (this.props.current.saGraphView.graphIndex == graphIndex) {
         tagClass = 'element-selected'
       }
       return h('button', { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentGraph(this.props.saView.saGraphViewIndex, graphIndex)
+        onclick: () => this.props.changeCurrentGraph(this.props.current.saGraphViewIndex, graphIndex)
       }, graphIndex.toString())
     })));
   }
 
   private renderCurrentGraph() {
-    if (!this.props.graph) {
+    if (!this.props.current.graph) {
       return h('div', {}, 'Viewed graph is undefined');
     }
-    const triples = getSaGraphViewFilteredTriples(this.props.saGraphView, this.props.graph);
+    const triples = getSaGraphViewFilteredTriples(this.props.current.saGraphView, this.props.current.graph);
     return h('div', {}, triples.map((triple: Triple) => {
       return h('div', {}, [
         renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
@@ -92,11 +90,7 @@ function renderLevelPosition(props: Props, graphNode: GraphNode) {
 export const Component = connect(
   View,
   (state: StoreState) => {
-    const saViewIndex = state.saViews_.currentSaViewIndex;
-    const saView = state.saViews_.saViews[saViewIndex];
-    const saGraphView = state.graphs_.saGraphViews[saView.saGraphViewIndex];
-    const graph = state.graphs_.graphs[saGraphView.graphIndex];
-    return objectJoin<StateProps>(state as StateProps, { saViewIndex: saViewIndex, saView: saView, saGraphView: saGraphView, graph: graph });
+    return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): GraphDispatchProps => { 
     return createGraphDispatchProps(dispatch);

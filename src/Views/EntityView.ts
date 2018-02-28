@@ -3,9 +3,9 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
-import { objectJoinExtend } from 'Common';
-import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialog';
-import { FocusTargetAreas } from 'UIStore/Focus';
+import { objectJoinExtend } from '../Common';
+import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
+import { FocusTargetAreas } from '../UIStore/Focus';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -13,13 +13,13 @@ interface Props extends GraphView.Props {
 }
 
 function isCurrentGraphNode(props: Props): boolean {
-  if (!props.saGraphView.currentNode) return false;
-  return props.saGraphView.currentNode.toString() == props.graphNode.toString();
+  if (!props.current.saGraphView.currentNode) return false;
+  return props.current.saGraphView.currentNode.toString() == props.graphNode.toString();
 }
 
 function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
-  if (!props.saGraphView.currentNode) return false;
-  return props.saGraphView.currentNode.getValue() == props.graphNode.getValue();
+  if (!props.current.saGraphView.currentNode) return false;
+  return props.current.saGraphView.currentNode.getValue() == props.graphNode.getValue();
 }
 
 export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
@@ -46,8 +46,8 @@ function EntityViewInner(props: Props) {
     class: '',
     onkeyup: keyup(props),
     onkeydown: keydown(props),
-    onclick: () => props.showAlertModal(props.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
-    onfocus: () => props.changeCurrentNode(props.saView.saGraphViewIndex, props.graphNode)
+    onclick: () => props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
+    onfocus: () => props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode)
   };
   if (isCurrentGraphNode(props)) {
     spanProps.class = 'element-selected';
@@ -62,20 +62,20 @@ function keyup(props: Props) {
   return (event: KeyboardEvent) => {
     // TODO dialog/graph keydown handling
     if (Key.isSpacebar(event)) {
-      props.createDialogMenuDialog(props.saViewIndex);
+      props.createDialogMenuDialog(props.current.saViewIndex);
       event.preventDefault();
     } else if (Key.isEscape(event)) {
       cancelLinkedDialogs(props);
     } else if (Key.isDownArrow(event)) {
-      props.changeCurrentGraphNodeByOffset(props.saView.saGraphViewIndex, 1);
+      props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, 1);
       event.preventDefault();
     } else if (Key.isUpArrow(event)) {
-      props.changeCurrentGraphNodeByOffset(props.saView.saGraphViewIndex, -1);
+      props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, -1);
       event.preventDefault();
     } else if (Key.isM(event)) {
-      props.createDeleteGraphDialog(props.saGraphView.graphIndex, props.saViewIndex);
+      props.createDeleteGraphDialog(props.current.saGraphView.graphIndex, props.current.saViewIndex);
     } else if (Key.isN(event)) {
-      props.createAddTripleDialog(props.graphNode, props.saViewIndex);
+      props.createAddTripleDialog(props.graphNode, props.current.saViewIndex);
     }
   }
 }
@@ -90,7 +90,7 @@ function keydown(props: Props) {
 }
 
 function cancelLinkedDialogs(props: Props) {
-  const linkedDialogs = getDialogMappingsToSaView(props.saViewIndex, props.dialogs_.viewMappings);
+  const linkedDialogs = getDialogMappingsToSaView(props.current.saViewIndex, props.dialogs_.viewMappings);
   if (linkedDialogs.length == 0) return;
   linkedDialogs.every((v, i, a) => {
     const dialog = props.dialogs_.dialogs[v.dialogIndex];

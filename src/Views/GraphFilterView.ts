@@ -36,9 +36,10 @@ class GraphFilterView extends UIComponent<Props, {}> {
     super(props, context);
   }
   render() {
-    if (!this.props.saGraphView.filter) return h('');
-    const conditionIndex = this.props.saGraphView.filter.rootConditionIndex;
-    const condition = this.props.saGraphView.filter.conditions[conditionIndex];
+    const filter = this.props.current.saGraphView.filter;
+    if (!filter) return h('');
+    const conditionIndex = filter.rootConditionIndex;
+    const condition = filter.conditions[conditionIndex];
     let v = tryRenderCondition<GF.GraphFilterConditionSubjectBeginsWith>(this.props, condition, conditionIndex,
       GF.GraphFilterConditionType.SubjectBeginsWith, GraphFilterConditionSubjectBeginsWithView);
     if (v) return v;
@@ -76,7 +77,7 @@ function renderConditionStringValueInputField(label: string, props: ConditionVie
     h('input', {
       type: 'text',
       // TODO pass enter, esc keys to dialog handling
-      oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.saView.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
+      oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.current.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
       value: props.condition.value
     })
   ]);
