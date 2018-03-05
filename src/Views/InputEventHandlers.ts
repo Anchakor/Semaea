@@ -13,6 +13,7 @@ export enum KeyEventOptions {
 }
 
 export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar | KeyEventOptions.KeepTextInputKeys;
+export const ButtonKeyEventOptions = KeyEventOptions.KeepSpacebar;
 
 export function keyup(props: Props, options: KeyEventOptions) {
   return (event: KeyboardEvent) => {

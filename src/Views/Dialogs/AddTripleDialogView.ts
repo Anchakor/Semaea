@@ -4,7 +4,7 @@ import { AddTripleDialog } from '../../Dialogs/Dialog';
 import { Triple } from '../../Graphs/Triple';
 import { objectJoin } from '../../Common';
 import { StoreState } from '../../UIStore/Main';
-import { keyup, KeyEventOptions, keydown, TextInputKeyEventOptions } from '../InputEventHandlers';
+import { keyup, KeyEventOptions, keydown, TextInputKeyEventOptions, ButtonKeyEventOptions } from '../InputEventHandlers';
 
 interface State {
   s: string
@@ -48,15 +48,15 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
           this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
           this.props.finishDialog(this.props.dialogIndex);
         },
-        onkeyup: keyup(this.props, TextInputKeyEventOptions),
-        onkeydown: keydown(this.props, TextInputKeyEventOptions),
+        onkeyup: keyup(this.props, ButtonKeyEventOptions),
+        onkeydown: keydown(this.props, ButtonKeyEventOptions),
       }, 'Add'), ' ', 
       h('button', {
         onclick: () => {
           this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
         },
-        onkeyup: keyup(this.props, TextInputKeyEventOptions),
-        onkeydown: keydown(this.props, TextInputKeyEventOptions),
+        onkeyup: keyup(this.props, ButtonKeyEventOptions),
+        onkeydown: keydown(this.props, ButtonKeyEventOptions),
       }, 'Add without closing'), ' ', 
       hc(DialogCancelButtonView, this.props) ]);
   }
