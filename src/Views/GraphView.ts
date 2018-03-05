@@ -6,7 +6,7 @@ import { Graph } from '../Graphs/Graph';
 import { SaView } from '../SaViews';
 import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
-import { createGraphDispatchProps, GraphDispatchProps } from './GraphDispatchProps';
+import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
 import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
@@ -17,7 +17,7 @@ import { CurrentProps, getCurrentProps } from './CurrentProps';
 export interface StateProps extends StoreState {
   current: CurrentProps
 }
-export type Props = StateProps & GraphDispatchProps
+export type Props = StateProps & MainDispatchProps
 
 export class View extends UIComponent<Props, {}> {
   constructor(props?: Props, context?: any) { super(props, context); }
@@ -92,6 +92,6 @@ export const Component = connect(
   (state: StoreState) => {
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): GraphDispatchProps => { 
-    return createGraphDispatchProps(dispatch);
+  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): MainDispatchProps => { 
+    return createMainDispatchProps(dispatch);
   });

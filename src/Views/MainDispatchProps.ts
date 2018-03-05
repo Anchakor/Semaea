@@ -7,9 +7,8 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
-import { objectJoin } from "Common";
 
-export interface GraphDispatchProps {
+export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
   changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
@@ -22,7 +21,7 @@ export interface GraphDispatchProps {
   acknowledgeFocusChange: () => void
 }
 
-export function createGraphDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): GraphDispatchProps {
+export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): MainDispatchProps {
   return {
     changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => 
       dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
