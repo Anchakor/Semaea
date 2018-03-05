@@ -4,8 +4,9 @@ import { connect, h, StoreLib, UIComponent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { SaView, shouldSaViewBeVisible } from '../SaViews';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
-import { keyup, keydown, ButtonKeyEventOptions } from './InputEventHandlers';
-import { MainDispatchProps, createMainDispatchProps } from 'Views/MainDispatchProps';
+import { ButtonKeyEventOptions } from './InputEventHandlers';
+import { MainDispatchProps, createMainDispatchProps } from './MainDispatchProps';
+import { createFocusableElementProps } from './FocusableElementProps';
 
 // View (component):
 
@@ -36,12 +37,10 @@ export class View extends UIComponent<Props, {}> {
           if (this.props.current.saViewIndex == saViewIndex) {
             tagClass = 'element-selected'
           }
-          return h('button', { 
+          return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
             class: tagClass,
             onclick: () => this.props.changeCurrentSaView(saViewIndex),
-            onkeyup: keyup(this.props, ButtonKeyEventOptions),
-            onkeydown: keydown(this.props, ButtonKeyEventOptions),
-          }, saViewIndex.toString())
+          }), saViewIndex.toString())
         })
       )
     );

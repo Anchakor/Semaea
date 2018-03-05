@@ -13,7 +13,8 @@ import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
 import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTargetAreas } from '../UIStore/Focus';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
 import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
-import { keyup, keydown, ButtonKeyEventOptions } from './InputEventHandlers';
+import { ButtonKeyEventOptions } from './InputEventHandlers';
+import { createFocusableElementProps } from './FocusableElementProps';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -58,14 +59,12 @@ export class DialogCancelButtonView extends UIComponent<DialogCancelButtonProps,
   }
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
-  return h('button', { 
+  return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 
     onclick: () => { 
       if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
       dialogProps.cancelDialog(dialogProps.dialogIndex);
     },
-    onkeyup: keyup(dialogProps, ButtonKeyEventOptions),
-    onkeydown: keydown(dialogProps, ButtonKeyEventOptions),
-  }, 'Cancel')
+  }), 'Cancel')
 }
 
 // View (component):

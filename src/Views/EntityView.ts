@@ -6,7 +6,8 @@ import * as Key from '../Key';
 import { objectJoinExtend } from '../Common';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
 import { FocusTargetAreas } from '../UIStore/Focus';
-import { keyup, KeyEventOptions, keydown } from 'Views/InputEventHandlers';
+import { KeyEventOptions } from './InputEventHandlers';
+import { createFocusableElementProps } from './FocusableElementProps';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -42,14 +43,12 @@ export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
   }
 }
 function EntityViewInner(props: Props) {
-  let spanProps = { 
+  let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
     tabIndex: 0, 
     class: '',
-    onkeyup: keyup(props, KeyEventOptions.Default),
-    onkeydown: keydown(props, KeyEventOptions.Default),
     onclick: () => props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
     onfocus: () => props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode)
-  };
+  });
   if (isCurrentGraphNode(props)) {
     spanProps.class = 'element-selected';
   }
