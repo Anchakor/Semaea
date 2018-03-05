@@ -9,9 +9,10 @@ type Props = StoreState & MainDispatchProps & { current: CurrentProps }
 export enum KeyEventOptions {
   Default = 0,
   KeepSpacebar = 1 << 0,
+  KeepTextInputKeys = 1 << 1,
 }
 
-export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar;
+export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar | KeyEventOptions.KeepTextInputKeys;
 
 export function keyup(props: Props, options: KeyEventOptions) {
   return (event: KeyboardEvent) => {
@@ -27,9 +28,9 @@ export function keyup(props: Props, options: KeyEventOptions) {
     } else if (Key.isUpArrow(event)) {
       props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, -1);
       event.preventDefault();
-    } else if (Key.isM(event)) {
+    } else if (Key.isM(event) && !(options && KeyEventOptions.KeepTextInputKeys)) {
       props.createDeleteGraphDialog(props.current.saGraphView.graphIndex, props.current.saViewIndex);
-    } else if (Key.isN(event)) {
+    } else if (Key.isN(event) && !(options && KeyEventOptions.KeepTextInputKeys)) {
       if (!props.current.saGraphView.currentNode) return;
       props.createAddTripleDialog(props.current.saGraphView.currentNode, props.current.saViewIndex);
     }
