@@ -3,6 +3,8 @@ import { Props as GraphViewProps } from './GraphView';
 import * as GF from '../UIStore/GraphFilters';
 import { objectJoinExtend } from '../Common';
 import { StoreState } from '../UIStore/Main';
+import { TextInputKeyEventOptions } from './InputEventHandlers';
+import { createFocusableElementProps } from './FocusableElementProps';
 
 function renderFilter<Condition extends GF.GraphFilterCondition>(
     funcComp: (props: ConditionViewPropsBase & { condition: Condition }) => VNode, 
@@ -74,12 +76,11 @@ type DispatchProps = {
 function renderConditionStringValueInputField(label: string, props: ConditionViewPropsBase & { condition: GF.GraphFilterConditionStringValue }) {
   return h('div', {}, [
     h('span', {}, label),
-    h('input', {
+    h('input', createFocusableElementProps(TextInputKeyEventOptions, props, {
       type: 'text',
-      // TODO pass enter, esc keys to dialog handling
       oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.current.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
       value: props.condition.value
-    })
+    }))
   ]);
 }
 
