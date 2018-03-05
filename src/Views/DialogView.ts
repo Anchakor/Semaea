@@ -12,6 +12,7 @@ import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
 import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTargetAreas } from '../UIStore/Focus';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
+import { createMainDispatchProps, MainDispatchProps } from 'Views/MainDispatchProps';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -71,13 +72,14 @@ export interface StateProps extends StoreState {
   dialogs: Dialog[]
   dialogSaViewMappings: DialogSaViewMapping[]
 }
-export interface DispatchProps {
+export interface DispatchExtendedProps {
   cancelDialog: (dialogIndex: number) => void
   finishDialog: (dialogIndex: number) => void
   acknowledgeFocusChange: () => void,
   addTriple: (graphIndex: number, triple: Triple) => void
   deleteGraph: (graphIndex: number) => void
 }
+type DispatchProps = DispatchExtendedProps & MainDispatchProps
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
@@ -104,7 +106,7 @@ export const Component = connect(
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state), dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
-    return {
+    return objectJoinExtend(createMainDispatchProps(dispatch), {
       cancelDialog: (dialogIndex: number) => {
         dispatch(createCancelDialogAction(dialogIndex));
         dispatch(createSetChangeFocusToGraphViewAction());
@@ -116,5 +118,5 @@ export const Component = connect(
       acknowledgeFocusChange: () => dispatch(createSetChangeFocusToNoneAction()),
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
-    };
+    });
   });

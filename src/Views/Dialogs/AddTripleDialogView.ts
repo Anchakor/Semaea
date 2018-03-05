@@ -4,6 +4,7 @@ import { AddTripleDialog } from '../../Dialogs/Dialog';
 import { Triple } from '../../Graphs/Triple';
 import { objectJoin } from '../../Common';
 import { StoreState } from '../../UIStore/Main';
+import { keyup, KeyEventOptions, keydown, TextInputKeyEventOptions } from '../InputEventHandlers';
 
 interface State {
   s: string
@@ -26,26 +27,36 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
       'Adding a triple: ', 
       h('input', { type: 'text', 
         value: this.state.s,
-        onInput: (ev: Event) => this.setState({ s: (ev.target as HTMLInputElement).value } as State)
+        onInput: (ev: Event) => this.setState({ s: (ev.target as HTMLInputElement).value } as State),
+        onkeyup: keyup(this.props, TextInputKeyEventOptions),
+        onkeydown: keydown(this.props, TextInputKeyEventOptions),
       }), ' ', 
       h('input', { type: 'text', 
         value: this.state.p,
-        onInput: (ev: Event) => this.setState({ p: (ev.target as HTMLInputElement).value } as State)
+        onInput: (ev: Event) => this.setState({ p: (ev.target as HTMLInputElement).value } as State),
+        onkeyup: keyup(this.props, TextInputKeyEventOptions),
+        onkeydown: keydown(this.props, TextInputKeyEventOptions),
       }), ' ', 
       h('input', { type: 'text', 
         value: this.state.o,
-        onInput: (ev: Event) => this.setState({ o: (ev.target as HTMLInputElement).value } as State)
+        onInput: (ev: Event) => this.setState({ o: (ev.target as HTMLInputElement).value } as State),
+        onkeyup: keyup(this.props, TextInputKeyEventOptions),
+        onkeydown: keydown(this.props, TextInputKeyEventOptions),
       }), ' ', 
       h('button', {
         onclick: () => {
           this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
           this.props.finishDialog(this.props.dialogIndex);
-        }
+        },
+        onkeyup: keyup(this.props, TextInputKeyEventOptions),
+        onkeydown: keydown(this.props, TextInputKeyEventOptions),
       }, 'Add'), ' ', 
       h('button', {
         onclick: () => {
           this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
-        }
+        },
+        onkeyup: keyup(this.props, TextInputKeyEventOptions),
+        onkeydown: keydown(this.props, TextInputKeyEventOptions),
       }, 'Add without closing'), ' ', 
       hc(DialogCancelButtonView, this.props) ]);
   }

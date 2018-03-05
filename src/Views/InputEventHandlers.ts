@@ -11,6 +11,8 @@ export enum KeyEventOptions {
   KeepSpacebar = 1 << 0,
 }
 
+export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar;
+
 export function keyup(props: Props, options: KeyEventOptions) {
   return (event: KeyboardEvent) => {
     // TODO dialog/graph keydown handling
