@@ -17,7 +17,6 @@ export const ButtonKeyEventOptions = KeyEventOptions.KeepSpacebar;
 
 export function keyup(props: Props, options: KeyEventOptions) {
   return (event: KeyboardEvent) => {
-    // TODO dialog/graph keydown handling
     if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
       props.createDialogMenuDialog(props.current.saViewIndex);
       event.preventDefault();

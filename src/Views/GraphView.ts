@@ -11,6 +11,8 @@ import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
 import { CurrentProps, getCurrentProps } from './CurrentProps';
+import { ButtonKeyEventOptions } from './InputEventHandlers';
+import { createFocusableElementProps } from './FocusableElementProps';
 
 // View (component):
 
@@ -39,10 +41,10 @@ export class View extends UIComponent<Props, {}> {
       if (this.props.current.saView.saGraphViewIndex == i) {
         tagClass = 'element-selected'
       }
-      return h('button', { 
+      return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
         class: tagClass,
         onclick: () => this.props.changeCurrentSaGraphView(this.props.current.saViewIndex, i)
-      }, i.toString())
+      }), i.toString())
     })));
   }
 
@@ -57,10 +59,10 @@ export class View extends UIComponent<Props, {}> {
       if (this.props.current.saGraphView.graphIndex == graphIndex) {
         tagClass = 'element-selected'
       }
-      return h('button', { 
+      return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
         class: tagClass,
         onclick: () => this.props.changeCurrentGraph(this.props.current.saGraphViewIndex, graphIndex)
-      }, graphIndex.toString())
+      }), graphIndex.toString())
     })));
   }
 
