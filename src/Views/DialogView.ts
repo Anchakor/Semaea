@@ -1,7 +1,7 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent } from '../External';
-import { objectJoin, objectJoinExtend } from '../Common';
+import { objectJoin, objectJoinExtend, assert } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
@@ -94,8 +94,9 @@ export class View extends UIComponent<Props, {}> {
         && this.props.dialogs[mapping.dialogIndex]
         && shouldDialogBeVisible(this.props.dialogs[mapping.dialogIndex]))
       .map((mapping, i, arr) => {
+        assert(i <= 0, "More than 1 dialog mapped to an SaView");
         return getDialogView(this.props, this.props.dialogs[mapping.dialogIndex], mapping.dialogIndex);
-      })); // TODO show only one dialog?
+      }));
   }
 }
 

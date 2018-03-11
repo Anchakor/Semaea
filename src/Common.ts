@@ -23,3 +23,9 @@ export const objectJoinExtend = <A,B>(a: A, b: B): A & B => Object.assign({}, a,
 
 /** Create a new object as a clone of `a` */
 export const objectClone = <A>(a: A): A => Object.assign({}, a);
+
+export const assert = (test: boolean, message: string) => {
+  if (!test) {
+    console.error(message);
+  }
+}
