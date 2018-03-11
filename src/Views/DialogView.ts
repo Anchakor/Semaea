@@ -1,6 +1,6 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
+import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent } from '../External';
 import { objectJoin, objectJoinExtend } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
@@ -60,11 +60,12 @@ export class DialogCancelButtonView extends UIComponent<DialogCancelButtonProps,
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 
-    onclick: () => { 
-      if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
-      dialogProps.cancelDialog(dialogProps.dialogIndex);
-    },
+    onclick: linkEvent(dialogProps, cancelDialogButtonOnClickHandler),
   }), 'Cancel')
+}
+function cancelDialogButtonOnClickHandler(dialogProps: DialogCancelButtonProps, event: Event) {
+  if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
+  dialogProps.cancelDialog(dialogProps.dialogIndex);
 }
 
 // View (component):
