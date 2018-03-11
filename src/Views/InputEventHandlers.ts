@@ -1,14 +1,14 @@
 import { CurrentProps } from './CurrentProps';
 import { StoreState } from '../UIStore/Main';
 import * as Key from '../Key';
-import { MainDispatchProps } from 'Views/MainDispatchProps';
-import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialog';
+import { MainDispatchProps } from './MainDispatchProps';
+import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
+import { MainProps } from './MainView';
+import { dialogKeyHandler, KeyEventType } from './DialogEventHandlers';
 
 /*
  Common event handling callbacks for UI (HTML) elements.
  */
-
-type Props = StoreState & MainDispatchProps & { current: CurrentProps }
 
 export enum KeyEventOptions {
   Default = 0,
@@ -20,7 +20,9 @@ export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar | KeyEventO
 export const ButtonKeyEventOptions = KeyEventOptions.KeepSpacebar;
 
 export function getKeyupHandler(options: KeyEventOptions) {
-  return (props: Props, event: KeyboardEvent) => {
+  return (props: MainProps, event: KeyboardEvent) => {
+    if (dialogKeyHandler(props, event, options, KeyEventType.keyUp)) return;
+
     if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
       props.createDialogMenuDialog(props.current.saViewIndex);
       event.preventDefault();
@@ -42,7 +44,9 @@ export function getKeyupHandler(options: KeyEventOptions) {
 }
 
 export function getKeydownHandler(options: KeyEventOptions) {
-  return (props: Props, event: KeyboardEvent) => {
+  return (props: MainProps, event: KeyboardEvent) => {
+    if (dialogKeyHandler(props, event, options, KeyEventType.keyDown)) return;
+
     if ((Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar))
       || Key.isDownArrow(event)
       || Key.isUpArrow(event)) {
@@ -51,7 +55,7 @@ export function getKeydownHandler(options: KeyEventOptions) {
   }
 }
 
-function cancelLinkedDialogs(props: Props) {
+function cancelLinkedDialogs(props: MainProps) {
   const linkedDialogs = getDialogMappingsToSaView(props.current.saViewIndex, props.dialogs_.viewMappings);
   if (linkedDialogs.length == 0) return;
   linkedDialogs.every((v, i, a) => {

@@ -1,11 +1,15 @@
 import { $, h, UIStoreLib, hc } from '../External';
 import { Model } from '../Model';
-import { store } from '../UIStore/Main';
-import * as SaViewView from '../Views/SaViewView';
-import * as DialogView from '../Views/DialogView';
-import * as GraphView from '../Views/GraphView';
-import * as ModalsView from '../Views/ModalsView';
-import * as TestingView from '../Views/TestingView';
+import { store, StoreState } from '../UIStore/Main';
+import * as SaViewView from './SaViewView';
+import * as DialogView from './DialogView';
+import * as GraphView from './GraphView';
+import * as ModalsView from './ModalsView';
+import * as TestingView from './TestingView';
+import { MainDispatchProps } from './MainDispatchProps';
+import { CurrentProps } from './CurrentProps';
+
+export type MainProps = StoreState & MainDispatchProps & { current: CurrentProps }
 
 export class MainView {
   static render(model: Model) {
