@@ -5,7 +5,7 @@ import { default as InfernoComponent } from 'inferno-component';
 import * as Redux from 'redux';
 import * as InfernoRedux from 'inferno-redux';
 
-export const $: any = (<any>window).$;
+export const $: (selector: string) => HTMLElement = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
 
 export { Inferno as UILib };
