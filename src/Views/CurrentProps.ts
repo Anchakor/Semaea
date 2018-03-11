@@ -24,7 +24,7 @@ export function getCurrentProps(state: StoreState): CurrentProps {
   const dialogSaViewMappings = state.dialogs_.viewMappings;
   const matchingMappings = dialogSaViewMappings.filter((mapping, i, arr) => mapping.saViewIndex == saViewIndex);
   const dialogIndex = (matchingMappings.length > 0) ? matchingMappings[0].dialogIndex : undefined;
-  const dialog = dialogIndex ? state.dialogs_.dialogs[dialogIndex] : undefined;
+  const dialog = (dialogIndex != undefined) ? state.dialogs_.dialogs[dialogIndex] : undefined;
 
   const currentProps: CurrentProps = {
     saViewIndex: saViewIndex,
