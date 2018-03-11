@@ -4,6 +4,10 @@ import * as Key from '../Key';
 import { MainDispatchProps } from 'Views/MainDispatchProps';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from 'Dialogs/Dialog';
 
+/*
+ Common event handling callbacks for UI (HTML) elements.
+ */
+
 type Props = StoreState & MainDispatchProps & { current: CurrentProps }
 
 export enum KeyEventOptions {
@@ -15,8 +19,8 @@ export enum KeyEventOptions {
 export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar | KeyEventOptions.KeepTextInputKeys;
 export const ButtonKeyEventOptions = KeyEventOptions.KeepSpacebar;
 
-export function keyup(props: Props, options: KeyEventOptions) {
-  return (event: KeyboardEvent) => {
+export function getKeyupHandler(options: KeyEventOptions) {
+  return (props: Props, event: KeyboardEvent) => {
     if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
       props.createDialogMenuDialog(props.current.saViewIndex);
       event.preventDefault();
@@ -37,8 +41,8 @@ export function keyup(props: Props, options: KeyEventOptions) {
   }
 }
 
-export function keydown(props: Props, options: KeyEventOptions) {
-  return (event: KeyboardEvent) => {
+export function getKeydownHandler(options: KeyEventOptions) {
+  return (props: Props, event: KeyboardEvent) => {
     if ((Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar))
       || Key.isDownArrow(event)
       || Key.isUpArrow(event)) {
