@@ -1,7 +1,7 @@
 import { QUnitStatic } from '../typings/qunit';
 import * as Inferno from 'inferno';
-import { default as InfernoHyperscript } from 'inferno-hyperscript';
-import { default as InfernoComponent } from 'inferno-component';
+import { h as InfernoHyperscript } from 'inferno-hyperscript';
+import { Component as InfernoComponent } from 'inferno';
 import * as Redux from 'redux';
 import * as InfernoRedux from 'inferno-redux';
 
