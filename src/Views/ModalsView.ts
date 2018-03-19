@@ -34,7 +34,7 @@ export interface DispatchProps {
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
-  constructor(props?: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: any) { super(props, context); }
   public render() {
     const x = this.props.modals_.modals.map((modal, i, a) => {
       return h('div', { 

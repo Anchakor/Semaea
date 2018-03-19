@@ -41,7 +41,7 @@ export interface DialogProps<D extends Dialog> extends Props {
 
 type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
 export class DialogCancelButtonView extends UIComponent<DialogCancelButtonProps, { elem: HTMLElement }> {
-  constructor(props?: DialogCancelButtonProps, context?: any) { super(props, context); }
+  constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
   render() {
     let innerProps = objectJoinExtend(this.props, {
       onComponentDidMount: (e: HTMLElement) => { 
@@ -86,7 +86,7 @@ type DispatchProps = DispatchExtendedProps & MainDispatchProps
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
-  constructor(props?: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, this.props.dialogSaViewMappings
       .filter((mapping, i, arr) => mapping.saViewIndex == this.props.current.saViewIndex

@@ -40,7 +40,7 @@ export interface TestingViewDispatchProps {
 type TestingViewProps = TestingViewStateProps & TestingViewDispatchProps
 
 export class TestingView extends UIComponent<TestingViewProps, {}> {
-  constructor(props?: TestingViewProps, context?: any) { super(props, context); }
+  constructor(props: TestingViewProps, context?: any) { super(props, context); }
   
   elem: any
   componentDidMount() {

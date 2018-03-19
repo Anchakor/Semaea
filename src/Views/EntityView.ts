@@ -25,7 +25,7 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
 }
 
 export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
-  constructor(props?: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: any) { super(props, context); }
   render() {
     let innerProps = objectJoinExtend(this.props, {
       onComponentDidMount: (e: HTMLElement) => { 

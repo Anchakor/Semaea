@@ -20,7 +20,7 @@ type DispatchProps = MainDispatchProps & DispatchPropsExtend
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
-  constructor(props?: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: any) { super(props, context); }
   public render() {
     return h('div', {}, [
       this.renderSaViewSwitchingBar(),
