@@ -1,4 +1,4 @@
-import { h, UIComponent, hf } from '../External';
+import { h, UIComponent, hf, linkEvent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from '../Views/GraphView';
@@ -46,8 +46,8 @@ function EntityViewInner(props: Props) {
   let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
     tabIndex: 0, 
     class: '',
-    onclick: () => props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+"."),
-    onfocus: () => props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode)
+    onclick: linkEvent(props, mouseHandler),
+    onfocus: linkEvent(props, focusHandler),
   });
   if (isCurrentGraphNode(props)) {
     spanProps.class = 'element-selected';
@@ -56,4 +56,12 @@ function EntityViewInner(props: Props) {
     spanProps.class = 'element-otherOccurence';
   }
   return h('span', spanProps, props.graphNode.getValue());
+}
+
+function focusHandler(props: Props, event: FocusEvent) {
+  props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
+}
+
+function mouseHandler(props: Props, event: MouseEvent) {
+  props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+".");
 }
