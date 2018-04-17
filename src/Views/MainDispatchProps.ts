@@ -5,7 +5,7 @@ import { createShowAlertModalAction } from '../UIStore/Modals';
 import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
-import { createCancelDialogAction } from '../UIStore/Dialogs';
+import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
 
 export interface MainDispatchProps {
@@ -17,6 +17,7 @@ export interface MainDispatchProps {
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
   cancelDialog: (dialogIndex: number) => void
+  finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
   acknowledgeFocusChange: () => void
 }
@@ -43,8 +44,14 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex));
       dispatch(createSetChangeFocusToDialogAction());
     },
-    cancelDialog: (dialogIndex: number) => 
-      dispatch(createCancelDialogAction(dialogIndex)),
+    cancelDialog: (dialogIndex: number) => {
+      dispatch(createCancelDialogAction(dialogIndex));
+      dispatch(createSetChangeFocusToGraphViewAction());
+    },
+    finishDialog: (dialogIndex: number) => {
+      dispatch(createFinishDialogAction(dialogIndex));
+      dispatch(createSetChangeFocusToGraphViewAction());
+    },
     changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => {
       dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset));
       dispatch(createSetChangeFocusToGraphViewAction());

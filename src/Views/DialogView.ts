@@ -76,9 +76,6 @@ export interface StateProps extends StoreState {
   dialogSaViewMappings: DialogSaViewMapping[]
 }
 export interface DispatchExtendedProps {
-  cancelDialog: (dialogIndex: number) => void
-  finishDialog: (dialogIndex: number) => void
-  acknowledgeFocusChange: () => void,
   addTriple: (graphIndex: number, triple: Triple) => void
   deleteGraph: (graphIndex: number) => void
 }
@@ -111,15 +108,6 @@ export const Component = connect(
   },
   (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
     return objectJoinExtend(createMainDispatchProps(dispatch), {
-      cancelDialog: (dialogIndex: number) => {
-        dispatch(createCancelDialogAction(dialogIndex));
-        dispatch(createSetChangeFocusToGraphViewAction());
-      },
-      finishDialog: (dialogIndex: number) => {
-        dispatch(createFinishDialogAction(dialogIndex));
-        dispatch(createSetChangeFocusToGraphViewAction());
-      },
-      acknowledgeFocusChange: () => dispatch(createSetChangeFocusToNoneAction()),
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
     });
