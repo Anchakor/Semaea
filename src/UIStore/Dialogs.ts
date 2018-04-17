@@ -24,14 +24,15 @@ export const defaultState: State = {
   dialogs: [],
 };
 
-export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewIndex: number, graphIndex?: number) {
+export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewIndex: number, graphIndex?: number, cloneGraphFilter: boolean = false) {
   // Creating a copy of SaView and SaGraphView
   const originatingSaView = state.saViews_.saViews[originatingSaViewIndex];
   const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
 
+  const newGraphFilter = cloneGraphFilter ? createDialogGraphFilter() : createDialogGraphFilter(); // TODO deep clone
   let newSaGraphView = (graphIndex == undefined) 
-    ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: createDialogGraphFilter() })
-    : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: createDialogGraphFilter() });
+    ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter })
+    : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: newGraphFilter });
   if (graphIndex) {
     newSaGraphView = setCurrentNodeToFirstNode(newSaGraphView, state.graphs_);
   }
