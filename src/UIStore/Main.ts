@@ -5,6 +5,7 @@ import * as Modals from './Modals';
 import * as SaViews from './SaViews';
 import * as Dialogs from './Dialogs';
 import * as Focus from './Focus';
+import { Log } from 'Common';
 
 export interface StoreState {
   readonly testing_: TestingView.State
@@ -27,6 +28,7 @@ const defaultState: StoreState = {
 
 const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState, action: StoreLib.Action) => {
   setTimeout(() => { $('#graph').textContent = JSON.stringify(state); }, 1); // Debug
+  Log.debug('Reducing action: '+JSON.stringify(action));
 
   var newState = Dialogs.reducer(state, action);
   if (newState != state) { return newState; }

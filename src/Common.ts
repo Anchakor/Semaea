@@ -29,3 +29,9 @@ export const assert = (test: boolean, message: string) => {
     console.error(message);
   }
 }
+
+export const Log = {
+  debug: console.debug,
+  error: console.error,
+  log: console.log
+}
