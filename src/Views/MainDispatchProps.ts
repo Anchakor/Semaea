@@ -7,6 +7,7 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
+import { createDeleteGraphAction } from "UIStore/Graphs";
 
 export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
@@ -20,6 +21,7 @@ export interface MainDispatchProps {
   finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
   acknowledgeFocusChange: () => void
+  deleteGraph: (graphIndex: number) => void
 }
 
 export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): MainDispatchProps {
@@ -58,5 +60,7 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     },
     acknowledgeFocusChange: () => 
       dispatch(createSetChangeFocusToNoneAction()),
+    deleteGraph: (graphIndex: number) => 
+      dispatch(createDeleteGraphAction(graphIndex)),
   };
 }

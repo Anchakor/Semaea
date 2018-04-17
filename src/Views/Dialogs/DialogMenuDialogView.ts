@@ -36,10 +36,17 @@ export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEven
 function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {
   const mappings = [
     { node: 'Add triple', trigger: () => props.createAddTripleDialog(currentNode, originatingSaViewIndex) },
+    { node: 'Delete graph', trigger: () => { 
+        const originatingSaGraphViewIndex = props.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex;
+        const originatingGraphIndex = props.graphs_.saGraphViews[originatingSaGraphViewIndex].graphIndex;
+        props.createDeleteGraphDialog(originatingGraphIndex, originatingSaViewIndex) 
+      } },
   ];
+  const currentGraphIndex = props.current.saGraphView.graphIndex;
   const currentNodeValue = currentNode.getValue();
   const mapping = mappings.find((v) => v.node == currentNodeValue);
   if (mapping) {
+    props.deleteGraph(currentGraphIndex)
     props.finishDialog(dialogIndex);
     mapping.trigger();
   } else {
