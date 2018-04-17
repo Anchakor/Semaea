@@ -5,7 +5,6 @@ import * as SaViewView from './SaViewView';
 import * as DialogView from './DialogView';
 import * as GraphView from './GraphView';
 import * as ModalsView from './ModalsView';
-import * as TestingView from './TestingView';
 import { MainDispatchProps } from './MainDispatchProps';
 import { CurrentProps } from './CurrentProps';
 
@@ -21,7 +20,6 @@ export class MainView {
         hc(SaViewView.Component),
         hc(DialogView.Component),
         hc(GraphView.Component),
-        hc(TestingView.Component)
         ])
       );
   }
