@@ -63,4 +63,8 @@ export class Graph {
       ? this._graph[index]
       : undefined;
   }
+
+  merge(graph: Graph){
+    this._graph = this._graph.concat(graph._graph);
+  }
 }

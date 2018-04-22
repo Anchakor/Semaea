@@ -1,11 +1,11 @@
 import { StoreLib } from '../../External';
 import { StoreState } from '../Main';
-import { OpenFileDialog, Status as DialogStatus, DialogType } from '../../Dialogs/Dialog';
+import { OpenFileDialog, Status as DialogStatus, DialogType, getDialogsByType } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { Graph } from '../../Graphs/Graph';
-import { objectJoin, arrayImmutableAppend, Log } from '../../Common';
+import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet } from '../../Common';
 import { State as GraphsState } from '../Graphs';
 import { request } from '../../Server/Client';
 import { ListDirectoryResponse } from '../../Server/Response';
@@ -74,9 +74,20 @@ export const AddOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDi
   graph: new Graph(),
 };
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
-  // TODO implementation
+  const dialog = getDialogsByType<OpenFileDialog>(state.dialogs_.dialogs, DialogType.OpenFile).find((v) => v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
+  if (!dialog) return state;
+  const graph = state.graphs_.graphs[dialog.createdGraphIndex];
+  if (!graph) return state;
+  const newGraph = graph.clone();
+  newGraph.merge(action.graph);
+  // TODO change dialog listDirectoryStatus
   // TODO write directoryPath somewhere
-  return state;
+  const newState = objectJoin<StoreState>(state, { 
+    graphs_: objectJoin<GraphsState>(state.graphs_, { 
+      graphs: arrayImmutableSet(state.graphs_.graphs, dialog.createdGraphIndex, newGraph)
+    })
+  });
+  return newState;
 }
 
 // Reducer:
