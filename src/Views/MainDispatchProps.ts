@@ -7,7 +7,7 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
-import { createDeleteGraphAction } from "UIStore/Graphs";
+import { createDeleteGraphAction } from '../UIStore/Graphs';
 
 export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void

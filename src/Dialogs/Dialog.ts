@@ -1,4 +1,4 @@
-import { Triple } from "../Graphs/Triple";
+import { Triple } from '../Graphs/Triple';
 
 export enum Status { 
   Opened = 'Opened', 
@@ -54,6 +54,6 @@ export enum DialogType {
 }
 export interface DialogMenuDialog extends Dialog {
   readonly type: DialogType.DialogMenu
-  readonly selectedDialog: DialogType | undefined
+  readonly selectedDialog: DialogType | undefined // TODO probably remove
   readonly createdGraphIndex: number
 }

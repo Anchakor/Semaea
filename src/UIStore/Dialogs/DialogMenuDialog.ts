@@ -4,8 +4,8 @@ import { DialogMenuDialog, Status as DialogStatus, DialogType } from '../../Dial
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
-import { Graph } from 'Graphs/Graph';
-import { objectJoin, arrayImmutableAppend } from 'Common';
+import { Graph } from '../../Graphs/Graph';
+import { objectJoin, arrayImmutableAppend } from '../../Common';
 import { State as GraphsState } from '../Graphs';
 
 // CreateDialogMenuDialogAction
