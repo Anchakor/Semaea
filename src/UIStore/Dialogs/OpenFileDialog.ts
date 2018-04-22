@@ -1,0 +1,94 @@
+import { StoreLib } from '../../External';
+import { StoreState } from '../Main';
+import { OpenFileDialog, Status as DialogStatus, DialogType } from '../../Dialogs/Dialog';
+import { doCreateDialog } from '../Dialogs';
+import { GraphNode } from '../../Graphs/GraphNode';
+import { Triple } from '../../Graphs/Triple';
+import { Graph } from '../../Graphs/Graph';
+import { objectJoin, arrayImmutableAppend, Log } from '../../Common';
+import { State as GraphsState } from '../Graphs';
+import { request } from '../../Server/Client';
+import { ListDirectoryResponse } from '../../Server/Response';
+import { ListDirectoryRequest } from '../../Server/Request';
+
+// CreateOpenFileDialogAction
+export enum ActionType { CreateOpenFileDialog = 'CreateOpenFileDialog' }
+export interface CreateOpenFileDialogAction extends StoreLib.Action { type: ActionType.CreateOpenFileDialog
+  originatingSaViewIndex: number
+  directoryPath: string
+}
+const createOpenFileDialogActionDefault: CreateOpenFileDialogAction = { type: ActionType.CreateOpenFileDialog, 
+  originatingSaViewIndex: 0, 
+  directoryPath: '.' 
+};
+function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileDialogAction) {
+  const newGraph = new Graph();
+  const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
+  const newState = objectJoin<StoreState>(state, { 
+    graphs_: objectJoin<GraphsState>(state.graphs_, { graphs: newGraphs })
+  });
+  const newGraphIndex = newGraphs.length - 1;
+
+  const dialog: OpenFileDialog = { 
+    status: DialogStatus.Opened, 
+    type: DialogType.OpenFile,
+    listDirectoryStatus: 'loading',
+    directoryPath: action.directoryPath,
+    createdGraphIndex: newGraphIndex,
+  };
+  
+  return doCreateDialog(newState, 
+    dialog, 
+    action.originatingSaViewIndex,
+    newGraphIndex);
+}
+export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
+  dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
+  const req = new ListDirectoryRequest();
+    { req.dirPath = directoryPath; } // TODO
+    const p1 = request(req, 'ListDirectoryResponse')
+    .then((response) => {
+      if (response.kind = 'ListDirectoryResponse') {
+        const r = response as ListDirectoryResponse;
+        const graph = new Graph();
+        r.listing.forEach((v) => {
+          graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
+        });
+        dispatch(objectJoin(AddOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
+      } else {
+        Log.error("Received unexpected response: "+JSON.stringify(response));
+        return;
+      }
+    });
+}
+
+// AddOpenFileDialogDirectoryListingAction
+export enum ActionType { AddOpenFileDialogDirectoryListing = 'AddOpenFileDialogDirectoryListing' }
+export interface AddOpenFileDialogDirectoryListingAction extends StoreLib.Action { type: ActionType.AddOpenFileDialogDirectoryListing
+  directoryPath: string
+  graph: Graph
+}
+export const AddOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDirectoryListingAction = { 
+  type: ActionType.AddOpenFileDialogDirectoryListing,
+  directoryPath: '.',
+  graph: new Graph(),
+};
+function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
+  // TODO implementation
+  // TODO write directoryPath somewhere
+  return state;
+}
+
+// Reducer:
+
+export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+  switch (action.type) {
+    case ActionType.CreateOpenFileDialog:
+      return doCreateOpenFileDialogAction(state, action as CreateOpenFileDialogAction);
+    case ActionType.AddOpenFileDialogDirectoryListing:
+      return doAddOpenFileDialogDirectoryListingAction(state, action as AddOpenFileDialogDirectoryListingAction);
+    default:
+      return state;
+  }
+}
+

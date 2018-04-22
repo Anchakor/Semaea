@@ -2,6 +2,7 @@ import { portNumber } from '../Server/Config';
 import { Request } from '../Server/Request';
 import * as RequestHandler from '../Server/RequestHandler';
 import * as Response from '../Server/Response';
+import { Log } from '../Common';
 
 export function requestSimple(request: Request): Promise<Response.Response> {
   return send(request)
@@ -19,6 +20,7 @@ export function request<T extends Response.Response>(request: Request, responseK
 
 /** Send request to get a response string. To get a Response object call request() */
 export function send(request: Request): Promise<string> {
+  Log.debug('Sending request: '+JSON.stringify(request));
   return sendString(JSON.stringify(request));
 }
 

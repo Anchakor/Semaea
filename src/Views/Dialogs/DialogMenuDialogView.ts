@@ -41,6 +41,7 @@ function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, origin
         const originatingGraphIndex = props.graphs_.saGraphViews[originatingSaGraphViewIndex].graphIndex;
         props.createDeleteGraphDialog(originatingGraphIndex, originatingSaViewIndex) 
       } },
+    { node: 'Open file', trigger: () => props.createOpenFileDialog('.', originatingSaViewIndex) },
   ];
   const currentGraphIndex = props.current.saGraphView.graphIndex;
   const currentNodeValue = currentNode.getValue();

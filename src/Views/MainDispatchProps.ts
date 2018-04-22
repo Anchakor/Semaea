@@ -8,6 +8,7 @@ import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMen
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
 import { createDeleteGraphAction } from '../UIStore/Graphs';
+import { createOpenFileDialog } from '../UIStore/Dialogs/OpenFileDialog';
 
 export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
@@ -15,6 +16,7 @@ export interface MainDispatchProps {
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
   showAlertModal: (originatingGraphIndex: number, message: string) => void
   createDialogMenuDialog: (originatingSaViewIndex: number) => void
+  createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
   cancelDialog: (dialogIndex: number) => void
@@ -35,6 +37,9 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     createDialogMenuDialog: (originatingSaViewIndex: number) => {
       dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex));
       dispatch(createSetChangeFocusToGraphViewAction());
+    },
+    createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
+      createOpenFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
     },
     showAlertModal: (originatingGraphIndex: number, message: string) => 
       dispatch(createShowAlertModalAction(originatingGraphIndex, message)),

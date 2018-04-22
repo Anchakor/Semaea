@@ -7,6 +7,7 @@ import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './
 import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
+import * as OpenFileDialog from './Dialogs/OpenFileDialog';
 import { GraphFilter, GraphFilterConditionType, GraphFilterConditionSubjectContains } from 'UIStore/GraphFilters';
 
 /* Dialogs
@@ -112,6 +113,8 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
   let newState = BasicGraphDialogs.reducer(state, action);
   if (newState != state) { return newState; }
   newState = DialogMenuDialog.reducer(state, action);
+  if (newState != state) { return newState; }
+  newState = OpenFileDialog.reducer(state, action);
   if (newState != state) { return newState; }
 
   switch (action.type) {    

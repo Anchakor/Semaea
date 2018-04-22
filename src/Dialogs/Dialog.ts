@@ -57,3 +57,13 @@ export interface DialogMenuDialog extends Dialog {
   readonly selectedDialog: DialogType | undefined // TODO probably remove
   readonly createdGraphIndex: number
 }
+
+export enum DialogType {
+  OpenFile = 'OpenFile'
+}
+export interface OpenFileDialog extends Dialog {
+  readonly type: DialogType.OpenFile
+  readonly createdGraphIndex: number
+  readonly listDirectoryStatus: 'loading' | 'loaded'
+  readonly directoryPath: string
+}
