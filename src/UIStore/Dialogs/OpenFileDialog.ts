@@ -45,13 +45,13 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
   const req = new ListDirectoryRequest();
-    { req.dirPath = directoryPath; } // TODO
+    { req.dirPath = directoryPath; }
     const p1 = request(req, 'ListDirectoryResponse')
     .then((response) => {
       if (response.kind = 'ListDirectoryResponse') {
         const r = response as ListDirectoryResponse;
         const graph = new Graph();
-        r.listing.forEach((v) => {
+        r.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
           graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
         });
         dispatch(objectJoin(AddOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
