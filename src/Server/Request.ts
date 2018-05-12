@@ -1,6 +1,6 @@
 
 export interface Request {
-  kind: RequestKind
+  readonly kind: RequestKind
 }
 
 export function requestIsOfKind<R extends Request>(request: Request, requestKind: RequestKind): request is R {
@@ -9,24 +9,24 @@ export function requestIsOfKind<R extends Request>(request: Request, requestKind
 
 export enum RequestKind { UnrecognizedRequest = 'UnrecognizedRequest' }
 export class UnrecognizedRequest implements Request {
-  kind: RequestKind.UnrecognizedRequest = RequestKind.UnrecognizedRequest
+  readonly kind = RequestKind.UnrecognizedRequest
 }
 
 export enum RequestKind { ListDirectoryRequest = 'ListDirectoryRequest' }
 export class ListDirectoryRequest implements Request {
-  kind: RequestKind.ListDirectoryRequest = RequestKind.ListDirectoryRequest
+  readonly kind = RequestKind.ListDirectoryRequest
   dirPath: string = ''
 }
 
 export enum RequestKind { ReadFileRequest = 'ReadFileRequest' }
 export class ReadFileRequest implements Request {
-  kind: RequestKind.ReadFileRequest = RequestKind.ReadFileRequest
+  readonly kind = RequestKind.ReadFileRequest
   filePath: string = ''
 }
 
 export enum RequestKind { WriteFileRequest = 'WriteFileRequest' }
 export class WriteFileRequest implements Request {
-  kind: RequestKind.WriteFileRequest = RequestKind.WriteFileRequest
+  readonly kind = RequestKind.WriteFileRequest
   filePath: string = ''
   content: string = ''
 }

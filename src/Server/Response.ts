@@ -19,7 +19,7 @@ export function handleUnexpectedResponse(response: Response) {
 }
 
 export interface Response {
-  kind: ResponseKind
+  readonly kind: ResponseKind
 }
 
 export function responseIsOfKind<R extends Response>(response: Response, responseKind: ResponseKind): response is R {
@@ -28,23 +28,23 @@ export function responseIsOfKind<R extends Response>(response: Response, respons
 
 export enum ResponseKind { ErrorResponse = 'ErrorResponse' }
 export class ErrorResponse implements Response {
-  kind: ResponseKind.ErrorResponse = ResponseKind.ErrorResponse
+  readonly kind = ResponseKind.ErrorResponse
   message: string = ''
 }
 
 export enum ResponseKind { ListDirectoryResponse = 'ListDirectoryResponse' }
 export class ListDirectoryResponse implements Response {
-  kind: ResponseKind.ListDirectoryResponse = ResponseKind.ListDirectoryResponse
+  readonly kind = ResponseKind.ListDirectoryResponse
   listing: IDirectoryEntry[] = []
 }
 
 export enum ResponseKind { ReadFileResponse = 'ReadFileResponse' }
 export class ReadFileResponse implements Response {
-  kind: ResponseKind.ReadFileResponse = ResponseKind.ReadFileResponse
+  readonly kind = ResponseKind.ReadFileResponse
   content: string = ''
 }
 
 export enum ResponseKind { WriteFileResponse = 'WriteFileResponse' }
 export class WriteFileResponse implements Response {
-  kind: ResponseKind.WriteFileResponse = ResponseKind.WriteFileResponse
+  readonly kind = ResponseKind.WriteFileResponse
 }
