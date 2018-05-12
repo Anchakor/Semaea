@@ -18,9 +18,8 @@ export function handleUnexpectedResponse(response: Response) {
   Log.error("Received unexpected response: "+JSON.stringify(response));
 }
 
-export enum ResponseKind { DefaultResponse = 'DefaultResponse' }
-export class Response {
-  kind: ResponseKind = ResponseKind.DefaultResponse
+export interface Response {
+  kind: ResponseKind
 }
 
 export function responseIsOfKind<R extends Response>(response: Response, responseKind: ResponseKind): response is R {
@@ -28,24 +27,24 @@ export function responseIsOfKind<R extends Response>(response: Response, respons
 }
 
 export enum ResponseKind { ErrorResponse = 'ErrorResponse' }
-export class ErrorResponse extends Response {
+export class ErrorResponse implements Response {
   kind: ResponseKind.ErrorResponse = ResponseKind.ErrorResponse
   message: string = ''
 }
 
 export enum ResponseKind { ListDirectoryResponse = 'ListDirectoryResponse' }
-export class ListDirectoryResponse extends Response {
+export class ListDirectoryResponse implements Response {
   kind: ResponseKind.ListDirectoryResponse = ResponseKind.ListDirectoryResponse
   listing: IDirectoryEntry[] = []
 }
 
 export enum ResponseKind { ReadFileResponse = 'ReadFileResponse' }
-export class ReadFileResponse extends Response {
+export class ReadFileResponse implements Response {
   kind: ResponseKind.ReadFileResponse = ResponseKind.ReadFileResponse
   content: string = ''
 }
 
 export enum ResponseKind { WriteFileResponse = 'WriteFileResponse' }
-export class WriteFileResponse extends Response {
+export class WriteFileResponse implements Response {
   kind: ResponseKind.WriteFileResponse = ResponseKind.WriteFileResponse
 }
