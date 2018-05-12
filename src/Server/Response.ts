@@ -1,5 +1,5 @@
 import { IDirectoryEntry } from '../Server/Filesystem';
-import { Log } from '../Common';
+import { Log, checkKindFor } from '../Common';
 
 export function createErrorResponse(err: any) {
   const r = new ErrorResponse();
@@ -18,13 +18,17 @@ export function handleUnexpectedResponse(response: Response) {
   Log.error("Received unexpected response: "+JSON.stringify(response));
 }
 
+type ResponseTypes = Response
+  | ErrorResponse
+  | ListDirectoryResponse
+  | ReadFileResponse
+  | WriteFileResponse
+
 export interface Response {
   readonly kind: ResponseKind
 }
 
-export function responseIsOfKind<R extends Response>(response: Response, responseKind: ResponseKind): response is R {
-  return (response.kind == responseKind);
-}
+export const responseIsOfKind = checkKindFor<ResponseTypes>();
 
 export enum ResponseKind { ErrorResponse = 'ErrorResponse' }
 export class ErrorResponse implements Response {

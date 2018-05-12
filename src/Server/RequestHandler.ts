@@ -1,5 +1,5 @@
 import * as Response from '../Server/Response';
-import { Request, ListDirectoryRequest, requestIsOfKind, RequestKind, ReadFileRequest, WriteFileRequest } from '../Server/Request';
+import { Request, requestIsOfKind, RequestKind } from '../Server/Request';
 import { listDirectory, readFileString, writeFileString } from '../Server/Filesystem';
 
 export function handle(requestString: string): Promise<string> {
@@ -16,19 +16,19 @@ export function handle(requestString: string): Promise<string> {
 }
 
 function handleRequest(request: Request) {
-  if (requestIsOfKind<ListDirectoryRequest>(request, RequestKind.ListDirectoryRequest)) {
+  if (requestIsOfKind(RequestKind.ListDirectoryRequest)(request)) {
     return listDirectory(request.dirPath).then((listing) => {
       const r = new Response.ListDirectoryResponse();
       r.listing = listing
       return createResponseString(r);
     });
-  } else if (requestIsOfKind<ReadFileRequest>(request, RequestKind.ReadFileRequest)) {
+  } else if (requestIsOfKind(RequestKind.ReadFileRequest)(request)) {
     return readFileString(request.filePath).then((content) => {
       const r = new Response.ReadFileResponse();
       r.content = content;
       return createResponseString(r);
     });
-  } else if (requestIsOfKind<WriteFileRequest>(request, RequestKind.WriteFileRequest)) {
+  } else if (requestIsOfKind(RequestKind.WriteFileRequest)(request)) {
     return writeFileString(request.filePath, request.content).then(() => {
       const r = new Response.WriteFileResponse();
       return createResponseString(r);

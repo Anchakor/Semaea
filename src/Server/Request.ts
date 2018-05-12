@@ -1,11 +1,16 @@
+import { checkKindFor } from '../Common';
+
+type RequestTypes = Request 
+  | UnrecognizedRequest
+  | ListDirectoryRequest
+  | ReadFileRequest
+  | WriteFileRequest
 
 export interface Request {
   readonly kind: RequestKind
 }
 
-export function requestIsOfKind<R extends Request>(request: Request, requestKind: RequestKind): request is R {
-  return (request.kind == requestKind);
-}
+export const requestIsOfKind = checkKindFor<RequestTypes>();
 
 export enum RequestKind { UnrecognizedRequest = 'UnrecognizedRequest' }
 export class UnrecognizedRequest implements Request {

@@ -35,3 +35,16 @@ export const Log = {
   error: console.error,
   log: console.log
 }
+
+
+interface ObjectWithKind<T extends string> { readonly kind: T; }
+
+type TypeOfKind<T extends ObjectWithKind<any>, TKind extends T['kind']> =
+    T extends { readonly kind: TKind } ? T : never;
+
+/** Create a type-guard for a group of objects with `kind` string property (can be string enum!). `T` has to be type union of the object types. */
+export function checkKindFor<T extends ObjectWithKind<any>>() {
+    return <TKind extends T['kind']>(kind: TKind) =>
+        (value: T): value is TypeOfKind<T, TKind> =>
+            value.kind === kind;
+}

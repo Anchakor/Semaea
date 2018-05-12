@@ -48,7 +48,7 @@ export const createOpenFileDialog = (directoryPath: string, originatingSaViewInd
     { req.dirPath = directoryPath; }
     const p1 = request(req, ResponseKind.ListDirectoryResponse)
     .then((response) => {
-      if (responseIsOfKind<ListDirectoryResponse>(response, ResponseKind.ListDirectoryResponse)) {
+      if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
         const graph = new Graph();
         response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
           graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
