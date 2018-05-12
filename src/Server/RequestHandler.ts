@@ -1,5 +1,5 @@
 import * as Response from '../Server/Response';
-import { Request, ListDirectoryRequest } from '../Server/Request';
+import { Request, ListDirectoryRequest, requestIsOfKind, RequestKind, ReadFileRequest, WriteFileRequest } from '../Server/Request';
 import { listDirectory, readFileString, writeFileString } from '../Server/Filesystem';
 
 export function handle(requestString: string): Promise<string> {
@@ -16,27 +16,26 @@ export function handle(requestString: string): Promise<string> {
 }
 
 function handleRequest(request: Request) {
-  switch (request.kind) {
-    case 'ListDirectoryRequest':
-      return listDirectory(request.dirPath).then((listing) => {
-        const r = new Response.ListDirectoryResponse();
-        r.listing = listing
-        return createResponseString(r);
-      });
-    case 'ReadFileRequest':
-      return readFileString(request.filePath).then((content) => {
-        const r = new Response.ReadFileResponse();
-        r.content = content;
-        return createResponseString(r);
-      });
-    case 'WriteFileRequest':
-      return writeFileString(request.filePath, request.content).then(() => {
-        const r = new Response.WriteFileResponse();
-        return createResponseString(r);
-      });
-    default:
-      return Promise.resolve(createResponseString(
-        Response.createErrorResponse('RequestHandler: Unrecognized request.')));
+  if (requestIsOfKind<ListDirectoryRequest>(request, RequestKind.ListDirectoryRequest)) {
+    return listDirectory(request.dirPath).then((listing) => {
+      const r = new Response.ListDirectoryResponse();
+      r.listing = listing
+      return createResponseString(r);
+    });
+  } else if (requestIsOfKind<ReadFileRequest>(request, RequestKind.ReadFileRequest)) {
+    return readFileString(request.filePath).then((content) => {
+      const r = new Response.ReadFileResponse();
+      r.content = content;
+      return createResponseString(r);
+    });
+  } else if (requestIsOfKind<WriteFileRequest>(request, RequestKind.WriteFileRequest)) {
+    return writeFileString(request.filePath, request.content).then(() => {
+      const r = new Response.WriteFileResponse();
+      return createResponseString(r);
+    });
+  } else {
+    return Promise.resolve(createResponseString(
+      Response.createErrorResponse('RequestHandler: Unrecognized request.')));
   }
 }
 
