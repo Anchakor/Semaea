@@ -8,7 +8,7 @@ export function runServerIntegrationTests() {
 
   Test.testAsync('Integration Request', function(assert, asyncDone) {
     const req = (new Request.UnrecognizedRequest());
-    const p1 = ServerClient.request(req, 'ListDirectoryResponse')
+    const p1 = ServerClient.request(req, Response.ResponseKind.ListDirectoryResponse)
     .catch((response) => {
       const expected = new Response.ErrorResponse();
       { expected.message = 'RequestHandler: Unrecognized request.'; }
@@ -20,7 +20,7 @@ export function runServerIntegrationTests() {
   Test.testAsync('Integration Filesystem ListDirectoryRequest', function(assert, asyncDone) {
     const req = new Request.ListDirectoryRequest();
     { req.dirPath = 'test/static'; }
-    const p1 = ServerClient.request(req, 'ListDirectoryResponse')
+    const p1 = ServerClient.request(req, Response.ResponseKind.ListDirectoryResponse)
     .then((response) => {
       const expected = new Response.ListDirectoryResponse();
       { expected.listing = new Array<IDirectoryEntry>();
@@ -30,7 +30,7 @@ export function runServerIntegrationTests() {
     });
 
     req.dirPath = 'test/static/nonexistantTest';
-    const p2 = ServerClient.request(req, 'ListDirectoryResponse')
+    const p2 = ServerClient.request(req, Response.ResponseKind.ListDirectoryResponse)
     .catch((response) => {
       const expected = new Response.ErrorResponse();
       { expected.message = 'Error getting list of directory: test/static/nonexistantTest'; }
@@ -43,7 +43,7 @@ export function runServerIntegrationTests() {
   Test.testAsync('Integration Filesystem ReadFileRequest', function(assert, asyncDone) {
     const req = new Request.ReadFileRequest();
     { req.filePath = 'test/static/tfile.txt'; }
-    const p1 = ServerClient.request(req, 'ReadFileResponse')
+    const p1 = ServerClient.request(req, Response.ResponseKind.ReadFileResponse)
     .then((response) => {
       const expected = new Response.ReadFileResponse();
       { expected.content = 'tfile contents \n\nasdf'; }
@@ -51,7 +51,7 @@ export function runServerIntegrationTests() {
     });
 
     { req.filePath = 'test/static/nonexistantTestFile.txt'; }
-    const p2 = ServerClient.request(req, 'ReadFileResponse')
+    const p2 = ServerClient.request(req, Response.ResponseKind.ReadFileResponse)
     .catch((response) => {
       const expected = new Response.ErrorResponse();
       { expected.message = 'Error reading file: test/static/nonexistantTestFile.txt'; }
@@ -65,14 +65,14 @@ export function runServerIntegrationTests() {
     const req = new Request.WriteFileRequest();
     { req.filePath = 'test/testWriteFile.txt';
       req.content = 'asdf\n \n'+Math.random(); }
-    const p1 = ServerClient.request(req, 'WriteFileResponse')
+    const p1 = ServerClient.request(req, Response.ResponseKind.WriteFileResponse)
     .then((response) => {
       const expected = new Response.WriteFileResponse();
       assert.serializedEqual(response, expected, 'When sending correct request, received correct WriteFileResponse.');
 
       const req2 = new Request.ReadFileRequest();
       { req2.filePath = req.filePath; }
-      return ServerClient.request(req2, 'ReadFileResponse')
+      return ServerClient.request(req2, Response.ResponseKind.ReadFileResponse)
     })
     .then((response) => {
       const expected = new Response.ReadFileResponse();

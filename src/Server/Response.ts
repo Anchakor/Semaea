@@ -1,4 +1,5 @@
 import { IDirectoryEntry } from '../Server/Filesystem';
+import { Log } from '../Common';
 
 export function createErrorResponse(err: any) {
   const r = new ErrorResponse();
@@ -13,27 +14,38 @@ export function createErrorResponse(err: any) {
   return r;
 }
 
-export type Response =      ErrorResponse |   FilesystemResponse
-export type ResponseKind =  'ErrorResponse' | FilesystemResponseKind
+export function handleUnexpectedResponse(response: Response) {
+  Log.error("Received unexpected response: "+JSON.stringify(response));
+}
 
-export class ErrorResponse {
-  kind: 'ErrorResponse' = 'ErrorResponse'
+export enum ResponseKind { DefaultResponse = 'DefaultResponse' }
+export class Response {
+  kind: ResponseKind = ResponseKind.DefaultResponse
+}
+
+export function responseIsOfKind<R extends Response>(response: Response, responseKind: ResponseKind): response is R {
+  return (response.kind == responseKind);
+}
+
+export enum ResponseKind { ErrorResponse = 'ErrorResponse' }
+export class ErrorResponse extends Response {
+  kind: ResponseKind.ErrorResponse = ResponseKind.ErrorResponse
   message: string = ''
 }
 
-export type FilesystemResponse =      ListDirectoryResponse |   ReadFileResponse |    WriteFileResponse
-export type FilesystemResponseKind =  'ListDirectoryResponse' | 'ReadFileResponse' |  'WriteFileResponse'
-
-export class ListDirectoryResponse {
-  kind: 'ListDirectoryResponse' = 'ListDirectoryResponse'
+export enum ResponseKind { ListDirectoryResponse = 'ListDirectoryResponse' }
+export class ListDirectoryResponse extends Response {
+  kind: ResponseKind.ListDirectoryResponse = ResponseKind.ListDirectoryResponse
   listing: IDirectoryEntry[] = []
 }
 
-export class ReadFileResponse {
-  kind: 'ReadFileResponse' = 'ReadFileResponse'
+export enum ResponseKind { ReadFileResponse = 'ReadFileResponse' }
+export class ReadFileResponse extends Response {
+  kind: ResponseKind.ReadFileResponse = ResponseKind.ReadFileResponse
   content: string = ''
 }
 
-export class WriteFileResponse {
-  kind: 'WriteFileResponse' = 'WriteFileResponse'
+export enum ResponseKind { WriteFileResponse = 'WriteFileResponse' }
+export class WriteFileResponse extends Response {
+  kind: ResponseKind.WriteFileResponse = ResponseKind.WriteFileResponse
 }

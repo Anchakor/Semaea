@@ -8,7 +8,7 @@ import { Graph } from '../../Graphs/Graph';
 import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet } from '../../Common';
 import { State as GraphsState } from '../Graphs';
 import { request } from '../../Server/Client';
-import { ListDirectoryResponse } from '../../Server/Response';
+import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
 
 // CreateOpenFileDialogAction
@@ -46,18 +46,16 @@ export const createOpenFileDialog = (directoryPath: string, originatingSaViewInd
   dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
   const req = new ListDirectoryRequest();
     { req.dirPath = directoryPath; }
-    const p1 = request(req, 'ListDirectoryResponse')
+    const p1 = request(req, ResponseKind.ListDirectoryResponse)
     .then((response) => {
-      if (response.kind = 'ListDirectoryResponse') {
-        const r = response as ListDirectoryResponse;
+      if (responseIsOfKind<ListDirectoryResponse>(response, ResponseKind.ListDirectoryResponse)) {
         const graph = new Graph();
-        r.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
+        response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
           graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
         });
         dispatch(objectJoin(AddOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
       } else {
-        Log.error("Received unexpected response: "+JSON.stringify(response));
-        return;
+        handleUnexpectedResponse(response);
       }
     });
 }
