@@ -17,7 +17,8 @@ export const linkEvent = Inferno.linkEvent;
 export function h(_tag: string | VNode | (() => VNode), _props?: any, _children?: Inferno.InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
-export function hf<P>(_tag: (props: P) => VNode, _props: P, _children?: Inferno.InfernoChildren): VNode {
+export type FunctionalUIComponent<P> = (props: P) => VNode;
+export function hf<P>(_tag: FunctionalUIComponent<P>, _props: P, _children?: Inferno.InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
 export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, S>), _props?: Partial<P>, _children?: Inferno.InfernoChildren): VNode {
