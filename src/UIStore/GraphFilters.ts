@@ -2,7 +2,7 @@ import { Graph } from '../Graphs/Graph';
 import { Triple } from '../Graphs/Triple';
 import { SaGraphView, State } from './Graphs';
 import { StoreLib } from '../External';
-import { objectJoin, arrayImmutableSet } from '../Common';
+import { objectJoin, arrayImmutableSet, checkKindFor } from '../Common';
 
 /*
 GraphFilters and GraphFilterConditions
@@ -16,8 +16,14 @@ export interface GraphFilter {
 }
 
 export interface GraphFilterCondition {
-  readonly type: GraphFilterConditionType
+  readonly kind: GraphFilterConditionKind
 }
+
+type GraphFilterConditionKinds = GraphFilterCondition
+  | GraphFilterConditionSubjectBeginsWith
+  | GraphFilterConditionSubjectContains
+
+export const graphFilterConditionIsOfKind = checkKindFor<GraphFilterConditionKinds>();
 
 export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph): Triple[] {
   return (saGraphView.filter)
@@ -27,11 +33,11 @@ export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: G
 
 function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition): Triple[] {
   let stringValue: string;
-  switch (condition.type) {
-    case GraphFilterConditionType.SubjectBeginsWith:
+  switch (condition.kind) {
+    case GraphFilterConditionKind.SubjectBeginsWith:
        stringValue = (condition as GraphFilterConditionSubjectBeginsWith).value;
       return graph.get().filter((triple) => triple.s.toLowerCase().startsWith(stringValue.toLowerCase()));
-    case GraphFilterConditionType.SubjectContains:
+    case GraphFilterConditionKind.SubjectContains:
       stringValue = (condition as GraphFilterConditionSubjectContains).value;
       return graph.get().filter((triple) => triple.s.toLowerCase().includes(stringValue.toLowerCase()));
     default:
@@ -43,22 +49,22 @@ export interface GraphFilterConditionStringValue extends GraphFilterCondition {
   readonly value: string
 }
 function isStringValueCondition(condition: GraphFilterCondition): condition is GraphFilterConditionStringValue {
-  return (condition.type === GraphFilterConditionType.SubjectBeginsWith
-    || condition.type === GraphFilterConditionType.SubjectContains);
+  return (condition.kind === GraphFilterConditionKind.SubjectBeginsWith
+    || condition.kind === GraphFilterConditionKind.SubjectContains);
 }
 
-export enum GraphFilterConditionType {
+export enum GraphFilterConditionKind {
   SubjectBeginsWith = 'SubjectBeginsWith'
 }
 export interface GraphFilterConditionSubjectBeginsWith extends GraphFilterConditionStringValue {
-  readonly type: GraphFilterConditionType.SubjectBeginsWith
+  readonly kind: GraphFilterConditionKind.SubjectBeginsWith
 }
 
-export enum GraphFilterConditionType {
+export enum GraphFilterConditionKind {
   SubjectContains = 'SubjectContains'
 }
 export interface GraphFilterConditionSubjectContains extends GraphFilterConditionStringValue {
-  readonly type: GraphFilterConditionType.SubjectContains
+  readonly kind: GraphFilterConditionKind.SubjectContains
 }
 
 // Actions:

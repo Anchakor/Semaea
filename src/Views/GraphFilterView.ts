@@ -5,29 +5,13 @@ import { objectJoinExtend } from '../Common';
 import { StoreState } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
+import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
 
-function renderFilter<Condition extends GF.GraphFilterCondition>(
-    funcComp: (props: ConditionViewPropsBase & { condition: Condition }) => VNode, 
-    p: ConditionViewPropsBase & { condition: Condition }): VNode {
+function renderFilter(conditionView: VNode): VNode {
   return h('div', {}, [
     'Filter: ',
-    hf(funcComp, p)
+    conditionView
   ]);
-}
-
-function isGraphFilterConditionOfType<C extends GF.GraphFilterCondition>(
-    condition: GF.GraphFilterCondition, type: GF.GraphFilterConditionType): condition is C {
-  return (condition.type == type);
-}
-
-function tryRenderCondition<C extends GF.GraphFilterCondition>(props: Props, 
-    c: GF.GraphFilterCondition, 
-    cIndex: number,
-    type: GF.GraphFilterConditionType, 
-    view: ((p: ConditionViewPropsBase & { condition: C }) => VNode)): VNode | undefined {
-  if (!isGraphFilterConditionOfType<C>(c, type)) return undefined;
-  const p = objectJoinExtend(props, { condition: c, conditionIndex: cIndex });
-  return renderFilter(view, p);
 }
 
 type Props = GraphViewProps & DispatchProps;
@@ -42,13 +26,15 @@ class GraphFilterView extends UIComponent<Props, {}> {
     if (!filter) return h('');
     const conditionIndex = filter.rootConditionIndex;
     const condition = filter.conditions[conditionIndex];
-    let v = tryRenderCondition<GF.GraphFilterConditionSubjectBeginsWith>(this.props, condition, conditionIndex,
-      GF.GraphFilterConditionType.SubjectBeginsWith, GraphFilterConditionSubjectBeginsWithView);
-    if (v) return v;
-    v = tryRenderCondition<GF.GraphFilterConditionSubjectContains>(this.props, condition, conditionIndex,
-      GF.GraphFilterConditionType.SubjectContains, GraphFilterConditionSubjectContainsView);
-    if (v) return v;
-    return h('');
+    if (graphFilterConditionIsOfKind(GF.GraphFilterConditionKind.SubjectBeginsWith)(condition)) {
+      const conditionProps = objectJoinExtend(this.props, { condition: condition, conditionIndex: conditionIndex });
+      return renderFilter(hf(GraphFilterConditionSubjectBeginsWithView, conditionProps));
+    } else if (graphFilterConditionIsOfKind(GF.GraphFilterConditionKind.SubjectContains)(condition)) {
+      const conditionProps = objectJoinExtend(this.props, { condition: condition, conditionIndex: conditionIndex });
+      return renderFilter(hf(GraphFilterConditionSubjectContainsView, conditionProps));
+    } else {
+      return h('');
+    }
   }
 }
 export const GraphFilterComponent = connect(
@@ -86,12 +72,12 @@ function renderConditionStringValueInputField(label: string, props: ConditionVie
 
 type PropsSubjectBeginsWithView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectBeginsWith }
 function GraphFilterConditionSubjectBeginsWithView(props: PropsSubjectBeginsWithView) {
-  if (props.condition.type != GF.GraphFilterConditionType.SubjectBeginsWith) return h('');
+  if (props.condition.kind != GF.GraphFilterConditionKind.SubjectBeginsWith) return h('');
   return renderConditionStringValueInputField('Subject begins with: ', props);
 }
 
 type PropsSubjectContainsView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectContains }
 function GraphFilterConditionSubjectContainsView(props: PropsSubjectContainsView) {
-  if (props.condition.type != GF.GraphFilterConditionType.SubjectContains) return h('');
+  if (props.condition.kind != GF.GraphFilterConditionKind.SubjectContains) return h('');
   return renderConditionStringValueInputField('Subject contains: ', props);
 }

@@ -8,7 +8,7 @@ import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 import * as OpenFileDialog from './Dialogs/OpenFileDialog';
-import { GraphFilter, GraphFilterConditionType, GraphFilterConditionSubjectContains } from 'UIStore/GraphFilters';
+import { GraphFilter, GraphFilterConditionKind, GraphFilterConditionSubjectContains } from 'UIStore/GraphFilters';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -62,7 +62,7 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
 
 export function createDialogGraphFilter(): GraphFilter {
   const c: GraphFilterConditionSubjectContains = { 
-    type: GraphFilterConditionType.SubjectContains,
+    kind: GraphFilterConditionKind.SubjectContains,
     value: ''
   };
   const f: GraphFilter = { conditions: [ c ], rootConditionIndex: 0 };
