@@ -1,6 +1,6 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent } from '../External';
+import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent, FunctionalUIComponent } from '../External';
 import { objectJoin, objectJoinExtend, assert } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
@@ -39,24 +39,36 @@ export interface DialogProps<D extends Dialog> extends Props {
   dialog: D
 }
 
-type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
-export class DialogCancelButtonView extends UIComponent<DialogCancelButtonProps, { elem: HTMLElement }> {
-  constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
+/** Base class for focusable UI Components. If it shoudln't focus set `doFocus` to false. */
+abstract class FocusableComponent<TProps extends Props> extends UIComponent<TProps, { elem: HTMLElement }> {
+  constructor(props: TProps, context?: any) { super(props, context); }
   render() {
     let innerProps = objectJoinExtend(this.props, {
       onComponentDidMount: (e: HTMLElement) => { 
         this.setState({ elem: e }); 
       },
-      onComponentDidUpdate: (lastProps: DialogCancelButtonProps, nextProps: DialogCancelButtonProps) => { 
-        if (this.state && this.props.focus_.changeFocusTo 
+      onComponentDidUpdate: (lastProps: TProps, nextProps: TProps) => { 
+        if (this.state && this.props.focus_.changeFocusTo && this.doFocus 
           && this.props.focus_.changeFocusTo == FocusTargetAreas.Dialog) {
             this.state.elem.focus();
             this.props.acknowledgeFocusChange();
         }
       }
     });
-    return hf(DialogCancelButtonViewInner, innerProps);
+    return hf(this.innerComponent, innerProps);
   }
+
+  doFocus: boolean = true;
+  abstract readonly innerComponent: FunctionalUIComponent<TProps>;
+}
+
+type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void, dontFocus?: boolean }
+export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
+  constructor(props: DialogCancelButtonProps, context?: any) { 
+    super(props, context);
+    if (props.dontFocus) { this.doFocus = false }
+  }
+  readonly innerComponent = DialogCancelButtonViewInner
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 

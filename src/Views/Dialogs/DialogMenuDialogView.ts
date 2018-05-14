@@ -11,7 +11,7 @@ import { GraphNode } from 'Graphs/GraphNode';
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.type, '; Status: ', props.dialog.status,
     ' ', 
-    hc(DialogCancelButtonView, objectJoinExtend(props, { additionCancelAction: () => props.deleteGraph(props.dialog.createdGraphIndex) })) 
+    hc(DialogCancelButtonView, objectJoinExtend(props, { additionCancelAction: () => props.deleteGraph(props.dialog.createdGraphIndex), dontFocus: true })) // TODO focus graph filter
   ]);
 }
 

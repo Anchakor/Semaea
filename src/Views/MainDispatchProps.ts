@@ -36,7 +36,7 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
     createDialogMenuDialog: (originatingSaViewIndex: number) => {
       dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex));
-      dispatch(createSetChangeFocusToGraphViewAction());
+      dispatch(createSetChangeFocusToDialogAction());
     },
     createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
       createOpenFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
