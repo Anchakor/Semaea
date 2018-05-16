@@ -13,12 +13,12 @@ export abstract class FocusableComponent<TProps extends StoreState & MainDispatc
         this.setState({ elem: e }); 
       },
       onComponentDidUpdate: (lastProps: TProps, nextProps: TProps) => { 
-        if (this.state && this.props.focus_.changeFocusTo && this.additionalFocusCondition(lastProps, nextProps)
-          && this.props.focus_.changeFocusTo == this.focusTarget) {
+        if (this.state && nextProps.focus_.changeFocusTo && this.additionalFocusCondition(lastProps, nextProps)
+          && nextProps.focus_.changeFocusTo == this.focusTarget) {
             Log.debug("Focusing FocusableComponent: "+this.getInnerComponentName());
             // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
             this.state.elem.focus();
-            this.props.acknowledgeFocusChange();
+            nextProps.acknowledgeFocusChange();
         }
       }
     });
