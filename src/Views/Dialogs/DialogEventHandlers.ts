@@ -1,16 +1,11 @@
-import { KeyEventOptions } from './InputEventHandlers';
-import { MainProps } from './MainView';
-import { shouldDialogBeVisible, DialogType } from '../Dialogs/Dialog';
-import { dialogMenuDialogKeyHandler } from './Dialogs/DialogMenuDialogView';
+import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
+import { MainProps } from '../MainView';
+import { shouldDialogBeVisible, DialogType } from '../../Dialogs/Dialog';
+import { dialogMenuDialogKeyHandler } from './DialogMenuDialogView';
 
 /*
 Custom event handling callbacks for UI (HTML) elements, when a particular dialog is opened in the view.
 */
-
-export enum KeyEventType {
-  keyDown = 'keyDown',
-  keyUp = 'keyUp',
-}
 
 export function dialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if (!props.current.dialog) return false;

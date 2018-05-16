@@ -4,11 +4,16 @@ import * as Key from '../Key';
 import { MainDispatchProps } from './MainDispatchProps';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
 import { MainProps } from './MainView';
-import { dialogKeyHandler, KeyEventType } from './DialogEventHandlers';
+import { dialogKeyHandler } from './Dialogs/DialogEventHandlers';
 
 /*
  Common event handling callbacks for UI (HTML) elements.
  */
+
+export enum KeyEventType {
+  keyDown = 'keyDown',
+  keyUp = 'keyUp',
+}
 
 export enum KeyEventOptions {
   Default = 0,

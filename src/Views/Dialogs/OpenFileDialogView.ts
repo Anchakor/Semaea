@@ -4,7 +4,6 @@ import { OpenFileDialog } from '../../Dialogs/Dialog';
 import { objectJoinExtend } from '../../Common';
 import { MainProps } from '../MainView';
 import { KeyEventOptions } from '../InputEventHandlers';
-import { KeyEventType } from '../DialogEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';

@@ -4,8 +4,7 @@ import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DialogMenuDialog } from '../../Dialogs/Dialog';
 import { objectJoinExtend } from '../../Common';
 import { MainProps } from '../MainView';
-import { KeyEventOptions } from '../InputEventHandlers';
-import { KeyEventType } from '../DialogEventHandlers';
+import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
 
