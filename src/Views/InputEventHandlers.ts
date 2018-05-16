@@ -56,6 +56,7 @@ export function getKeydownHandler(options: KeyEventOptions) {
 }
 
 function cancelLinkedDialogs(props: MainProps) {
+  // TODO handle deleting graphs (custom actions?) for some dialogs (example: dialog menu, open file)
   const linkedDialogs = getDialogMappingsToSaView(props.current.saViewIndex, props.dialogs_.viewMappings);
   if (linkedDialogs.length == 0) return;
   linkedDialogs.every((v, i, a) => {
