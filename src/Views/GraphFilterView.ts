@@ -6,8 +6,8 @@ import { StoreState } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
-import { FocusableComponent } from '../Views/DialogView';
 import { FocusTarget } from '../UIStore/Focus';
+import { FocusableComponent } from './FocusableComponent';
 
 function renderFilter(conditionView: VNode): VNode {
   return h('div', {}, [
