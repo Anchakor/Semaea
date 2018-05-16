@@ -1,7 +1,7 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent, FunctionalUIComponent } from '../External';
-import { objectJoin, objectJoinExtend, assert } from '../Common';
+import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
@@ -40,9 +40,11 @@ export interface DialogProps<D extends Dialog> extends Props {
 }
 
 /** Base class for focusable UI Components. If it shoudln't focus set `doFocus` to false. */
-abstract class FocusableComponent<TProps extends Props> extends UIComponent<TProps, { elem: HTMLElement }> {
-  constructor(props: TProps, context?: any) { super(props, context); }
+export abstract class FocusableComponent<TProps extends StoreState & MainDispatchProps & { dontFocus?: boolean }> extends UIComponent<TProps, { elem: HTMLElement }> {
+  constructor(props: TProps, context?: any) { super(props, context); if (props.dontFocus) { this.doFocus = false } }
   render() {
+    if (this.doFocus) { Log.debug("FocusableComponent "+this.getInnerComponentName()); }
+    // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
     let innerProps = objectJoinExtend(this.props, {
       onComponentDidMount: (e: HTMLElement) => { 
         this.setState({ elem: e }); 
@@ -58,16 +60,15 @@ abstract class FocusableComponent<TProps extends Props> extends UIComponent<TPro
     return hf(this.innerComponent, innerProps);
   }
 
-  doFocus: boolean = true;
   abstract readonly innerComponent: FunctionalUIComponent<TProps>;
+  doFocus: boolean = true;
+  innerComponentName?: string = undefined;
+  private getInnerComponentName() { return (this.innerComponentName) ? this.innerComponentName :  this.innerComponent.name; }
 }
 
 type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void, dontFocus?: boolean }
 export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
-  constructor(props: DialogCancelButtonProps, context?: any) { 
-    super(props, context);
-    if (props.dontFocus) { this.doFocus = false }
-  }
+  constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
   readonly innerComponent = DialogCancelButtonViewInner
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {

@@ -6,6 +6,7 @@ import { StoreState } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
+import { FocusableComponent } from 'Views/DialogView';
 
 function renderFilter(conditionView: VNode): VNode {
   return h('div', {}, [
@@ -15,7 +16,7 @@ function renderFilter(conditionView: VNode): VNode {
 }
 
 type Props = GraphViewProps & DispatchProps;
-type ConditionViewPropsBase = Props & { conditionIndex: number }
+type ConditionViewProps<GCT extends GF.GraphFilterCondition> = Props & { conditionIndex: number, condition: GCT }
 
 class GraphFilterView extends UIComponent<Props, {}> {
   constructor(props: Props, context: any) {
@@ -26,6 +27,7 @@ class GraphFilterView extends UIComponent<Props, {}> {
     if (!filter) return h('');
     const conditionIndex = filter.rootConditionIndex;
     const condition = filter.conditions[conditionIndex];
+    // TODO don't focus conditions past the first one
     if (graphFilterConditionIsOfKind(GF.GraphFilterConditionKind.SubjectBeginsWith)(condition)) {
       const conditionProps = objectJoinExtend(this.props, { condition: condition, conditionIndex: conditionIndex });
       return renderFilter(hf(GraphFilterConditionSubjectBeginsWithView, conditionProps));
@@ -59,25 +61,37 @@ type DispatchProps = {
 
 // GraphFilterConditionViews
 
-function renderConditionStringValueInputField(label: string, props: ConditionViewPropsBase & { condition: GF.GraphFilterConditionStringValue }) {
+function renderConditionStringValueInputField(label: string, props: ConditionViewProps<GF.GraphFilterConditionStringValue>) {
   return h('div', {}, [
-    h('span', {}, label),
-    h('input', createFocusableElementProps(TextInputKeyEventOptions, props, {
+    h('span', {}, label+': '),
+    hc(ConditionStringValueInputFieldComponent, objectJoinExtend(props, { dontFocus: false, name: label }))
+    // TODO don't focus for dialogs where the cancel button is supposed to be focused
+  ]);
+}
+type ConditionStringValueInputFieldComponentProps<GCT extends GF.GraphFilterConditionStringValue> 
+  = ConditionViewProps<GCT> & { dontFocus?: boolean, name?: string }
+class ConditionStringValueInputFieldComponent<GCT extends GF.GraphFilterConditionStringValue> 
+  extends FocusableComponent<ConditionStringValueInputFieldComponentProps<GCT>> {
+  constructor(props: ConditionStringValueInputFieldComponentProps<GCT>, context?: any) { 
+    super(props, context);
+    if (props.name) { this.innerComponentName = 'GraphFilterCondition '+props.name }
+  }
+  readonly innerComponent = (props: ConditionStringValueInputFieldComponentProps<GCT>) => h(
+    'input', 
+    createFocusableElementProps(TextInputKeyEventOptions, props, {
       type: 'text',
       oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.current.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
       value: props.condition.value
-    }))
-  ]);
+    })
+  )
 }
 
-type PropsSubjectBeginsWithView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectBeginsWith }
-function GraphFilterConditionSubjectBeginsWithView(props: PropsSubjectBeginsWithView) {
+function GraphFilterConditionSubjectBeginsWithView(props: ConditionViewProps<GF.GraphFilterConditionSubjectBeginsWith>) {
   if (props.condition.kind != GF.GraphFilterConditionKind.SubjectBeginsWith) return h('');
-  return renderConditionStringValueInputField('Subject begins with: ', props);
+  return renderConditionStringValueInputField('Subject begins with', props);
 }
 
-type PropsSubjectContainsView = ConditionViewPropsBase & { condition: GF.GraphFilterConditionSubjectContains }
-function GraphFilterConditionSubjectContainsView(props: PropsSubjectContainsView) {
+function GraphFilterConditionSubjectContainsView(props: ConditionViewProps<GF.GraphFilterConditionSubjectContains>) {
   if (props.condition.kind != GF.GraphFilterConditionKind.SubjectContains) return h('');
-  return renderConditionStringValueInputField('Subject contains: ', props);
+  return renderConditionStringValueInputField('Subject contains', props);
 }

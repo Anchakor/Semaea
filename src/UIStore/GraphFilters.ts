@@ -67,6 +67,8 @@ export interface GraphFilterConditionSubjectContains extends GraphFilterConditio
   readonly kind: GraphFilterConditionKind.SubjectContains
 }
 
+// TODO container conditions (AND, OR)
+
 // Actions:
 
 // ChangeGraphFilterConditionStringValueAction
