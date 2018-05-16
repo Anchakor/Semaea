@@ -6,7 +6,8 @@ import { StoreState } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
-import { FocusableComponent } from 'Views/DialogView';
+import { FocusableComponent } from '../Views/DialogView';
+import { FocusTarget } from '../UIStore/Focus';
 
 function renderFilter(conditionView: VNode): VNode {
   return h('div', {}, [
@@ -64,18 +65,18 @@ type DispatchProps = {
 function renderConditionStringValueInputField(label: string, props: ConditionViewProps<GF.GraphFilterConditionStringValue>) {
   return h('div', {}, [
     h('span', {}, label+': '),
-    hc(ConditionStringValueInputFieldComponent, objectJoinExtend(props, { dontFocus: false, name: label }))
-    // TODO don't focus for dialogs where the cancel button is supposed to be focused
+    hc(ConditionStringValueInputFieldComponent, objectJoinExtend(props, { name: label }))
   ]);
 }
 type ConditionStringValueInputFieldComponentProps<GCT extends GF.GraphFilterConditionStringValue> 
-  = ConditionViewProps<GCT> & { dontFocus?: boolean, name?: string }
+  = ConditionViewProps<GCT> & { name?: string }
 class ConditionStringValueInputFieldComponent<GCT extends GF.GraphFilterConditionStringValue> 
   extends FocusableComponent<ConditionStringValueInputFieldComponentProps<GCT>> {
   constructor(props: ConditionStringValueInputFieldComponentProps<GCT>, context?: any) { 
     super(props, context);
     if (props.name) { this.innerComponentName = 'GraphFilterCondition '+props.name }
   }
+  readonly focusTargetArea = FocusTarget.GraphFilter;
   readonly innerComponent = (props: ConditionStringValueInputFieldComponentProps<GCT>) => h(
     'input', 
     createFocusableElementProps(TextInputKeyEventOptions, props, {

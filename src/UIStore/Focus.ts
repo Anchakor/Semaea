@@ -6,16 +6,17 @@ Focus determines to which area of the application the focus should be changed (f
 In that area, exactly one HTML element should get the focus to itself (in onComponentUpdate) and dispatch action SetChangeFocusToAction with undefined.
 */
 
-export enum FocusTargetAreas {
+export enum FocusTarget {
   GraphView = 'GraphView',
-  Dialog = 'Dialog'
+  DialogCancelButton = 'DialogCancelButton',
+  GraphFilter = 'GraphFilter'
 }
 
 export interface State {
-  readonly changeFocusTo?: FocusTargetAreas
+  readonly changeFocusTo?: FocusTarget
 }
 export const defaultState: State = { 
-  changeFocusTo: FocusTargetAreas.GraphView
+  changeFocusTo: FocusTarget.GraphView
   // TODO previous focus & action for returning focus (or focus per view?)
 };
 
@@ -24,13 +25,14 @@ export const defaultState: State = {
 // SetChangeFocusToAction
 export enum ActionType { SetChangeFocusTo = 'SetChangeFocusTo' }
 export interface SetChangeFocusToAction extends StoreLib.Action { type: ActionType.SetChangeFocusTo
-  changeFocusTo?: FocusTargetAreas
+  changeFocusTo?: FocusTarget
 }
 export const createSetChangeFocusToAction = (partialAction: Partial<SetChangeFocusToAction>) => objectJoin<SetChangeFocusToAction>({ type: ActionType.SetChangeFocusTo,
   changeFocusTo: undefined
 }, partialAction);
-export const createSetChangeFocusToGraphViewAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTargetAreas.GraphView });
-export const createSetChangeFocusToDialogAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTargetAreas.Dialog });
+export const createSetChangeFocusToGraphViewAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.GraphView });
+export const createSetChangeFocusToDialogCancelButtonAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.DialogCancelButton });
+export const createSetChangeFocusToGraphFilterAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.GraphFilter });
 export const createSetChangeFocusToNoneAction = () => createSetChangeFocusToAction({ changeFocusTo: undefined });
 function doSetChangeFocusToAction(state: State, action: SetChangeFocusToAction) {
   const newState: State = { changeFocusTo: action.changeFocusTo };

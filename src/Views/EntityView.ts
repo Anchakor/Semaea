@@ -5,7 +5,7 @@ import * as GraphView from '../Views/GraphView';
 import * as Key from '../Key';
 import { objectJoinExtend } from '../Common';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
-import { FocusTargetAreas } from '../UIStore/Focus';
+import { FocusTarget } from '../UIStore/Focus';
 import { KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 
@@ -32,8 +32,9 @@ export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
         this.setState({ elem: e }); 
       },
       onComponentDidUpdate: (lastProps: Props, nextProps: Props) => { 
+        // TODO use FocusableComponent
         if (isCurrentGraphNode(nextProps) && this.state && this.props.focus_.changeFocusTo 
-          && this.props.focus_.changeFocusTo == FocusTargetAreas.GraphView) {
+          && this.props.focus_.changeFocusTo == FocusTarget.GraphView) {
             this.state.elem.focus();
             this.props.acknowledgeFocusChange();
         }

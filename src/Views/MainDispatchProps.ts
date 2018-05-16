@@ -6,7 +6,7 @@ import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
-import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogAction } from '../UIStore/Focus';
+import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction } from '../UIStore/Focus';
 import { createDeleteGraphAction } from '../UIStore/Graphs';
 import { createOpenFileDialog } from '../UIStore/Dialogs/OpenFileDialog';
 
@@ -36,7 +36,7 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createChangeSaGraphViewGraphAction(saGraphViewIndex, graphIndex)),
     createDialogMenuDialog: (originatingSaViewIndex: number) => {
       dispatch(createCreateDialogMenuDialogAction(originatingSaViewIndex));
-      dispatch(createSetChangeFocusToDialogAction());
+      dispatch(createSetChangeFocusToGraphFilterAction());
     },
     createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
       createOpenFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
@@ -45,11 +45,11 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
     createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => {
       dispatch(createCreateDeleteGraphDialogAction(graphIndex, originatingSaViewIndex));
-      dispatch(createSetChangeFocusToDialogAction());
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
     },
     createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => {
       dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex));
-      dispatch(createSetChangeFocusToDialogAction());
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
     },
     cancelDialog: (dialogIndex: number) => {
       dispatch(createCancelDialogAction(dialogIndex));

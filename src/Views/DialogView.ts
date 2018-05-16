@@ -10,7 +10,7 @@ import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView'
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
-import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTargetAreas } from '../UIStore/Focus';
+import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTarget } from '../UIStore/Focus';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
 import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
 import { ButtonKeyEventOptions } from './InputEventHandlers';
@@ -40,18 +40,18 @@ export interface DialogProps<D extends Dialog> extends Props {
 }
 
 /** Base class for focusable UI Components. If it shoudln't focus set `doFocus` to false. */
-export abstract class FocusableComponent<TProps extends StoreState & MainDispatchProps & { dontFocus?: boolean }> extends UIComponent<TProps, { elem: HTMLElement }> {
-  constructor(props: TProps, context?: any) { super(props, context); if (props.dontFocus) { this.doFocus = false } }
+export abstract class FocusableComponent<TProps extends StoreState & MainDispatchProps> extends UIComponent<TProps, { elem: HTMLElement }> {
+  constructor(props: TProps, context?: any) { super(props, context); }
   render() {
-    if (this.doFocus) { Log.debug("FocusableComponent "+this.getInnerComponentName()); }
-    // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
     let innerProps = objectJoinExtend(this.props, {
       onComponentDidMount: (e: HTMLElement) => { 
         this.setState({ elem: e }); 
       },
       onComponentDidUpdate: (lastProps: TProps, nextProps: TProps) => { 
-        if (this.state && this.props.focus_.changeFocusTo && this.doFocus 
-          && this.props.focus_.changeFocusTo == FocusTargetAreas.Dialog) {
+        if (this.state && this.props.focus_.changeFocusTo 
+          && this.props.focus_.changeFocusTo == this.focusTargetArea) {
+            Log.debug("Focusing FocusableComponent: "+this.getInnerComponentName());
+            // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
             this.state.elem.focus();
             this.props.acknowledgeFocusChange();
         }
@@ -61,15 +61,16 @@ export abstract class FocusableComponent<TProps extends StoreState & MainDispatc
   }
 
   abstract readonly innerComponent: FunctionalUIComponent<TProps>;
-  doFocus: boolean = true;
+  abstract readonly focusTargetArea: FocusTarget;
   innerComponentName?: string = undefined;
   private getInnerComponentName() { return (this.innerComponentName) ? this.innerComponentName :  this.innerComponent.name; }
 }
 
-type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void, dontFocus?: boolean }
+type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
 export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
   constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
   readonly innerComponent = DialogCancelButtonViewInner
+  readonly focusTargetArea = FocusTarget.DialogCancelButton
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 
