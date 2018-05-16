@@ -9,6 +9,7 @@ export enum Status {
 export interface Dialog {
   readonly type: DialogType
   readonly status: Status
+  readonly createdGraphIndex?: number
 }
 
 export interface DialogSaViewMapping {

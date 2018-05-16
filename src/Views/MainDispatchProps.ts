@@ -19,7 +19,7 @@ export interface MainDispatchProps {
   createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (graphNode: GraphNode, originatingSaViewIndex: number) => void
-  cancelDialog: (dialogIndex: number) => void
+  cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
   finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
   acknowledgeFocusChange: () => void
@@ -51,7 +51,8 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createCreateAddTripleDialogAction(graphNode, originatingSaViewIndex));
       dispatch(createSetChangeFocusToDialogCancelButtonAction());
     },
-    cancelDialog: (dialogIndex: number) => {
+    cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => {
+      if (createdGraphIndex != undefined) { dispatch(createDeleteGraphAction(createdGraphIndex)); }
       dispatch(createCancelDialogAction(dialogIndex));
       dispatch(createSetChangeFocusToGraphViewAction());
     },

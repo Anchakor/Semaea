@@ -6,7 +6,7 @@ import { FocusableComponent } from '../FocusableComponent';
 import { FocusTarget } from '../../UIStore/Focus';
 import { h, linkEvent } from '../../External';
 
-type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
+type DialogCancelButtonProps = DialogProps<Dialog>
 export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
   constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
   readonly innerComponent = DialogCancelButtonViewInner
@@ -18,6 +18,5 @@ function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   }), 'Cancel')
 }
 function cancelDialogButtonOnClickHandler(dialogProps: DialogCancelButtonProps, event: Event) {
-  if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
-  dialogProps.cancelDialog(dialogProps.dialogIndex);
+  dialogProps.cancelDialog(dialogProps.dialogIndex, dialogProps.dialog.createdGraphIndex);
 }

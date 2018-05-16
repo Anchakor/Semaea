@@ -11,6 +11,6 @@ import { DialogCancelButtonView } from './DialogCancelButtonView';
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.type, '; Status: ', props.dialog.status,
     ' ', 
-    hc(DialogCancelButtonView, objectJoinExtend(props, { additionCancelAction: () => props.deleteGraph(props.dialog.createdGraphIndex) }))
+    hc(DialogCancelButtonView, props)
   ]);
 }

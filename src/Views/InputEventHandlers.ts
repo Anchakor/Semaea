@@ -67,6 +67,6 @@ function cancelLinkedDialogs(props: MainProps) {
   linkedDialogs.every((v, i, a) => {
     const dialog = props.dialogs_.dialogs[v.dialogIndex];
     if (!dialog || !shouldDialogBeVisible(dialog)) return true;
-    props.cancelDialog(v.dialogIndex); return true;
+    props.cancelDialog(v.dialogIndex, dialog.createdGraphIndex); return true;
   });
 }
