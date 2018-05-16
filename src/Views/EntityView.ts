@@ -48,7 +48,10 @@ function EntityViewInner(props: Props) {
 }
 
 function focusHandler(props: Props, event: FocusEvent) {
-  props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
+  const currentNode = props.current.saGraphView.currentNode;
+  if (currentNode && !props.graphNode.equals(currentNode)) {   
+    props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
+  }
 }
 
 function mouseHandler(props: Props, event: MouseEvent) {
