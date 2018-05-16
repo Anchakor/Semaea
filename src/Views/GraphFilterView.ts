@@ -76,7 +76,7 @@ class ConditionStringValueInputFieldComponent<GCT extends GF.GraphFilterConditio
     super(props, context);
     if (props.name) { this.innerComponentName = 'GraphFilterCondition '+props.name }
   }
-  readonly focusTargetArea = FocusTarget.GraphFilter;
+  readonly focusTarget = FocusTarget.GraphFilter;
   readonly innerComponent = (props: ConditionStringValueInputFieldComponentProps<GCT>) => h(
     'input', 
     createFocusableElementProps(TextInputKeyEventOptions, props, {

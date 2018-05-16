@@ -13,8 +13,8 @@ export abstract class FocusableComponent<TProps extends StoreState & MainDispatc
         this.setState({ elem: e }); 
       },
       onComponentDidUpdate: (lastProps: TProps, nextProps: TProps) => { 
-        if (this.state && this.props.focus_.changeFocusTo 
-          && this.props.focus_.changeFocusTo == this.focusTargetArea) {
+        if (this.state && this.props.focus_.changeFocusTo && this.additionalFocusCondition(lastProps, nextProps)
+          && this.props.focus_.changeFocusTo == this.focusTarget) {
             Log.debug("Focusing FocusableComponent: "+this.getInnerComponentName());
             // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
             this.state.elem.focus();
@@ -26,7 +26,8 @@ export abstract class FocusableComponent<TProps extends StoreState & MainDispatc
   }
 
   abstract readonly innerComponent: FunctionalUIComponent<TProps>;
-  abstract readonly focusTargetArea: FocusTarget;
+  abstract readonly focusTarget: FocusTarget;
+  additionalFocusCondition(lastProps: TProps, nextProps: TProps) { return true; };
   innerComponentName?: string = undefined;
   private getInnerComponentName() { return (this.innerComponentName) ? this.innerComponentName :  this.innerComponent.name; }
 }

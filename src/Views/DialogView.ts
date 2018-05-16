@@ -44,7 +44,7 @@ type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: ()
 export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
   constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
   readonly innerComponent = DialogCancelButtonViewInner
-  readonly focusTargetArea = FocusTarget.DialogCancelButton
+  readonly focusTarget = FocusTarget.DialogCancelButton
 }
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 

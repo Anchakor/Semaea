@@ -1,13 +1,14 @@
 import { h, UIComponent, hf, linkEvent } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
-import * as GraphView from '../Views/GraphView';
+import * as GraphView from './GraphView';
 import * as Key from '../Key';
 import { objectJoinExtend } from '../Common';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
 import { FocusTarget } from '../UIStore/Focus';
 import { KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
+import { FocusableComponent } from './FocusableComponent';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -24,24 +25,11 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
   return props.current.saGraphView.currentNode.getValue() == props.graphNode.getValue();
 }
 
-export class EntityView extends UIComponent<Props, { elem: HTMLElement }> {
+export class EntityView extends FocusableComponent<Props> {
   constructor(props: Props, context?: any) { super(props, context); }
-  render() {
-    let innerProps = objectJoinExtend(this.props, {
-      onComponentDidMount: (e: HTMLElement) => { 
-        this.setState({ elem: e }); 
-      },
-      onComponentDidUpdate: (lastProps: Props, nextProps: Props) => { 
-        // TODO use FocusableComponent
-        if (isCurrentGraphNode(nextProps) && this.state && this.props.focus_.changeFocusTo 
-          && this.props.focus_.changeFocusTo == FocusTarget.GraphView) {
-            this.state.elem.focus();
-            this.props.acknowledgeFocusChange();
-        }
-      }
-    });
-    return hf(EntityViewInner, innerProps);
-  }
+  focusTarget = FocusTarget.GraphView
+  innerComponent = EntityViewInner
+  additionalFocusCondition(lastProps: Props, nextProps: Props) { return isCurrentGraphNode(nextProps); };
 }
 function EntityViewInner(props: Props) {
   let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
