@@ -28,4 +28,11 @@ export class GraphNode {
   toString(): string {
     return this._position + '$' + this._triple.s + '|' + this._triple.p + '|' + this._triple.o;
   }
+
+  equals(graphNode: GraphNode): boolean {
+    return this.position == graphNode.position
+      && this._triple.s == graphNode._triple.s
+      && this._triple.p == graphNode._triple.p
+      && this._triple.o == graphNode._triple.o;
+  }
 }

@@ -17,7 +17,7 @@ interface Props extends GraphView.Props {
 
 function isCurrentGraphNode(props: Props): boolean {
   if (!props.current.saGraphView.currentNode) return false;
-  return props.current.saGraphView.currentNode.toString() == props.graphNode.toString();
+  return props.current.saGraphView.currentNode.equals(props.graphNode);
 }
 
 function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
