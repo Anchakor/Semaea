@@ -1,5 +1,6 @@
 import { h, UIComponent, connect, StoreLib, hc } from '../../External';
-import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { DialogProps } from '../DialogView';
+import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { AddTripleDialog } from '../../Dialogs/Dialog';
 import { Triple } from '../../Graphs/Triple';
 import { objectJoin } from '../../Common';

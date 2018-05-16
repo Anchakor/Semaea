@@ -1,5 +1,5 @@
 import { h, hc } from '../../External';
-import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { DialogProps } from '../DialogView';
 import { OpenFileDialog } from '../../Dialogs/Dialog';
 import { objectJoinExtend } from '../../Common';
 import { MainProps } from '../MainView';
@@ -7,6 +7,7 @@ import { KeyEventOptions } from '../InputEventHandlers';
 import { KeyEventType } from '../DialogEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
+import { DialogCancelButtonView } from './DialogCancelButtonView';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.type, '; Status: ', props.dialog.status,

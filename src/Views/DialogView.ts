@@ -1,6 +1,6 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent, FunctionalUIComponent } from '../External';
+import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
 import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
@@ -10,12 +10,8 @@ import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView'
 import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
 import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
-import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToNoneAction, FocusTarget } from '../UIStore/Focus';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
 import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
-import { ButtonKeyEventOptions } from './InputEventHandlers';
-import { createFocusableElementProps } from './FocusableElementProps';
-import { FocusableComponent } from './FocusableComponent';
 import { OpenFileDialogView } from './Dialogs/OpenFileDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
@@ -42,22 +38,6 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
 export interface DialogProps<D extends Dialog> extends Props {
   dialogIndex: number
   dialog: D
-}
-
-type DialogCancelButtonProps = DialogProps<Dialog> & { additionCancelAction?: () => void }
-export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
-  constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
-  readonly innerComponent = DialogCancelButtonViewInner
-  readonly focusTarget = FocusTarget.DialogCancelButton
-}
-function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
-  return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 
-    onclick: linkEvent(dialogProps, cancelDialogButtonOnClickHandler),
-  }), 'Cancel')
-}
-function cancelDialogButtonOnClickHandler(dialogProps: DialogCancelButtonProps, event: Event) {
-  if (dialogProps.additionCancelAction != undefined) dialogProps.additionCancelAction();
-  dialogProps.cancelDialog(dialogProps.dialogIndex);
 }
 
 // View (component):

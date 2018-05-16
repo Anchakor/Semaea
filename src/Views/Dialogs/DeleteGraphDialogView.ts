@@ -1,8 +1,9 @@
 import { h, hc } from '../../External';
-import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { DialogProps } from '../DialogView';
 import { DeleteGraphDialog } from '../../Dialogs/Dialog';
 import { ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
+import { DialogCancelButtonView } from './DialogCancelButtonView';
 
 export function DeleteGraphDialogView(props: DialogProps<DeleteGraphDialog>) {
   return h('div', {}, [ 'Delete graph at index: ', props.dialog.graphToDeleteIndex, ' ',

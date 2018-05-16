@@ -1,5 +1,6 @@
 import { h, hc } from '../../External';
-import { DialogProps, DialogCancelButtonView } from '../DialogView';
+import { DialogProps } from '../DialogView';
+import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DialogMenuDialog } from '../../Dialogs/Dialog';
 import { objectJoinExtend } from '../../Common';
 import { MainProps } from '../MainView';
