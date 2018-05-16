@@ -2,7 +2,7 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent, hf, hc, linkEvent, FunctionalUIComponent } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
-import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping } from '../Dialogs/Dialog';
+import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
@@ -16,6 +16,7 @@ import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps'
 import { ButtonKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { FocusableComponent } from './FocusableComponent';
+import { OpenFileDialogView } from './Dialogs/OpenFileDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -30,7 +31,10 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
       return hf(DeleteGraphDialogView, dialogProps as DialogProps<DeleteGraphDialog>);
     case DialogType.AddTriple:
       return hc(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
+    case DialogType.OpenFile:
+      return hf(OpenFileDialogView, dialogProps as DialogProps<OpenFileDialog>);
     default:
+      Log.log('Warning: rendering a default view for a dialog: '+dialogProps.dialog.type);
       return hf(DefaultDialogView, dialogProps as DialogProps<Dialog>);
   }
 }
