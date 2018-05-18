@@ -29,6 +29,11 @@ export const createOpenFileDialog = (directoryPath: string, originatingSaViewInd
     });
 }
 
+export const changeOpenFileDialogDirectory = (dialogIndex: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  // TODO changeOpenFileDialogDirectory, extracted common function from createOpenFileDialog
+  Log.debug("Changing OpenFileDialogDirectory: dialogIndex: "+dialogIndex+"; directoryPath: "+directoryPath);
+}
+
 class SyncID {
   private static counter = 1;
   public static getNext() { return SyncID.counter++; }

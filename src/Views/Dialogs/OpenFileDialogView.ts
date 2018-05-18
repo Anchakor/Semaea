@@ -1,6 +1,6 @@
 import { h, hc } from '../../External';
 import { DialogProps } from '../DialogView';
-import { OpenFileDialog } from '../../Dialogs/Dialog';
+import { OpenFileDialog, dialogIsOfKind, DialogKind } from '../../Dialogs/Dialog';
 import { objectJoinExtend, Log } from '../../Common';
 import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
@@ -21,14 +21,15 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
       const currentNode = props.current.saGraphView.currentNode;
-      const originatingSaViewIndex = props.current.saView.originatingSaViewIndex;
       const dialogIndex = props.current.dialogIndex;
+      const dialog = props.current.dialog;
       const graph = props.current.graph
-      if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined && graph) {
+      if (dialog && !dialogIsOfKind(DialogKind.OpenFile)(dialog)) {
+        Log.error("Calling openFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
+      } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         // TODO use enum for directory/file
         if (graph.get(currentNode.getValue(), 'filesystem type', 'directory').length > 0) {
-          Log.debug(OpenFileDialogView.name+' opening directory: '+currentNode.getValue());
-          // TODO load directory
+          props.changeOpenFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(currentNode.getValue(), 'filesystem type', 'file').length > 0) {
           Log.debug(OpenFileDialogView.name+' opening file: '+currentNode.getValue());
           // TODO open file
