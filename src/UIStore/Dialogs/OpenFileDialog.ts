@@ -11,6 +11,24 @@ import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
 
+export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
+  dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
+  const req = new ListDirectoryRequest();
+    { req.dirPath = directoryPath; }
+    const p1 = request(req, ResponseKind.ListDirectoryResponse)
+    .then((response) => {
+      if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
+        const graph = new Graph();
+        response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
+          graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
+        });
+        dispatch(objectJoin(addOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
+      } else {
+        handleUnexpectedResponse(response);
+      }
+    });
+}
+
 // CreateOpenFileDialogAction
 export enum ActionType { CreateOpenFileDialog = 'CreateOpenFileDialog' }
 export interface CreateOpenFileDialogAction extends StoreLib.Action { type: ActionType.CreateOpenFileDialog
@@ -42,23 +60,6 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
     action.originatingSaViewIndex,
     newGraphIndex);
 }
-export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
-  dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
-  const req = new ListDirectoryRequest();
-    { req.dirPath = directoryPath; }
-    const p1 = request(req, ResponseKind.ListDirectoryResponse)
-    .then((response) => {
-      if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
-        const graph = new Graph();
-        response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
-          graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
-        });
-        dispatch(objectJoin(AddOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
-      } else {
-        handleUnexpectedResponse(response);
-      }
-    });
-}
 
 // AddOpenFileDialogDirectoryListingAction
 export enum ActionType { AddOpenFileDialogDirectoryListing = 'AddOpenFileDialogDirectoryListing' }
@@ -66,7 +67,7 @@ export interface AddOpenFileDialogDirectoryListingAction extends StoreLib.Action
   directoryPath: string
   graph: Graph
 }
-export const AddOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDirectoryListingAction = { 
+export const addOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDirectoryListingAction = { 
   type: ActionType.AddOpenFileDialogDirectoryListing,
   directoryPath: '.',
   graph: new Graph(),
