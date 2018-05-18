@@ -41,13 +41,12 @@ export interface CreateOpenFileDialogAction extends StoreLib.Action { type: Acti
   directoryPath: string
   syncID: number
 }
-function createOpenFileDialogAction(p: Partial<CreateOpenFileDialogAction>): CreateOpenFileDialogAction {
-  const defaultAction: CreateOpenFileDialogAction = { type: ActionType.CreateOpenFileDialog, 
+function createOpenFileDialogAction(partialAction: Partial<CreateOpenFileDialogAction>) {
+  return objectJoin(objectJoin<CreateOpenFileDialogAction>({ type: ActionType.CreateOpenFileDialog, 
     originatingSaViewIndex: 0, 
     directoryPath: '.',
-    syncID: SyncID.getNext(),
-  };
-  return objectJoin(defaultAction, p);
+    syncID: 0,
+  }, partialAction), { syncID: SyncID.getNext() });
 }
 function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileDialogAction) {
   const newGraph = new Graph();
@@ -79,14 +78,13 @@ export interface AddOpenFileDialogDirectoryListingAction extends StoreLib.Action
   graph: Graph
   syncID: number
 }
-function createAddOpenFileDialogDirectoryListingAction(p: Partial<AddOpenFileDialogDirectoryListingAction> & { syncID: number }): AddOpenFileDialogDirectoryListingAction {
-  const defaultAction: AddOpenFileDialogDirectoryListingAction = { 
+function createAddOpenFileDialogDirectoryListingAction(partialAction: Partial<AddOpenFileDialogDirectoryListingAction> & { syncID: number }) {
+  return objectJoin<AddOpenFileDialogDirectoryListingAction>({ 
     type: ActionType.AddOpenFileDialogDirectoryListing,
     directoryPath: '.',
     graph: new Graph(),
-    syncID: p.syncID
-  };
-  return objectJoin(defaultAction, p);
+    syncID: partialAction.syncID
+  }, partialAction);
 }
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
   const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
