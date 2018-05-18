@@ -53,3 +53,10 @@ export function checkKindFor<T extends ObjectWithKind<any>>() {
 export function filterDownArray<T, U extends T>(array: T[], predicate: (x: T) => x is U): U[] {
   return array.filter(predicate);
 }
+
+/** Filter an array narrowing the type by a typeguard, returning value wrapped, with an index */
+export function filterDownArrayToIndexed<T, U extends T>(array: T[], predicate: (x: T) => x is U): { value: U, index: number }[] {
+  type Indexed<V> = { value: V, index: number };
+  function pred(x: Indexed<T>): x is Indexed<U> { return predicate(x.value); }
+  return filterDownArray(array.map((v,i) => { return { value: v, index: i } }), pred);
+}
