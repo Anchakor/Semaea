@@ -5,8 +5,7 @@ import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { Graph } from '../../Graphs/Graph';
-import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet, filterDownArray } from '../../Common';
-import { State as GraphsState } from '../Graphs';
+import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet, filterDownArray, filterDownArrayToIndexed } from '../../Common';
 import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
@@ -43,7 +42,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
   const newGraph = new Graph();
   const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
   const newState = objectJoin<StoreState>(state, { 
-    graphs_: objectJoin<GraphsState>(state.graphs_, { graphs: newGraphs })
+    graphs_: objectJoin(state.graphs_, { graphs: newGraphs })
   });
   const newGraphIndex = newGraphs.length - 1;
 
@@ -73,18 +72,22 @@ export const addOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDi
   graph: new Graph(),
 };
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
-  const dialog = filterDownArray(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
-    .find((v) =>  v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
-  // TODO this doesn't work, status is not set to done, but still 2 dialogs can be loading for same directory - use dialog index?
-  if (!dialog) return state;
+  const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
+    .find((v) =>  v.value.directoryPath == action.directoryPath && v.value.listDirectoryStatus == 'loading');
+  // TODO still 2 dialogs can be loading for same directory - use dialog ID?
+  if (!dialogIndexed || !dialogIndexed.value) return state;
+  const dialog = dialogIndexed.value;
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
   if (!graph) return state;
   const newGraph = graph.clone();
   newGraph.merge(action.graph);
-  // TODO change dialog listDirectoryStatus
   // TODO write directoryPath somewhere
+  const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loaded' });
   const newState = objectJoin<StoreState>(state, { 
-    graphs_: objectJoin<GraphsState>(state.graphs_, { 
+    dialogs_: objectJoin(state.dialogs_, { 
+      dialogs: arrayImmutableSet(state.dialogs_.dialogs, dialogIndexed.index, newDialog)
+    }),
+    graphs_: objectJoin(state.graphs_, { 
       graphs: arrayImmutableSet(state.graphs_.graphs, dialog.createdGraphIndex, newGraph)
     })
   });
