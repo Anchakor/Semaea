@@ -63,6 +63,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
     listDirectoryStatus: 'loading',
     directoryPath: action.directoryPath,
     createdGraphIndex: newGraphIndex,
+    syncID: action.syncID,
   };
   
   return doCreateDialog(newState, 
@@ -89,15 +90,17 @@ function createAddOpenFileDialogDirectoryListingAction(p: Partial<AddOpenFileDia
 }
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
   const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
-    .find((v) =>  v.value.directoryPath == action.directoryPath && v.value.listDirectoryStatus == 'loading');
-  // TODO still 2 dialogs can be loading for same directory - use dialog ID?
+    .find((v) => v.value.syncID == action.syncID);
   if (!dialogIndexed || !dialogIndexed.value) return state;
   const dialog = dialogIndexed.value;
+  if (dialog.listDirectoryStatus != 'loading') { 
+    Log.error("OpenFileDialog is receiving directory listing but is in incorrect status: "+JSON.stringify(dialog)) 
+  }
+  // TODO replace the graph instead of merge
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
   if (!graph) return state;
   const newGraph = graph.clone();
   newGraph.merge(action.graph);
-  // TODO write directoryPath somewhere
   const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loaded' });
   const newState = objectJoin<StoreState>(state, { 
     dialogs_: objectJoin(state.dialogs_, { 

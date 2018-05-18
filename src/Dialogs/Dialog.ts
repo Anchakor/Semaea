@@ -72,4 +72,5 @@ export interface OpenFileDialog extends Dialog {
   readonly createdGraphIndex: number
   readonly listDirectoryStatus: 'loading' | 'loaded'
   readonly directoryPath: string
+  readonly syncID: number
 }
