@@ -44,7 +44,12 @@ type TypeOfKind<T extends ObjectWithKind<any>, TKind extends T['kind']> =
 
 /** Create a type-guard for a group of objects with `kind` string property (can be string enum!). `T` has to be type union of the object types. */
 export function checkKindFor<T extends ObjectWithKind<any>>() {
-    return <TKind extends T['kind']>(kind: TKind) =>
-        (value: T): value is TypeOfKind<T, TKind> =>
-            value.kind === kind;
+  return <TKind extends T['kind']>(kind: TKind) =>
+    (value: T): value is TypeOfKind<T, TKind> =>
+      value.kind === kind;
+}
+
+/** Filter an array narrowing the type by a typeguard */
+export function filterDownArray<T, U extends T>(array: T[], predicate: (x: T) => x is U): U[] {
+  return array.filter(predicate);
 }

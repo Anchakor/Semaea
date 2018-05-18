@@ -5,7 +5,7 @@ import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { Graph } from '../../Graphs/Graph';
-import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet } from '../../Common';
+import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet, filterDownArray } from '../../Common';
 import { State as GraphsState } from '../Graphs';
 import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
@@ -73,9 +73,10 @@ export const addOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDi
   graph: new Graph(),
 };
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
-  const dialog = state.dialogs_.dialogs.find((v) => dialogIsOfKind(DialogKind.OpenFile)(v) && v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
+  const dialog = filterDownArray(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
+    .find((v) =>  v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
   // TODO this doesn't work, status is not set to done, but still 2 dialogs can be loading for same directory - use dialog index?
-  if (!dialog || !dialogIsOfKind(DialogKind.OpenFile)(dialog)) return state;
+  if (!dialog) return state;
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
   if (!graph) return state;
   const newGraph = graph.clone();
