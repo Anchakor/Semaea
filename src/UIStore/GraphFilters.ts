@@ -19,10 +19,6 @@ export interface GraphFilterCondition {
   readonly kind: GraphFilterConditionKind
 }
 
-type GraphFilterConditionKinds = GraphFilterCondition
-  | GraphFilterConditionSubjectBeginsWith
-  | GraphFilterConditionSubjectContains
-
 export const graphFilterConditionIsOfKind = checkKindFor<GraphFilterConditionKinds>();
 
 export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph): Triple[] {
@@ -44,6 +40,12 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
       return graph.get();
   }
 }
+
+// CONDITIONS:
+
+type GraphFilterConditionKinds = GraphFilterCondition
+  | GraphFilterConditionSubjectBeginsWith
+  | GraphFilterConditionSubjectContains
 
 export interface GraphFilterConditionStringValue extends GraphFilterCondition {
   readonly value: string

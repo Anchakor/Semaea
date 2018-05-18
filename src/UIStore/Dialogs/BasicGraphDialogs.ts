@@ -1,6 +1,6 @@
 import { StoreLib } from '../../External';
 import { StoreState } from '../Main';
-import { DeleteGraphDialog, Status as DialogStatus, DialogType, AddTripleDialog } from '../../Dialogs/Dialog';
+import { DeleteGraphDialog, Status as DialogStatus, DialogKind, AddTripleDialog } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -17,7 +17,7 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
   // FEATURE maybe reopen cancelled dialogs if they exist
   const dialog: DeleteGraphDialog = { 
     status: DialogStatus.Opened, 
-    type: DialogType.DeleteGraph,
+    kind: DialogKind.DeleteGraph,
     graphToDeleteIndex: action.graphIndex
   };
   return doCreateDialog(state, 
@@ -51,7 +51,7 @@ function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripl
   }
   const dialog: AddTripleDialog = { 
     status: DialogStatus.Opened, 
-    type: DialogType.AddTriple,
+    kind: DialogKind.AddTriple,
     triple: triple
   }
   return doCreateDialog(state, 

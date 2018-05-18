@@ -1,6 +1,6 @@
 import { StoreLib } from '../../External';
 import { StoreState } from '../Main';
-import { OpenFileDialog, Status as DialogStatus, DialogType, getDialogsByType } from '../../Dialogs/Dialog';
+import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -49,7 +49,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
 
   const dialog: OpenFileDialog = { 
     status: DialogStatus.Opened, 
-    type: DialogType.OpenFile,
+    kind: DialogKind.OpenFile,
     listDirectoryStatus: 'loading',
     directoryPath: action.directoryPath,
     createdGraphIndex: newGraphIndex,
@@ -73,9 +73,9 @@ export const addOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDi
   graph: new Graph(),
 };
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
-  const dialog = getDialogsByType<OpenFileDialog>(state.dialogs_.dialogs, DialogType.OpenFile).find((v) => v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
+  const dialog = state.dialogs_.dialogs.find((v) => dialogIsOfKind(DialogKind.OpenFile)(v) && v.directoryPath == action.directoryPath && v.listDirectoryStatus == 'loading');
   // TODO this doesn't work, status is not set to done, but still 2 dialogs can be loading for same directory - use dialog index?
-  if (!dialog) return state;
+  if (!dialog || !dialogIsOfKind(DialogKind.OpenFile)(dialog)) return state;
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
   if (!graph) return state;
   const newGraph = graph.clone();

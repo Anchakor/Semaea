@@ -9,7 +9,7 @@ import { GraphNode } from 'Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
-  return h('div', {}, [ 'Dialog type: ', props.dialog.type, '; Status: ', props.dialog.status,
+  return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
     ' ', 
     hc(DialogCancelButtonView, props)
   ]);

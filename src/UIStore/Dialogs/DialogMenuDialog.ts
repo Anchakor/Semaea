@@ -1,6 +1,6 @@
 import { StoreLib } from '../../External';
 import { StoreState } from '../Main';
-import { DialogMenuDialog, Status as DialogStatus, DialogType } from '../../Dialogs/Dialog';
+import { DialogMenuDialog, Status as DialogStatus, DialogKind } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -29,7 +29,7 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
 
   const dialog: DialogMenuDialog = { 
     status: DialogStatus.Opened, 
-    type: DialogType.DialogMenu,
+    kind: DialogKind.DialogMenu,
     selectedDialog: undefined,
     createdGraphIndex: newGraphIndex
   };

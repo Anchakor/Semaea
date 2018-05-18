@@ -1,6 +1,6 @@
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import { MainProps } from '../MainView';
-import { shouldDialogBeVisible, DialogType } from '../../Dialogs/Dialog';
+import { shouldDialogBeVisible, DialogKind } from '../../Dialogs/Dialog';
 import { dialogMenuDialogKeyHandler } from './DialogMenuDialogView';
 import { openFileDialogKeyHandler } from './OpenFileDialogView';
 
@@ -12,10 +12,10 @@ export function dialogKeyHandler(props: MainProps, event: KeyboardEvent, options
   if (!props.current.dialog) return false;
   if (!shouldDialogBeVisible(props.current.dialog)) return false;
 
-  switch (props.current.dialog.type) {
-    case DialogType.DialogMenu:
+  switch (props.current.dialog.kind) {
+    case DialogKind.DialogMenu:
       return dialogMenuDialogKeyHandler(props, event, options, type);
-    case DialogType.OpenFile:
+    case DialogKind.OpenFile:
       return openFileDialogKeyHandler(props, event, options, type);
     default:
       return false;

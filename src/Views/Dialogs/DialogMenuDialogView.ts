@@ -9,7 +9,7 @@ import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
 
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
-  return h('div', {}, [ 'Dialog type: ', props.dialog.type, '; Status: ', props.dialog.status,
+  return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
     ' ', 
     hc(DialogCancelButtonView, props)
   ]);

@@ -1,4 +1,5 @@
 import { Triple } from '../Graphs/Triple';
+import { checkKindFor } from 'Common';
 
 export enum Status { 
   Opened = 'Opened', 
@@ -7,7 +8,7 @@ export enum Status {
 }
 
 export interface Dialog {
-  readonly type: DialogType
+  readonly kind: DialogKind
   readonly status: Status
   readonly createdGraphIndex?: number
 }
@@ -17,9 +18,7 @@ export interface DialogSaViewMapping {
   readonly saViewIndex: number
 }
 
-export const getDialogsByType = <T extends Dialog>(dialogs: Dialog[], type: DialogType): T[] => {
-  return dialogs.filter((value: Dialog) => value.type == type) as T[];
-};
+export const dialogIsOfKind = checkKindFor<DialogKinds>();
 
 export function shouldDialogBeVisible(dialog: Dialog): boolean {
   return dialog.status != Status.Finished 
@@ -34,36 +33,42 @@ export function getDialogMappingsToSaView(saViewIndex: number, viewMappings: Dia
 
 // DIALOGS:
 
-export enum DialogType {
+type DialogKinds = Dialog
+  | DeleteGraphDialog
+  | AddTripleDialog
+  | DialogMenuDialog
+  | OpenFileDialog
+
+export enum DialogKind {
   DeleteGraph = 'DeleteGraph'
 }
 export interface DeleteGraphDialog extends Dialog {
-  readonly type: DialogType.DeleteGraph
+  readonly kind: DialogKind.DeleteGraph
   readonly graphToDeleteIndex: number
 }
 
-export enum DialogType {
+export enum DialogKind {
   AddTriple = 'AddTriple'
 }
 export interface AddTripleDialog extends Dialog {
-  readonly type: DialogType.AddTriple
+  readonly kind: DialogKind.AddTriple
   readonly triple: Triple
 }
 
-export enum DialogType {
+export enum DialogKind {
   DialogMenu = 'DialogMenu'
 }
 export interface DialogMenuDialog extends Dialog {
-  readonly type: DialogType.DialogMenu
-  readonly selectedDialog: DialogType | undefined // TODO probably remove
+  readonly kind: DialogKind.DialogMenu
+  readonly selectedDialog: DialogKind | undefined // TODO probably remove
   readonly createdGraphIndex: number
 }
 
-export enum DialogType {
+export enum DialogKind {
   OpenFile = 'OpenFile'
 }
 export interface OpenFileDialog extends Dialog {
-  readonly type: DialogType.OpenFile
+  readonly kind: DialogKind.OpenFile
   readonly createdGraphIndex: number
   readonly listDirectoryStatus: 'loading' | 'loaded'
   readonly directoryPath: string

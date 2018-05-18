@@ -2,7 +2,7 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
-import { DialogType, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog } from '../Dialogs/Dialog';
+import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
@@ -20,17 +20,17 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
     dialogIndex: dialogIndex,
     dialog: dialog
   });
-  switch (dialog.type) {
-    case DialogType.DialogMenu:
+  switch (dialog.kind) {
+    case DialogKind.DialogMenu:
       return hf(DialogMenuDialogView, dialogProps as DialogProps<DialogMenuDialog>);
-    case DialogType.DeleteGraph:
+    case DialogKind.DeleteGraph:
       return hf(DeleteGraphDialogView, dialogProps as DialogProps<DeleteGraphDialog>);
-    case DialogType.AddTriple:
+    case DialogKind.AddTriple:
       return hc(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
-    case DialogType.OpenFile:
+    case DialogKind.OpenFile:
       return hf(OpenFileDialogView, dialogProps as DialogProps<OpenFileDialog>);
     default:
-      Log.log('Warning: rendering a default view for a dialog: '+dialogProps.dialog.type);
+      Log.log('Warning: rendering a default view for a dialog: '+dialogProps.dialog.kind);
       return hf(DefaultDialogView, dialogProps as DialogProps<Dialog>);
   }
 }
