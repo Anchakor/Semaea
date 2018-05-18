@@ -11,7 +11,8 @@ import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpected
 import { ListDirectoryRequest } from '../../Server/Request';
 
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
-  dispatch(objectJoin(createOpenFileDialogActionDefault, { directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex }));
+  const action = createOpenFileDialogAction({ directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex });
+  dispatch(action);
   const req = new ListDirectoryRequest();
     { req.dirPath = directoryPath; }
     const p1 = request(req, ResponseKind.ListDirectoryResponse)
@@ -21,11 +22,16 @@ export const createOpenFileDialog = (directoryPath: string, originatingSaViewInd
         response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
           graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
         });
-        dispatch(objectJoin(addOpenFileDialogDirectoryListingActionDefault, { directoryPath: directoryPath, graph: graph }));
+        dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: action.syncID, directoryPath: directoryPath, graph: graph }));
       } else {
         handleUnexpectedResponse(response);
       }
     });
+}
+
+class SyncID {
+  private static counter = 1;
+  public static getNext() { return SyncID.counter++; }
 }
 
 // CreateOpenFileDialogAction
@@ -33,11 +39,16 @@ export enum ActionType { CreateOpenFileDialog = 'CreateOpenFileDialog' }
 export interface CreateOpenFileDialogAction extends StoreLib.Action { type: ActionType.CreateOpenFileDialog
   originatingSaViewIndex: number
   directoryPath: string
+  syncID: number
 }
-const createOpenFileDialogActionDefault: CreateOpenFileDialogAction = { type: ActionType.CreateOpenFileDialog, 
-  originatingSaViewIndex: 0, 
-  directoryPath: '.' 
-};
+function createOpenFileDialogAction(p: Partial<CreateOpenFileDialogAction>): CreateOpenFileDialogAction {
+  const defaultAction: CreateOpenFileDialogAction = { type: ActionType.CreateOpenFileDialog, 
+    originatingSaViewIndex: 0, 
+    directoryPath: '.',
+    syncID: SyncID.getNext(),
+  };
+  return objectJoin(defaultAction, p);
+}
 function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileDialogAction) {
   const newGraph = new Graph();
   const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
@@ -65,12 +76,17 @@ export enum ActionType { AddOpenFileDialogDirectoryListing = 'AddOpenFileDialogD
 export interface AddOpenFileDialogDirectoryListingAction extends StoreLib.Action { type: ActionType.AddOpenFileDialogDirectoryListing
   directoryPath: string
   graph: Graph
+  syncID: number
 }
-export const addOpenFileDialogDirectoryListingActionDefault: AddOpenFileDialogDirectoryListingAction = { 
-  type: ActionType.AddOpenFileDialogDirectoryListing,
-  directoryPath: '.',
-  graph: new Graph(),
-};
+function createAddOpenFileDialogDirectoryListingAction(p: Partial<AddOpenFileDialogDirectoryListingAction> & { syncID: number }): AddOpenFileDialogDirectoryListingAction {
+  const defaultAction: AddOpenFileDialogDirectoryListingAction = { 
+    type: ActionType.AddOpenFileDialogDirectoryListing,
+    directoryPath: '.',
+    graph: new Graph(),
+    syncID: p.syncID
+  };
+  return objectJoin(defaultAction, p);
+}
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
   const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
     .find((v) =>  v.value.directoryPath == action.directoryPath && v.value.listDirectoryStatus == 'loading');
