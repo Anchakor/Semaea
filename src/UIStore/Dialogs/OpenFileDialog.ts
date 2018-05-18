@@ -96,11 +96,12 @@ function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: Ad
   if (dialog.listDirectoryStatus != 'loading') { 
     Log.error("OpenFileDialog is receiving directory listing but is in incorrect status: "+JSON.stringify(dialog)) 
   }
-  // TODO replace the graph instead of merge
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
-  if (!graph) return state;
-  const newGraph = graph.clone();
-  newGraph.merge(action.graph);
+  if (!graph) { 
+    Log.error("OpenFileDialog createdGraphIndex is invalid: "+JSON.stringify(dialog)) 
+    return state;
+  }
+  const newGraph = action.graph.clone();
   const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loaded' });
   const newState = objectJoin<StoreState>(state, { 
     dialogs_: objectJoin(state.dialogs_, { 
