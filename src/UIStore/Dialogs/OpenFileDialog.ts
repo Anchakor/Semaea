@@ -9,14 +9,17 @@ import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet, filterDownArr
 import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
+import { normalize } from 'path';
 
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
+  directoryPath = normalize(directoryPath);
   const action = createOpenFileDialogAction({ directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex });
   dispatch(action);
   requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
 }
 
 export const changeOpenFileDialogDirectory = (dialogIndex: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  directoryPath = normalize(directoryPath);
   const action = createOpenFileDialogChangeDirectoryAction({ directoryPath: directoryPath, dialogIndex: dialogIndex });
   dispatch(action);
   requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
@@ -29,10 +32,12 @@ const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
       const graph = new Graph();
+      if (directoryPath != '.') {
+        graph.addTriple(new Triple('..', 'filesystem type', 'directory'));
+      }
       response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
         graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
       });
-      // TODO add navigation to parent directory
       dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: syncID, directoryPath: directoryPath, graph: graph }));
     } else {
       handleUnexpectedResponse(response);
