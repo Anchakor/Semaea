@@ -126,12 +126,15 @@ function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFi
   const saGraphView = state.graphs_.saGraphViews[saGraphViewIndex];
   const saGraphViews = arrayImmutableSet(state.graphs_.saGraphViews, saGraphViewIndex, 
     objectJoin(saGraphView, { filter: createGraphFilter() }));
+  const graphs = arrayImmutableSet(state.graphs_.graphs, saGraphView.graphIndex, new Graph());
 
   const newState = objectJoin<StoreState>(state, { 
     dialogs_: objectJoin(state.dialogs_, { 
       dialogs: arrayImmutableSet(state.dialogs_.dialogs, dialogIndexed.index, newDialog)
     }),
-    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews }),
+    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews,
+      graphs: graphs
+    }),
   });
   return newState;
 }
