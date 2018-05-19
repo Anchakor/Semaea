@@ -13,25 +13,31 @@ import { ListDirectoryRequest } from '../../Server/Request';
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   const action = createOpenFileDialogAction({ directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex });
   dispatch(action);
-  const req = new ListDirectoryRequest();
-    { req.dirPath = directoryPath; }
-    const p1 = request(req, ResponseKind.ListDirectoryResponse)
-    .then((response) => {
-      if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
-        const graph = new Graph();
-        response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
-          graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
-        });
-        dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: action.syncID, directoryPath: directoryPath, graph: graph }));
-      } else {
-        handleUnexpectedResponse(response);
-      }
-    });
+  requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
 }
 
 export const changeOpenFileDialogDirectory = (dialogIndex: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
-  // TODO changeOpenFileDialogDirectory, extracted common function from createOpenFileDialog
-  Log.debug("Changing OpenFileDialogDirectory: dialogIndex: "+dialogIndex+"; directoryPath: "+directoryPath);
+  const action = createOpenFileDialogChangeDirectoryAction({ directoryPath: directoryPath, dialogIndex: dialogIndex });
+  dispatch(action);
+  requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
+}
+
+const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  const req = new ListDirectoryRequest();
+  req.dirPath = directoryPath;
+  const p1 = request(req, ResponseKind.ListDirectoryResponse)
+  .then((response) => {
+    if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
+      const graph = new Graph();
+      response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
+        graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
+      });
+      // TODO add navigation to parent directory
+      dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: syncID, directoryPath: directoryPath, graph: graph }));
+    } else {
+      handleUnexpectedResponse(response);
+    }
+  });
 }
 
 class SyncID {
@@ -76,6 +82,38 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
     newGraphIndex);
 }
 
+// OpenFileDialogChangeDirectoryAction
+export enum ActionType { OpenFileDialogChangeDirectory = 'OpenFileDialogChangeDirectory' }
+export interface OpenFileDialogChangeDirectoryAction extends StoreLib.Action { type: ActionType.OpenFileDialogChangeDirectory
+  dialogIndex: number
+  directoryPath: string
+  syncID: number
+}
+function createOpenFileDialogChangeDirectoryAction(partialAction: Partial<OpenFileDialogChangeDirectoryAction>) { 
+  return objectJoin(objectJoin<OpenFileDialogChangeDirectoryAction>({ type: ActionType.OpenFileDialogChangeDirectory,
+    dialogIndex: 0,
+    directoryPath: '.',
+    syncID: 0,
+  }, partialAction), { syncID: SyncID.getNext() });
+}
+function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFileDialogChangeDirectoryAction) {
+  const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
+    .find((v) => v.index == action.dialogIndex);
+  if (!dialogIndexed || !dialogIndexed.value) {
+    Log.error("Dialog not found: "+JSON.stringify(action));
+    return state;
+  }
+  const dialog = dialogIndexed.value;
+  const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loading', 
+    directoryPath: action.directoryPath, syncID: action.syncID });
+  const newState = objectJoin<StoreState>(state, { 
+    dialogs_: objectJoin(state.dialogs_, { 
+      dialogs: arrayImmutableSet(state.dialogs_.dialogs, dialogIndexed.index, newDialog)
+    }),
+  });
+  return newState;
+}
+
 // AddOpenFileDialogDirectoryListingAction
 export enum ActionType { AddOpenFileDialogDirectoryListing = 'AddOpenFileDialogDirectoryListing' }
 export interface AddOpenFileDialogDirectoryListingAction extends StoreLib.Action { type: ActionType.AddOpenFileDialogDirectoryListing
@@ -97,11 +135,11 @@ function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: Ad
   if (!dialogIndexed || !dialogIndexed.value) return state;
   const dialog = dialogIndexed.value;
   if (dialog.listDirectoryStatus != 'loading') { 
-    Log.error("OpenFileDialog is receiving directory listing but is in incorrect status: "+JSON.stringify(dialog)) 
+    Log.error("Not in 'loading' status: "+JSON.stringify(dialog)) 
   }
   const graph = state.graphs_.graphs[dialog.createdGraphIndex];
   if (!graph) { 
-    Log.error("OpenFileDialog createdGraphIndex is invalid: "+JSON.stringify(dialog)) 
+    Log.error("createdGraphIndex is invalid: "+JSON.stringify(dialog)) 
     return state;
   }
   const newGraph = action.graph.clone();
@@ -125,6 +163,8 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
       return doCreateOpenFileDialogAction(state, action as CreateOpenFileDialogAction);
     case ActionType.AddOpenFileDialogDirectoryListing:
       return doAddOpenFileDialogDirectoryListingAction(state, action as AddOpenFileDialogDirectoryListingAction);
+    case ActionType.OpenFileDialogChangeDirectory:
+      return doOpenFileDialogChangeDirectoryAction(state, action as OpenFileDialogChangeDirectoryAction);
     default:
       return state;
   }
