@@ -42,9 +42,6 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
   let newSaGraphView = (graphIndex == undefined) 
     ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter })
     : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: newGraphFilter });
-  if (graphIndex) {
-    newSaGraphView = setCurrentNodeToFirstNode(newSaGraphView, state.graphs_);
-  }
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
