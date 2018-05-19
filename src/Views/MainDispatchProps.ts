@@ -41,9 +41,11 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     },
     createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
       createOpenFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
+      dispatch(createSetChangeFocusToGraphFilterAction());
     },
     changeOpenFileDialogDirectory: (dialogIndex: number, directoryPath: string) => {
       changeOpenFileDialogDirectory(dialogIndex, directoryPath)(dispatch);
+      dispatch(createSetChangeFocusToGraphFilterAction());
     },
     showAlertModal: (originatingGraphIndex: number, message: string) => 
       dispatch(createShowAlertModalAction(originatingGraphIndex, message)),
