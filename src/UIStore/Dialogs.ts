@@ -9,6 +9,7 @@ import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 import * as OpenFileDialog from './Dialogs/OpenFileDialog';
 import { GraphFilter, GraphFilterConditionKind, GraphFilterConditionSubjectContains, createDefaultGraphFilter, cloneGraphFilter } from './GraphFilters';
+import { GraphNode } from 'Graphs/GraphNode';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -39,9 +40,13 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
   const newGraphFilter = (graphFilter) 
     ? graphFilter 
     : (originatingSaGraphView.filter) ? cloneGraphFilter(originatingSaGraphView.filter) : undefined;
+  // If graphFilter is changed (partially) reset currentNode to ease up/down arrow navigation
+  const currentNode = (graphFilter && originatingSaGraphView.currentNode)
+    ? new GraphNode(originatingSaGraphView.currentNode.getTriple(), 's')
+    : originatingSaGraphView.currentNode
   let newSaGraphView = (graphIndex == undefined) 
-    ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter })
-    : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: newGraphFilter });
+    ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter, currentNode: currentNode })
+    : objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter, currentNode: currentNode, graphIndex: graphIndex });
   const saGraphViews = arrayImmutableAppend(state.graphs_.saGraphViews, newSaGraphView);
   const newSaGraphViewIndex = saGraphViews.length - 1;
 
