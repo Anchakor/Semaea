@@ -2,7 +2,7 @@ import { Graph } from '../Graphs/Graph';
 import { Triple } from '../Graphs/Triple';
 import { SaGraphView, State } from './Graphs';
 import { StoreLib } from '../External';
-import { objectJoin, arrayImmutableSet, checkKindFor } from '../Common';
+import { objectJoin, arrayImmutableSet, checkKindFor, objectClone } from '../Common';
 
 /*
 GraphFilters and GraphFilterConditions
@@ -38,6 +38,22 @@ function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition
       return graph.get().filter((triple) => triple.s.toLowerCase().includes(stringValue.toLowerCase()));
     default:
       return graph.get();
+  }
+}
+
+export function createDefaultGraphFilter() {
+  const c: GraphFilterConditionSubjectContains = { 
+    kind: GraphFilterConditionKind.SubjectContains,
+    value: ''
+  };
+  const f: GraphFilter = { conditions: [ c ], rootConditionIndex: 0 };
+  return f;
+}
+
+export function cloneGraphFilter(filter: GraphFilter): GraphFilter {
+  return {
+    conditions: filter.conditions.map((v) => objectClone(v)),
+    rootConditionIndex: filter.rootConditionIndex,
   }
 }
 

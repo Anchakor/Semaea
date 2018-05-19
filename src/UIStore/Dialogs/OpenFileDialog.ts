@@ -10,6 +10,7 @@ import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
 import { normalize } from 'path';
+import { createDefaultGraphFilter } from 'UIStore/GraphFilters';
 
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   directoryPath = normalize(directoryPath);
@@ -84,7 +85,8 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
   return doCreateDialog(newState, 
     dialog, 
     action.originatingSaViewIndex,
-    newGraphIndex);
+    newGraphIndex,
+    createDefaultGraphFilter());
 }
 
 // OpenFileDialogChangeDirectoryAction
@@ -111,6 +113,7 @@ function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFi
   const dialog = dialogIndexed.value;
   const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loading', 
     directoryPath: action.directoryPath, syncID: action.syncID });
+  // TODO clear dialog filter
   const newState = objectJoin<StoreState>(state, { 
     dialogs_: objectJoin(state.dialogs_, { 
       dialogs: arrayImmutableSet(state.dialogs_.dialogs, dialogIndexed.index, newDialog)

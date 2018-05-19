@@ -8,7 +8,7 @@ import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 import * as OpenFileDialog from './Dialogs/OpenFileDialog';
-import { GraphFilter, GraphFilterConditionKind, GraphFilterConditionSubjectContains } from 'UIStore/GraphFilters';
+import { GraphFilter, GraphFilterConditionKind, GraphFilterConditionSubjectContains, createDefaultGraphFilter, cloneGraphFilter } from './GraphFilters';
 
 /* Dialogs
 Dialogs are temporary UI views for doing some action.
@@ -25,12 +25,20 @@ export const defaultState: State = {
   dialogs: [],
 };
 
-export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewIndex: number, graphIndex?: number, cloneGraphFilter: boolean = false) {
+/**
+ * For use in other reducer functions.
+ * @param originatingSaViewIndex SaView from which the dialog creation was triggered
+ * @param graphIndex GraphIndex to use for the dialog SaView, if undefined the graph from originatingSaGraphView is used
+ * @param graphFilter GraphFilter to use for the dialog SaGraphView, if undefined the filter is copied from the originatingSaGraphView
+ */
+export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaViewIndex: number, graphIndex?: number, graphFilter?: GraphFilter) {
   // Creating a copy of SaView and SaGraphView
   const originatingSaView = state.saViews_.saViews[originatingSaViewIndex];
   const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
 
-  const newGraphFilter = cloneGraphFilter ? createDialogGraphFilter() : createDialogGraphFilter(); // TODO deep clone
+  const newGraphFilter = (graphFilter) 
+    ? graphFilter 
+    : (originatingSaGraphView.filter) ? cloneGraphFilter(originatingSaGraphView.filter) : undefined;
   let newSaGraphView = (graphIndex == undefined) 
     ? objectJoin<SaGraphView>(originatingSaGraphView, { filter: newGraphFilter })
     : objectJoin<SaGraphView>(originatingSaGraphView, { graphIndex: graphIndex, filter: newGraphFilter });
@@ -58,15 +66,6 @@ export function doCreateDialog(state: StoreState, dialog: Dialog, originatingSaV
     saViews_: objectJoin<SaViewsState>(state.saViews_, { saViews: saViews, currentSaViewIndex: newSaViewIndex }),
     dialogs_: objectJoin<State>(state.dialogs_, { dialogs: dialogs, viewMappings: viewMappings })
   });
-}
-
-export function createDialogGraphFilter(): GraphFilter {
-  const c: GraphFilterConditionSubjectContains = { 
-    kind: GraphFilterConditionKind.SubjectContains,
-    value: ''
-  };
-  const f: GraphFilter = { conditions: [ c ], rootConditionIndex: 0 };
-  return f;
 }
 
 // Actions:

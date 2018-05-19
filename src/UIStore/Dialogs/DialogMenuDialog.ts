@@ -7,6 +7,7 @@ import { Triple } from '../../Graphs/Triple';
 import { Graph } from '../../Graphs/Graph';
 import { objectJoin, arrayImmutableAppend } from '../../Common';
 import { State as GraphsState } from '../Graphs';
+import { createDefaultGraphFilter } from 'UIStore/GraphFilters';
 
 // CreateDialogMenuDialogAction
 export enum ActionType { CreateDialogMenuDialog = 'CreateDialogMenuDialog' }
@@ -37,7 +38,8 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
   return doCreateDialog(newState, 
     dialog, 
     action.originatingSaViewIndex,
-    newGraphIndex);
+    newGraphIndex,
+    createDefaultGraphFilter());
 }
 
 // Reducer:

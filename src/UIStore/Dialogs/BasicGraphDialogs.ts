@@ -56,10 +56,7 @@ function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripl
   }
   return doCreateDialog(state, 
     dialog, 
-    action.originatingSaViewIndex,
-    undefined,
-    true
-  );
+    action.originatingSaViewIndex);
 }
 
 // Reducer:
