@@ -51,6 +51,8 @@ class SyncID {
   public static getNext() { return SyncID.counter++; }
 }
 
+const createGraphFilter = createDefaultGraphFilter;
+
 // CreateOpenFileDialogAction
 export enum ActionType { CreateOpenFileDialog = 'CreateOpenFileDialog' }
 export interface CreateOpenFileDialogAction extends StoreLib.Action { type: ActionType.CreateOpenFileDialog
@@ -86,7 +88,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
     dialog, 
     action.originatingSaViewIndex,
     newGraphIndex,
-    createDefaultGraphFilter());
+    createGraphFilter());
 }
 
 // OpenFileDialogChangeDirectoryAction
@@ -111,13 +113,25 @@ function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFi
     return state;
   }
   const dialog = dialogIndexed.value;
-  const newDialog = objectJoin(dialog, { listDirectoryStatus: 'loading', 
-    directoryPath: action.directoryPath, syncID: action.syncID });
-  // TODO clear dialog filter
+  const newDialog = objectJoin(dialog, 
+    { listDirectoryStatus: 'loading', directoryPath: action.directoryPath, syncID: action.syncID });
+  
+  // Reseting dialog filter
+  const mapping = state.dialogs_.viewMappings.find((v) => v.dialogIndex == action.dialogIndex);
+  if (!mapping) {
+    Log.error("Dialog mapping not found: "+JSON.stringify(action));
+    return state; 
+  }
+  const saGraphViewIndex = state.saViews_.saViews[mapping.saViewIndex].saGraphViewIndex;
+  const saGraphView = state.graphs_.saGraphViews[saGraphViewIndex];
+  const saGraphViews = arrayImmutableSet(state.graphs_.saGraphViews, saGraphViewIndex, 
+    objectJoin(saGraphView, { filter: createGraphFilter() }));
+
   const newState = objectJoin<StoreState>(state, { 
     dialogs_: objectJoin(state.dialogs_, { 
       dialogs: arrayImmutableSet(state.dialogs_.dialogs, dialogIndexed.index, newDialog)
     }),
+    graphs_: objectJoin(state.graphs_, { saGraphViews: saGraphViews }),
   });
   return newState;
 }
