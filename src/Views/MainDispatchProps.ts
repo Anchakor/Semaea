@@ -23,6 +23,7 @@ export interface MainDispatchProps {
   cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
   finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
+  focusGraphView: () => void
   acknowledgeFocusChange: () => void
   deleteGraph: (graphIndex: number) => void
 }
@@ -70,6 +71,8 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset));
       dispatch(createSetChangeFocusToGraphViewAction());
     },
+    focusGraphView: () => 
+      dispatch(createSetChangeFocusToGraphViewAction()),
     acknowledgeFocusChange: () => 
       dispatch(createSetChangeFocusToNoneAction()),
     deleteGraph: (graphIndex: number) => 

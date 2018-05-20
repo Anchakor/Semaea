@@ -35,10 +35,8 @@ export class EntityFocusableView extends FocusableComponent<Props> {
 
 export function entityView(props: Props) {
   let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
-    tabIndex: 0, 
     class: '',
     onclick: linkEvent(props, mouseHandler),
-    onfocus: linkEvent(props, focusHandler),
   });
   if (isCurrentGraphNode(props)) {
     spanProps.class = 'element-selected';
@@ -49,13 +47,13 @@ export function entityView(props: Props) {
   return h('span', spanProps, props.graphNode.getValue());
 }
 
-function focusHandler(props: Props, event: FocusEvent) {
+function mouseHandler(props: Props, event: MouseEvent) {
   const currentNode = props.current.saGraphView.currentNode;
-  if (currentNode && !props.graphNode.equals(currentNode)) {   
+  const alreadyIsCurrentNode = (currentNode && props.graphNode.equals(currentNode));
+  if (!alreadyIsCurrentNode) {   
     props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
   }
-}
-
-function mouseHandler(props: Props, event: MouseEvent) {
+  props.focusGraphView();
+  // TODO proper mouse click handling
   props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+".");
 }
