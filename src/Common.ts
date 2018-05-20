@@ -60,3 +60,12 @@ export function filterDownArrayToIndexed<T, U extends T>(array: T[], predicate: 
   function pred(x: Indexed<T>): x is Indexed<U> { return predicate(x.value); }
   return filterDownArray(array.map((v,i) => { return { value: v, index: i } }), pred);
 }
+
+
+export function getSequenceIndexByOffset(sequenceLength: number, sequenceIndex: number, offset: number) {
+  let newIndex = (sequenceIndex + offset) % sequenceLength;
+  while (newIndex < 0) {
+    newIndex += sequenceLength;
+  }
+  return newIndex;
+}

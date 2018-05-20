@@ -1,4 +1,4 @@
-import { arrayImmutableSet, objectClone, objectJoin } from '../../Common';
+import { arrayImmutableSet, objectClone, objectJoin, getSequenceIndexByOffset } from '../../Common';
 import { StoreLib, UILib, UIStoreLib } from '../../External';
 import { Graph } from '../../Graphs/Graph';
 import { GraphNode } from '../../Graphs/GraphNode';
@@ -54,7 +54,7 @@ function doChangeCurrentNodeAction(state: State, action: ChangeCurrentNodeAction
   });
 }
 
-// ChangeCurrentGraphNodeByOffsetAction
+// ChangeCurrentGraphNodeByOffsetAction // TODO when graph view components are defined
 export enum ActionType { ChangeCurrentGraphNodeByOffset = 'ChangeCurrentGraphNodeByOffset' }
 export interface ChangeCurrentGraphNodeByOffsetAction extends StoreLib.Action { type: ActionType.ChangeCurrentGraphNodeByOffset
   saGraphViewIndex: number
@@ -72,10 +72,7 @@ function doChangeCurrentGraphNodeByOffsetAction(state: State, action: ChangeCurr
   const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
   if (triples.length < 1) return state;
   const tripleIndex = triples.findIndex((triple) => currentNode.getTriple().equals(triple));
-  let newTripleIndex = (tripleIndex + action.offset) % triples.length;
-  while (newTripleIndex < 0) {
-    newTripleIndex += triples.length;
-  }
+  let newTripleIndex = getSequenceIndexByOffset(triples.length, tripleIndex, action.offset);
   const newTriple = triples[newTripleIndex];
   if (!newTriple) return state;
   const newCurrentNode = new GraphNode(newTriple, currentNode.position);
@@ -85,7 +82,7 @@ function doChangeCurrentGraphNodeByOffsetAction(state: State, action: ChangeCurr
   });
 }
 
-// ChangeCurrentGraphNodeVerticallyByOffsetAction
+// ChangeCurrentGraphNodeVerticallyByOffsetAction // TODO when graph view components are defined
 export enum ActionType { ChangeCurrentGraphNodeVerticallyByOffset = 'ChangeCurrentGraphNodeVerticallyByOffset' }
 export interface ChangeCurrentGraphNodeVerticallyByOffsetAction extends StoreLib.Action { type: ActionType.ChangeCurrentGraphNodeVerticallyByOffset
   saGraphViewIndex: number
@@ -104,17 +101,9 @@ function doChangeCurrentGraphNodeVerticallyByOffsetAction(state: State, action: 
   if (triples.length < 1) return state;
   
   function getGraphNodeSequences(node: GraphNode, triples: Triple[]) {
-    // TODO when graph view components are defined
     return triples.map((t) => [new GraphNode(t, 's'), new GraphNode(t, 'p'), new GraphNode(t, 'o')]);
   }
   const sequences = getGraphNodeSequences(currentNode, triples);
-  function getSequenceIndexByOffset(sequences: GraphNode[][], sequenceIndex: number, offset: number) {
-    let newIndex = (sequenceIndex + offset) % sequences.length;
-    while (newIndex < 0) {
-      newIndex += triples.length;
-    }
-    return newIndex;
-  }
   const currentSequenceIndex = sequences.findIndex((s) => s.some((gn) => currentNode.equals(gn)));
   const currentSequence = sequences[currentSequenceIndex];
   const inCurrentSequenceIndex = currentSequence.findIndex((gn) => currentNode.equals(gn));
@@ -123,9 +112,9 @@ function doChangeCurrentGraphNodeVerticallyByOffsetAction(state: State, action: 
     if (inSequenceIndex == undefined) inSequenceIndex = (offset < 0) ? currentSequence.length : 0;
     const newInSequenceIndex = (inSequenceIndex + offset);
     if (newInSequenceIndex < 0) {
-      return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences, sequenceIndex, -1), newInSequenceIndex);
+      return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences.length, sequenceIndex, -1), newInSequenceIndex);
     } else if (newInSequenceIndex >= currentSequence.length) {
-      return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences, sequenceIndex, 1), newInSequenceIndex - currentSequence.length);
+      return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences.length, sequenceIndex, 1), newInSequenceIndex - currentSequence.length);
     }
     return currentSequence[newInSequenceIndex];
   }
