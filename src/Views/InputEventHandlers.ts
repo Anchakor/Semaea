@@ -39,6 +39,12 @@ export function getKeyupHandler(options: KeyEventOptions) {
     } else if (Key.isUpArrow(event)) {
       props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, -1);
       event.preventDefault();
+    } else if (Key.isRightArrow(event)) {
+      props.changeCurrentGraphNodeVerticallyByOffset(props.current.saGraphViewIndex, 1);
+      event.preventDefault();
+    } else if (Key.isLeftArrow(event)) {
+      props.changeCurrentGraphNodeVerticallyByOffset(props.current.saGraphViewIndex, -1);
+      event.preventDefault();
     } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       props.createDeleteGraphDialog(props.current.saGraphView.graphIndex, props.current.saViewIndex);
     } else if (Key.isN(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {

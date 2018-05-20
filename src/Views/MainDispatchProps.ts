@@ -1,6 +1,6 @@
 import { GraphNode } from "../Graphs/GraphNode";
 import { StoreLib } from "../External";
-import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
+import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeVerticallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
@@ -23,6 +23,7 @@ export interface MainDispatchProps {
   cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
   finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
+  changeCurrentGraphNodeVerticallyByOffset: (saGraphViewIndex: number, offset: number) => void
   focusGraphView: () => void
   acknowledgeFocusChange: () => void
   deleteGraph: (graphIndex: number) => void
@@ -69,6 +70,10 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     },
     changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => {
       dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset));
+      dispatch(createSetChangeFocusToGraphViewAction());
+    },
+    changeCurrentGraphNodeVerticallyByOffset: (saGraphViewIndex: number, offset: number) => {
+      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(saGraphViewIndex, offset));
       dispatch(createSetChangeFocusToGraphViewAction());
     },
     focusGraphView: () => 
