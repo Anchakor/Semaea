@@ -4,7 +4,7 @@ import { MainDispatchProps } from './MainDispatchProps';
 import { UIComponent, FunctionalUIComponent, hf } from '../External';
 import { FocusTarget } from '../UIStore/Focus';
 
-/** Base class for focusable UI Components. If it shoudln't focus set `doFocus` to false. */
+/** Base class for focusable UI Components. */
 export abstract class FocusableComponent<TProps extends StoreState & MainDispatchProps> extends UIComponent<TProps, { elem: HTMLElement }> {
   constructor(props: TProps, context?: any) { super(props, context); }
   render() {

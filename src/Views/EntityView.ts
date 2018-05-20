@@ -25,13 +25,15 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
   return props.current.saGraphView.currentNode.getValue() == props.graphNode.getValue();
 }
 
-export class EntityView extends FocusableComponent<Props> {
+/** Empty focusable element for all GraphView entities (GraphNodes) */
+export class EntityFocusableView extends FocusableComponent<Props> {
   constructor(props: Props, context?: any) { super(props, context); }
   focusTarget = FocusTarget.GraphView
-  innerComponent = EntityViewInner
-  additionalFocusCondition(lastProps: Props, nextProps: Props) { return isCurrentGraphNode(nextProps); };
+  innerComponentName = 'Graph View EntityFocusableView'
+  innerComponent = (p: Props) => h('span', createFocusableElementProps(KeyEventOptions.Default, p, { tabindex: 0 }));
 }
-function EntityViewInner(props: Props) {
+
+export function entityView(props: Props) {
   let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
     tabIndex: 0, 
     class: '',

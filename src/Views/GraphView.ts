@@ -71,18 +71,20 @@ export class View extends UIComponent<Props, {}> {
       return h('div', {}, 'Viewed graph is undefined');
     }
     const triples = getSaGraphViewFilteredTriples(this.props.current.saGraphView, this.props.current.graph);
-    return h('div', {}, triples.map((triple: Triple) => {
-      return h('div', {}, [
-        renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
-        renderLevelPosition(this.props, new GraphNode(triple, 'p')), ' ',
-        renderLevelPosition(this.props, new GraphNode(triple, 'o'))
-        ]);
-    }));
+    return h('div', {}, [hc(EntityView.EntityFocusableView, this.props)]
+      .concat(triples.map((triple: Triple) => {
+        return h('div', {}, [
+          renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
+          renderLevelPosition(this.props, new GraphNode(triple, 'p')), ' ',
+          renderLevelPosition(this.props, new GraphNode(triple, 'o'))
+          ]);
+      }))
+    );
   }
 }
 
 function renderLevelPosition(props: Props, graphNode: GraphNode) {
-  return hc(EntityView.EntityView, objectJoinExtend(props, { 
+  return hf(EntityView.entityView, objectJoinExtend(props, { 
     graphNode: graphNode
    })); 
 }
