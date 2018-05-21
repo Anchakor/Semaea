@@ -12,7 +12,6 @@ import { FocusableComponent } from './FocusableComponent';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
-  shouldFocus?: boolean
 }
 
 function isCurrentGraphNode(props: Props): boolean {
