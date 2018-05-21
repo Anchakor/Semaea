@@ -11,6 +11,7 @@ import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpected
 import { ListDirectoryRequest } from '../../Server/Request';
 import { normalize } from 'path';
 import { createDefaultGraphFilter } from 'UIStore/GraphFilters';
+import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   directoryPath = normalize(directoryPath);
@@ -34,10 +35,10 @@ const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string
     if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
       const graph = new Graph();
       if (directoryPath != '.') {
-        graph.addTriple(new Triple('..', 'filesystem type', 'directory'));
+        graph.addTriple(new Triple('..', FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory));
       }
       response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
-        graph.addTriple(new Triple(v.name, 'filesystem type', v.kind));
+        graph.addTriple(new Triple(v.name, FilesystemPredicates.DirectoryEntryKind, v.kind));
       });
       dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: syncID, directoryPath: directoryPath, graph: graph }));
     } else {

@@ -7,6 +7,7 @@ import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
+import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
@@ -28,9 +29,9 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
         Log.error("Calling openFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
       } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         // TODO use enum for directory/file
-        if (graph.get(currentNode.getValue(), 'filesystem type', 'directory').length > 0) {
+        if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeOpenFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
-        } else if (graph.get(currentNode.getValue(), 'filesystem type', 'file').length > 0) {
+        } else if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
           Log.debug(OpenFileDialogView.name+' opening file: '+currentNode.getValue());
           // TODO open file
         }

@@ -1,5 +1,6 @@
 import fs = require('fs');
 import path = require('path');
+import { IDirectoryEntry, DirectoryEntryKind } from '../Entities/Filesystem';
 
 const fileEncoding = 'utf8';
 
@@ -28,11 +29,6 @@ export function writeFileString(filePath: string, data: string) {
   });
 }
 
-export interface IDirectoryEntry {
-  kind: 'file' | 'directory'
-  name: string
-}
-
 export function listDirectorySimple(dirPath: string) {
   return listDirectoryCustom(dirPath, (entry) => path.join(dirPath, entry));
 }
@@ -42,7 +38,7 @@ export function listDirectory(dirPath: string) {
     const entryPath = path.join(dirPath, entry);
     const stats = fs.statSync(entryPath);
     return { 
-      kind: stats.isDirectory() ? 'directory' : 'file', 
+      kind: stats.isDirectory() ? DirectoryEntryKind.Directory : DirectoryEntryKind.File, 
       name: entry
     };
   });

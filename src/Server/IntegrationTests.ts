@@ -2,7 +2,7 @@ import * as Test from '../Test';
 import * as Request from '../Server/Request';
 import * as Response from '../Server/Response';
 import * as ServerClient from '../Server/Client';
-import { IDirectoryEntry } from '../Server/Filesystem';
+import { DirectoryEntryKind, IDirectoryEntry } from '../Entities/Filesystem';
 
 export function runServerIntegrationTests() {
 
@@ -24,8 +24,8 @@ export function runServerIntegrationTests() {
     .then((response) => {
       const expected = new Response.ListDirectoryResponse();
       { expected.listing = new Array<IDirectoryEntry>();
-        expected.listing.push({ kind: 'directory', name: 'tdir' } as IDirectoryEntry);
-        expected.listing.push({ kind: 'file', name: 'tfile.txt' } as IDirectoryEntry); }
+        expected.listing.push({ kind: DirectoryEntryKind.Directory, name: 'tdir' } as IDirectoryEntry);
+        expected.listing.push({ kind: DirectoryEntryKind.File, name: 'tfile.txt' } as IDirectoryEntry); }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ListDirectoryResponse.');
     });
 

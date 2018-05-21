@@ -1,5 +1,5 @@
-import { IDirectoryEntry } from '../Server/Filesystem';
 import { Log, checkKindFor } from '../Common';
+import { IDirectoryEntry } from '../Entities/Filesystem';
 
 export function createErrorResponse(err: any) {
   const r = new ErrorResponse();
