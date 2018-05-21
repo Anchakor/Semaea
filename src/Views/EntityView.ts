@@ -37,6 +37,7 @@ export function entityView(props: Props) {
   let spanProps = createFocusableElementProps(KeyEventOptions.Default, props, { 
     class: '',
     onclick: linkEvent(props, mouseHandler),
+    oncontextmenu: linkEvent(props, mouseHandler),
   });
   if (isCurrentGraphNode(props)) {
     spanProps.class = 'element-selected';
@@ -54,8 +55,15 @@ function mouseHandler(props: Props, event: MouseEvent) {
     props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
   }
   props.focusGraphView();
-  
+
   if (dialogEntityMouseClickHandler(props, event, props.graphNode)) return;
+
+  if (event.button == 2) {
+    // TODO handle what should happen on dialog graphs (so this doesn't happen: dialog menu -> dialog menu -> delete graph)
+    props.createDialogMenuDialog(props.current.saViewIndex);
+    event.preventDefault();
+    return;
+  }
 
   if (alreadyIsCurrentNode) {
     props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+".");
