@@ -59,7 +59,6 @@ function mouseHandler(props: Props, event: MouseEvent) {
   if (dialogEntityMouseClickHandler(props, event, props.graphNode)) return;
 
   if (event.button == 2) {
-    // TODO handle what should happen on dialog graphs (so this doesn't happen: dialog menu -> dialog menu -> delete graph)
     props.createDialogMenuDialog(props.current.saViewIndex);
     event.preventDefault();
     return;

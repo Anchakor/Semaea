@@ -30,6 +30,14 @@ export function dialogEntityMouseClickHandler(props: MainProps, event: MouseEven
   if (!props.current.dialog) return false;
   if (!shouldDialogBeVisible(props.current.dialog)) return false;
 
+  if (event.button == 2) {
+    switch (props.current.dialog.kind) {
+      default:
+        event.preventDefault();
+        return true; // Preventing dialog menu triggering on dialog views
+    }
+  }
+
   switch (props.current.dialog.kind) {
     case DialogKind.DialogMenu:
       return dialogMenuDialogEntityMouseClickHandler(props, event, graphNode);
