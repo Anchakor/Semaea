@@ -49,7 +49,7 @@ export function getKeyupHandler(options: KeyEventOptions) {
       props.createDeleteGraphDialog(props.current.saGraphView.graphIndex, props.current.saViewIndex);
     } else if (Key.isN(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       if (!props.current.saGraphView.currentNode) return;
-      props.createAddTripleDialog(props.current.saGraphView.currentNode, props.current.saViewIndex);
+      props.createAddTripleDialog(props.current.saViewIndex);
     }
   }
 }

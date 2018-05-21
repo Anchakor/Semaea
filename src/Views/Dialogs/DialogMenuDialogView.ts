@@ -2,11 +2,11 @@ import { h, hc } from '../../External';
 import { DialogProps } from '../DialogView';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DialogMenuDialog } from '../../Dialogs/Dialog';
-import { objectJoinExtend } from '../../Common';
+import { objectJoinExtend, Log } from '../../Common';
 import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
-import { GraphNode } from 'Graphs/GraphNode';
+import { GraphNode } from '../../Graphs/GraphNode';
 
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
@@ -50,7 +50,7 @@ function submitDialog(props: MainProps) {
 
 function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {
   const mappings = [
-    { node: 'Add triple', trigger: () => props.createAddTripleDialog(currentNode, originatingSaViewIndex) },
+    { node: 'Add triple', trigger: () => props.createAddTripleDialog(originatingSaViewIndex) },
     { node: 'Delete graph', trigger: () => { 
         const originatingSaGraphViewIndex = props.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex;
         const originatingGraphIndex = props.graphs_.saGraphViews[originatingSaGraphViewIndex].graphIndex;
@@ -66,6 +66,6 @@ function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, origin
     props.finishDialog(dialogIndex);
     mapping.trigger();
   } else {
-    alert("asf "+currentNode.getValue());
+    Log.error("Submitted DialogMenuDialog for a node without a handler: "+currentNode.getValue());
   }
 }

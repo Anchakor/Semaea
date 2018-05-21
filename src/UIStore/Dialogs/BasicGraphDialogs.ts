@@ -4,6 +4,7 @@ import { DeleteGraphDialog, Status as DialogStatus, DialogKind, AddTripleDialog 
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
+import { getOriginatingOrClosestSaViewIndex } from 'SaViews';
 
 // CreateDeleteGraphDialogAction
 export enum ActionType { CreateDeleteGraphDialog = 'CreateDeleteGraphDialog' }
@@ -28,15 +29,16 @@ function doCreateDeleteGraphDialogAction(state: StoreState, action: CreateDelete
 // CreateAddTripleDialogAction
 export enum ActionType { CreateAddTripleDialog = 'CreateAddTripleDialog' }
 export interface CreateAddTripleDialogAction extends StoreLib.Action { type: ActionType.CreateAddTripleDialog
-  graphNode: GraphNode
   originatingSaViewIndex: number
 }
-export const createCreateAddTripleDialogAction = (GraphNode: GraphNode, originatingSaViewIndex: number): CreateAddTripleDialogAction => 
-  ({ type: ActionType.CreateAddTripleDialog, graphNode: GraphNode, originatingSaViewIndex: originatingSaViewIndex });
+export const createCreateAddTripleDialogAction = (originatingSaViewIndex: number): CreateAddTripleDialogAction => 
+  ({ type: ActionType.CreateAddTripleDialog, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripleDialogAction) {
   let triple = new Triple('', '', '');
-  const sourceTriple = action.graphNode.getTriple();
-  switch (action.graphNode.position) {
+  const originatingSaView = state.graphs_.saGraphViews[action.originatingSaViewIndex];
+  if (!originatingSaView.currentNode) return state;
+  const sourceTriple = originatingSaView.currentNode.getTriple();
+  switch (originatingSaView.currentNode.position) {
     case 'p':
       triple.s = sourceTriple.getNodeAtPosition('s');
       triple.p = sourceTriple.getNodeAtPosition('p');
