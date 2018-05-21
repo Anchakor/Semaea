@@ -18,12 +18,7 @@ export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
 export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      const currentNode = props.current.saGraphView.currentNode;
-      const originatingSaViewIndex = props.current.saView.originatingSaViewIndex;
-      const dialogIndex = props.current.dialogIndex;
-      if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
-        handleMenuDialogSubmit(props, currentNode, originatingSaViewIndex, dialogIndex);
-      }
+      submitDialog(props);
       event.preventDefault();
     } else {
       event.preventDefault();
@@ -31,6 +26,26 @@ export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEven
     return true;
   }
   return false;
+}
+
+export function dialogMenuDialogEntityMouseClickHandler(props: MainProps, event: MouseEvent, graphNode: GraphNode): boolean {
+  const currentNode = props.current.saGraphView.currentNode;
+  const alreadyIsCurrentNode = (currentNode && graphNode.equals(currentNode));
+  if (alreadyIsCurrentNode) { 
+    submitDialog(props);
+    event.preventDefault();
+    return true;
+  }
+  return false;
+}
+
+function submitDialog(props: MainProps) {
+  const currentNode = props.current.saGraphView.currentNode;
+  const originatingSaViewIndex = props.current.saView.originatingSaViewIndex;
+  const dialogIndex = props.current.dialogIndex;
+  if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
+    handleMenuDialogSubmit(props, currentNode, originatingSaViewIndex, dialogIndex);
+  }
 }
 
 function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {

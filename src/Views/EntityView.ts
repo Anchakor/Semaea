@@ -9,6 +9,7 @@ import { FocusTarget } from '../UIStore/Focus';
 import { KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { FocusableComponent } from './FocusableComponent';
+import { dialogEntityMouseClickHandler } from './Dialogs/DialogEventHandlers';
 
 interface Props extends GraphView.Props {
   graphNode: GraphNode
@@ -49,10 +50,14 @@ export function entityView(props: Props) {
 function mouseHandler(props: Props, event: MouseEvent) {
   const currentNode = props.current.saGraphView.currentNode;
   const alreadyIsCurrentNode = (currentNode && props.graphNode.equals(currentNode));
-  if (!alreadyIsCurrentNode) {   
+  if (!alreadyIsCurrentNode) { 
     props.changeCurrentNode(props.current.saGraphViewIndex, props.graphNode);
   }
   props.focusGraphView();
-  // TODO proper mouse click handling
-  props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+".");
+  
+  if (dialogEntityMouseClickHandler(props, event, props.graphNode)) return;
+
+  if (alreadyIsCurrentNode) {
+    props.showAlertModal(props.current.saGraphView.graphIndex, "Some message "+props.graphNode.toString()+".");
+  }
 }
