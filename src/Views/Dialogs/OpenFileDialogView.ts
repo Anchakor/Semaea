@@ -10,13 +10,18 @@ import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
-  return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
+  return h('div', {}, [ getSummaryText(props),
     ' ', 
     hc(DialogCancelButtonView, props)
   ]);
 }
 
-// TODO spacebar handling directory navigation
+function getSummaryText(props: DialogProps<OpenFileDialog>) {
+  const statusText = (props.dialog.listDirectoryStatus == 'loading') 
+    ? `loading directory: ${props.dialog.directoryPath}`
+    : `current directory: ${props.dialog.directoryPath}`;
+  return `Opening a file (${statusText})`;
+}
 
 export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
