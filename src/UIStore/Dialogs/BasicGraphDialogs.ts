@@ -1,4 +1,4 @@
-import { StoreLib } from '../../External';
+import { StoreLib, Reducer } from '../../External';
 import { StoreState } from '../Main';
 import { DeleteGraphDialog, Status as DialogStatus, DialogKind, AddTripleDialog } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
@@ -63,7 +63,7 @@ function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripl
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   switch (action.type) {
     case ActionType.CreateDeleteGraphDialog:
       return doCreateDeleteGraphDialogAction(state, action as CreateDeleteGraphDialogAction);

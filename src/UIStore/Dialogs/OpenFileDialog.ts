@@ -1,4 +1,4 @@
-import { StoreLib } from '../../External';
+import { StoreLib, Reducer } from '../../External';
 import { StoreState } from '../Main';
 import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind, DialogSaViewMapping } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
@@ -54,7 +54,7 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) =>
   const p1 = request(req, ResponseKind.ReadFileResponse)
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
-      alert(`Loaded file ${filePath}: `+response.content);
+      alert(`Loaded file ${filePath}: `+response.content); // TODO
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }
@@ -253,7 +253,7 @@ function doAction<A>(state: StoreState,
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   switch (action.type) {
     case ActionType.CreateOpenFileDialog:
       return doCreateOpenFileDialogAction(state, action as CreateOpenFileDialogAction);

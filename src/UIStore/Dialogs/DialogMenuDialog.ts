@@ -1,4 +1,4 @@
-import { StoreLib } from '../../External';
+import { StoreLib, Reducer } from '../../External';
 import { StoreState } from '../Main';
 import { DialogMenuDialog, Status as DialogStatus, DialogKind } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
@@ -44,7 +44,7 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   switch (action.type) {
     case ActionType.CreateDialogMenuDialog:
       return doCreateDialogMenuDialogAction(state, action as CreateDialogMenuDialogAction);

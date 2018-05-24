@@ -1,5 +1,5 @@
 import { arrayImmutableSet, objectClone, objectJoin, getSequenceIndexByOffset } from '../../Common';
-import { StoreLib, UILib, UIStoreLib } from '../../External';
+import { StoreLib, UILib, UIStoreLib, Reducer } from '../../External';
 import { Graph } from '../../Graphs/Graph';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -127,7 +127,7 @@ function doChangeCurrentGraphNodeVerticallyByOffsetAction(state: State, action: 
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<State> = (state: State, action: StoreLib.Action) => {
+export const reducer: Reducer<State> = (state: State, action: StoreLib.Action) => {
   switch (action.type) {
     case ActionType.ChangeSaGraphViewGraph:
       return doChangeSaGraphViewGraphAction(state, action as ChangeSaGraphViewGraphAction);

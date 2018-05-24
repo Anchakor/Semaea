@@ -41,7 +41,7 @@ const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState,
 
 // Store initialization:
 
-export const store = StoreLib.createStore<StoreState>(reducer);
+export const store = StoreLib.createStore<StoreState, any, any, any>(reducer);
 
 // Other:
 

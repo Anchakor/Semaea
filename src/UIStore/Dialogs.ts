@@ -1,6 +1,6 @@
 import { Dialog, Status as DialogStatus, DialogSaViewMapping } from '../Dialogs/Dialog';
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
-import { StoreLib } from '../External';
+import { StoreLib, Reducer } from '../External';
 import { StoreState } from './Main';
 import { State as SaViewsState } from './SaViews';
 import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './Graphs';
@@ -110,7 +110,7 @@ function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   let newState = BasicGraphDialogs.reducer(state, action);
   if (newState != state) { return newState; }
   newState = DialogMenuDialog.reducer(state, action);

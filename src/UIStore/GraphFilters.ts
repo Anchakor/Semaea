@@ -1,7 +1,7 @@
 import { Graph } from '../Graphs/Graph';
 import { Triple } from '../Graphs/Triple';
 import { SaGraphView, State } from './Graphs';
-import { StoreLib } from '../External';
+import { StoreLib, Reducer } from '../External';
 import { objectJoin, arrayImmutableSet, checkKindFor, objectClone } from '../Common';
 
 /*
@@ -111,7 +111,7 @@ function doChangeGraphFilterConditionStringValueAction(state: State, action: Cha
 
 // Reducer:
 
-export const reducer: StoreLib.Reducer<State> = (state: State, action: StoreLib.Action) => {
+export const reducer: Reducer<State> = (state: State, action: StoreLib.Action) => {
   switch (action.type) {
     case ActionType.ChangeGraphFilterConditionStringValue:
       return doChangeGraphFilterConditionStringValueAction(state, action as ChangeGraphFilterConditionStringValueAction);

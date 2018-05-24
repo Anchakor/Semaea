@@ -29,6 +29,8 @@ export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, 
 export { Redux as StoreLib };
 export { InfernoRedux as UIStoreLib };
 
+export type Reducer<S> = (state: S, action: Redux.Action) => S
+
 /** Connect UIComponent to UIStore.
  * `component` has props made by 
  * 1) `mapStateToProps` (usually use `objectJoin` on the entire UIStore `state` plus object of select relevant properties deeper in the state)
