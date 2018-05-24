@@ -8,7 +8,7 @@ import { Graph } from '../../Graphs/Graph';
 import { objectJoin, arrayImmutableAppend, Log, arrayImmutableSet, filterDownArray, filterDownArrayToIndexed, getIndexedArray } from '../../Common';
 import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
-import { ListDirectoryRequest } from '../../Server/Request';
+import { ListDirectoryRequest, ReadFileRequest } from '../../Server/Request';
 import { normalize } from 'path';
 import { createDefaultGraphFilter } from '../GraphFilters';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
@@ -42,15 +42,21 @@ const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string
         graph.addTriple(new Triple(v.name, FilesystemPredicates.DirectoryEntryKind, v.kind));
       });
       dispatch(createAddOpenFileDialogDirectoryListingAction({ syncID: syncID, directoryPath: directoryPath, graph: graph }));
-    } else {
-      handleUnexpectedResponse(response);
-    }
-  });
+    } else handleUnexpectedResponse(response);
+  }).catch(handleUnexpectedResponse);
 }
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
   filePath = normalize(filePath);
   dispatch(createOpenFileDialogOpeningFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
+  const req = new ReadFileRequest();
+  req.filePath = filePath;
+  const p1 = request(req, ResponseKind.ReadFileResponse)
+  .then((response) => {
+    if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
+      alert(`Loaded file ${filePath}: `+response.content);
+    } else handleUnexpectedResponse(response);
+  }).catch(handleUnexpectedResponse);
 }
 
 class SyncID {
