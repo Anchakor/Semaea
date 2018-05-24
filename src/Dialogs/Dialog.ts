@@ -70,7 +70,8 @@ export enum DialogKind {
 export interface OpenFileDialog extends Dialog {
   readonly kind: DialogKind.OpenFile
   readonly createdGraphIndex: number
-  readonly listDirectoryStatus: 'loading' | 'loaded'
+  readonly openFileStatus: 'loadingDirectory' | 'loadedDirectory' | 'loadingFile'
   readonly directoryPath: string
+  readonly filePath?: string
   readonly syncID: number
 }

@@ -8,6 +8,7 @@ import * as Key from '../../Key';
 import { GraphNode } from 'Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
+import { extname, join } from 'path';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
@@ -17,8 +18,10 @@ export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
 }
 
 function getSummaryText(props: DialogProps<OpenFileDialog>) {
-  const statusText = (props.dialog.listDirectoryStatus == 'loading') 
+  const statusText = (props.dialog.openFileStatus == 'loadingDirectory') 
     ? `loading directory: ${props.dialog.directoryPath}`
+    : (props.dialog.openFileStatus == 'loadingFile')
+    ? `loading file: ${props.dialog.filePath}`
     : `current directory: ${props.dialog.directoryPath}`;
   return `Opening a file (${statusText})`;
 }
@@ -37,8 +40,7 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
         if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeOpenFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          Log.debug(OpenFileDialogView.name+' opening file: '+currentNode.getValue());
-          // TODO open file
+          tryToOpenFile(currentNode.getValue(), dialog.directoryPath, props, dialogIndex);
         }
       }
       event.preventDefault();
@@ -48,4 +50,23 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
     return true;
   }
   return false;
+}
+
+function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number){
+  Log.debug(`${OpenFileDialogView.name} trying to open file: ${fileName}`);
+  const filePath = join(directoryPath, fileName);
+  if (!canOpenFile(fileName)) {
+    alert(`Cannot open file (unsupported extension): ${fileName}`); // TODO don't use 'alert()' for UI messages
+    return;
+  }
+  props.openFileDialogOpenFile(dialogIndex, filePath);
+}
+
+function canOpenFile(fileName: string): boolean {
+  switch (extname(fileName)) {
+    case '.jsonld':
+      return true;
+    default:
+      return false;
+  }
 }

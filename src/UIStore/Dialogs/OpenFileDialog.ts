@@ -10,9 +10,9 @@ import { request } from '../../Server/Client';
 import { ListDirectoryResponse, ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { ListDirectoryRequest } from '../../Server/Request';
 import { normalize } from 'path';
-import { createDefaultGraphFilter } from 'UIStore/GraphFilters';
+import { createDefaultGraphFilter } from '../GraphFilters';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
-import { SaGraphView } from 'UIStore/Graphs';
+import { SaGraphView } from '../Graphs';
 
 export const createOpenFileDialog = (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   directoryPath = normalize(directoryPath);
@@ -48,6 +48,11 @@ const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string
   });
 }
 
+export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  filePath = normalize(filePath);
+  dispatch(createOpenFileDialogOpeningFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
+}
+
 class SyncID {
   private static counter = 1;
   public static getNext() { return SyncID.counter++; }
@@ -80,7 +85,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
   const dialog: OpenFileDialog = { 
     status: DialogStatus.Opened, 
     kind: DialogKind.OpenFile,
-    listDirectoryStatus: 'loading',
+    openFileStatus: 'loadingDirectory',
     directoryPath: action.directoryPath,
     createdGraphIndex: newGraphIndex,
     syncID: action.syncID,
@@ -110,7 +115,7 @@ function createOpenFileDialogChangeDirectoryAction(partialAction: Partial<OpenFi
 function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFileDialogChangeDirectoryAction) {
   function getNewDialog(action: OpenFileDialogChangeDirectoryAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
     return objectJoin(dialog, 
-      { listDirectoryStatus: 'loading', directoryPath: action.directoryPath, syncID: action.syncID });
+      { openFileStatus: 'loadingDirectory', directoryPath: action.directoryPath, syncID: action.syncID });
   }
   function getNewGraph(action: OpenFileDialogChangeDirectoryAction, graph: Graph): Graph | undefined {
     return new Graph();
@@ -139,7 +144,7 @@ function createAddOpenFileDialogDirectoryListingAction(partialAction: Partial<Ad
 }
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
   function getNewDialog(action: AddOpenFileDialogDirectoryListingAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
-    return objectJoin(dialog, { listDirectoryStatus: 'loaded' });
+    return objectJoin(dialog, { openFileStatus: 'loadedDirectory' });
   }
   function getNewGraph(action: AddOpenFileDialogDirectoryListingAction, graph: Graph): Graph | undefined {
     return action.graph.clone();
@@ -147,14 +152,38 @@ function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: Ad
   return doAction(state, action, getNewDialog, getNewGraph, undefined);
 }
 
+// OpenFileDialogOpeningFileAction
+export enum ActionType { OpenFileDialogOpeningFile = 'OpenFileDialogOpeningFile' }
+export interface OpenFileDialogOpeningFileAction extends StoreLib.Action { type: ActionType.OpenFileDialogOpeningFile
+  dialogIndex: number
+  filePath: string
+}
+export const createOpenFileDialogOpeningFileAction = (partialAction: Partial<OpenFileDialogOpeningFileAction>) => objectJoin<OpenFileDialogOpeningFileAction>({ type: ActionType.OpenFileDialogOpeningFile,
+  dialogIndex: 0,
+  filePath: ''
+}, partialAction);
+function doOpenFileDialogOpeningFileAction(state: StoreState, action: OpenFileDialogOpeningFileAction) {
+  function getNewDialog(action: OpenFileDialogOpeningFileAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
+    return objectJoin(dialog, { openFileStatus: 'loadingFile', filePath: action.filePath });
+  }
+  function getNewGraph(action: OpenFileDialogOpeningFileAction, graph: Graph): Graph | undefined {
+    return new Graph();
+  }
+  return doAction(state, action, getNewDialog, getNewGraph, undefined);
+}
+
 // Common: 
 
 function doAction<A>(state: StoreState, 
-  action: A & { dialogIndex?: number, syncID: number },
+  action: A & { dialogIndex?: number, syncID?: number },
   getNewDialog?: (action: A, dialog: OpenFileDialog) => OpenFileDialog | undefined,
   getNewGraph?: (action: A, graph: Graph) => Graph | undefined,
   getNewSaGraphView?: (action: A, saGraphView: SaGraphView) => SaGraphView | undefined,
 ) {
+  if (action.dialogIndex == undefined && action.syncID == undefined) {
+    Log.error("Action has neither dialogIndex nor syncID, cannot find dialog: "+JSON.stringify(action));
+    return state;
+  }
   const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
     .find((v) => ((action.dialogIndex == undefined) 
       ? v.value.syncID == action.syncID 
@@ -226,6 +255,8 @@ export const reducer: StoreLib.Reducer<StoreState> = (state: StoreState, action:
       return doAddOpenFileDialogDirectoryListingAction(state, action as AddOpenFileDialogDirectoryListingAction);
     case ActionType.OpenFileDialogChangeDirectory:
       return doOpenFileDialogChangeDirectoryAction(state, action as OpenFileDialogChangeDirectoryAction);
+    case ActionType.OpenFileDialogOpeningFile:
+      return doOpenFileDialogOpeningFileAction(state, action as OpenFileDialogOpeningFileAction);
     default:
       return state;
   }
