@@ -31,8 +31,9 @@ function mainRun() {
 }
 
 function mainBuild() {
-  const webpackLocation = 'node_modules/webpack/bin/webpack.js'
-  return sh('node', [webpackLocation]) && sh('node', [webpackLocation, '--config', 'webpackServer.config.js']);
+  const webpackLocation = 'node_modules/webpack-cli/bin/webpack.js'
+  return sh('node', [webpackLocation]) && 
+    sh('node', [webpackLocation, '--config', 'webpackServer.config.js']);
 }
 
 function sh(command, args) {

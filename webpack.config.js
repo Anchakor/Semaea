@@ -2,6 +2,7 @@
 var path = require('path');
 
 module.exports = {
+    mode: 'development', // can also be 'production' or 'none'
     entry: {
         semaea_client: './src/Main.ts',
         //semaea_server: './src/Server/App.ts'
