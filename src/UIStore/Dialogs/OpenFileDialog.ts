@@ -1,6 +1,6 @@
 import { StoreLib, Reducer } from '../../External';
 import { StoreState } from '../Main';
-import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind, DialogSaViewMapping, Dialog, Dialogs, FileDialog } from '../../Dialogs/Dialog';
+import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind, DialogSaViewMapping, Dialog, Dialogs, FileDialog, FileDialogStatus } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -92,7 +92,7 @@ function doCreateOpenFileDialogAction(state: StoreState, action: CreateOpenFileD
   const dialog: OpenFileDialog = { 
     status: DialogStatus.Opened, 
     kind: DialogKind.OpenFile,
-    openFileStatus: 'loadingDirectory',
+    fileDialogStatus: FileDialogStatus.LoadingDirectory,
     directoryPath: action.directoryPath,
     createdGraphIndex: newGraphIndex,
     syncID: action.syncID,
@@ -122,7 +122,7 @@ function createOpenFileDialogChangeDirectoryAction(partialAction: Partial<OpenFi
 function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFileDialogChangeDirectoryAction) {
   function getNewDialog(action: OpenFileDialogChangeDirectoryAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
     return objectJoin(dialog, 
-      { openFileStatus: 'loadingDirectory', directoryPath: action.directoryPath, syncID: action.syncID });
+      { fileDialogStatus: FileDialogStatus.LoadingDirectory, directoryPath: action.directoryPath, syncID: action.syncID });
   }
   function getNewGraph(action: OpenFileDialogChangeDirectoryAction, graph: Graph): Graph | undefined {
     return new Graph();
@@ -151,7 +151,7 @@ function createAddOpenFileDialogDirectoryListingAction(partialAction: Partial<Ad
 }
 function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: AddOpenFileDialogDirectoryListingAction) {
   function getNewDialog(action: AddOpenFileDialogDirectoryListingAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
-    return objectJoin(dialog, { openFileStatus: 'loadedDirectory' });
+    return objectJoin(dialog, { fileDialogStatus: FileDialogStatus.LoadedDirectory });
   }
   function getNewGraph(action: AddOpenFileDialogDirectoryListingAction, graph: Graph): Graph | undefined {
     return action.graph.clone();
@@ -171,7 +171,7 @@ export const createOpenFileDialogOpeningFileAction = (partialAction: Partial<Ope
 }, partialAction);
 function doOpenFileDialogOpeningFileAction(state: StoreState, action: OpenFileDialogOpeningFileAction) {
   function getNewDialog(action: OpenFileDialogOpeningFileAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
-    return objectJoin(dialog, { openFileStatus: 'loadingFile', filePath: action.filePath });
+    return objectJoin(dialog, { fileDialogStatus: FileDialogStatus.ProcessingFile, filePath: action.filePath });
   }
   function getNewGraph(action: OpenFileDialogOpeningFileAction, graph: Graph): Graph | undefined {
     return new Graph();

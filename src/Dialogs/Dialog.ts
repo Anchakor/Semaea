@@ -64,9 +64,18 @@ export interface DialogMenuDialog extends Dialog {
   readonly createdGraphIndex: number
 }
 
+export enum FileDialogStatus {
+  LoadingDirectory = 'LoadingDirectory',
+  LoadedDirectory = 'LoadedDirectory',
+  ProcessingFile = 'ProcessingFile',
+}
+
 export interface FileDialog extends Dialog {
   readonly createdGraphIndex: number
   readonly syncID: number
+  readonly directoryPath: string
+  readonly fileDialogStatus: FileDialogStatus
+  readonly filePath?: string
 }
 
 export enum DialogKind {
@@ -74,7 +83,4 @@ export enum DialogKind {
 }
 export interface OpenFileDialog extends FileDialog {
   readonly kind: DialogKind.OpenFile
-  readonly openFileStatus: 'loadingDirectory' | 'loadedDirectory' | 'loadingFile'
-  readonly directoryPath: string
-  readonly filePath?: string
 }

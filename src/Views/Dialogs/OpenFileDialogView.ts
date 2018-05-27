@@ -1,6 +1,6 @@
 import { h, hc } from '../../External';
 import { DialogProps } from '../DialogView';
-import { OpenFileDialog, dialogIsOfKind, DialogKind } from '../../Dialogs/Dialog';
+import { OpenFileDialog, dialogIsOfKind, DialogKind, FileDialogStatus } from '../../Dialogs/Dialog';
 import { objectJoinExtend, Log } from '../../Common';
 import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
@@ -18,9 +18,9 @@ export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
 }
 
 function getSummaryText(props: DialogProps<OpenFileDialog>) {
-  const statusText = (props.dialog.openFileStatus == 'loadingDirectory') 
+  const statusText = (props.dialog.fileDialogStatus == FileDialogStatus.LoadingDirectory) 
     ? `loading directory: ${props.dialog.directoryPath}`
-    : (props.dialog.openFileStatus == 'loadingFile')
+    : (props.dialog.fileDialogStatus == FileDialogStatus.ProcessingFile)
     ? `loading file: ${props.dialog.filePath}`
     : `current directory: ${props.dialog.directoryPath}`;
   return `Opening a file (${statusText})`;
