@@ -18,7 +18,7 @@ export interface DialogSaViewMapping {
   readonly saViewIndex: number
 }
 
-export const dialogIsOfKind = checkKindFor<DialogKinds>();
+export const dialogIsOfKind = checkKindFor<Dialogs>();
 
 export function shouldDialogBeVisible(dialog: Dialog): boolean {
   return dialog.status != Status.Finished 
@@ -33,7 +33,7 @@ export function getDialogMappingsToSaView(saViewIndex: number, viewMappings: Dia
 
 // DIALOGS:
 
-type DialogKinds = Dialog
+export type Dialogs = Dialog
   | DeleteGraphDialog
   | AddTripleDialog
   | DialogMenuDialog
@@ -64,14 +64,17 @@ export interface DialogMenuDialog extends Dialog {
   readonly createdGraphIndex: number
 }
 
+export interface FileDialog extends Dialog {
+  readonly createdGraphIndex: number
+  readonly syncID: number
+}
+
 export enum DialogKind {
   OpenFile = 'OpenFile'
 }
-export interface OpenFileDialog extends Dialog {
+export interface OpenFileDialog extends FileDialog {
   readonly kind: DialogKind.OpenFile
-  readonly createdGraphIndex: number
   readonly openFileStatus: 'loadingDirectory' | 'loadedDirectory' | 'loadingFile'
   readonly directoryPath: string
   readonly filePath?: string
-  readonly syncID: number
 }

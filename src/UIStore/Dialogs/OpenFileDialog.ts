@@ -1,6 +1,6 @@
 import { StoreLib, Reducer } from '../../External';
 import { StoreState } from '../Main';
-import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind, DialogSaViewMapping } from '../../Dialogs/Dialog';
+import { OpenFileDialog, Status as DialogStatus, DialogKind, dialogIsOfKind, DialogSaViewMapping, Dialog, Dialogs, FileDialog } from '../../Dialogs/Dialog';
 import { doCreateDialog } from '../Dialogs';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
@@ -54,7 +54,7 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) =>
   const p1 = request(req, ResponseKind.ReadFileResponse)
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
-      alert(`Loaded file ${filePath}: `+response.content); // TODO
+      alert(`Loaded file ${filePath}: `+response.content); // TODO open file, decodig from CBOR
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }
@@ -130,7 +130,7 @@ function doOpenFileDialogChangeDirectoryAction(state: StoreState, action: OpenFi
     // Reseting dialog filter
     return objectJoin(saGraphView, { filter: createGraphFilter() });
   }
-  return doAction(state, action, getNewDialog, getNewGraph, getNewSaGraphView);
+  return doAction(state, action, dialogIsOfKind(DialogKind.OpenFile), getNewDialog, getNewGraph, getNewSaGraphView);
 }
 
 // AddOpenFileDialogDirectoryListingAction
@@ -155,7 +155,7 @@ function doAddOpenFileDialogDirectoryListingAction(state: StoreState, action: Ad
   function getNewGraph(action: AddOpenFileDialogDirectoryListingAction, graph: Graph): Graph | undefined {
     return action.graph.clone();
   }
-  return doAction(state, action, getNewDialog, getNewGraph, undefined);
+  return doAction(state, action, dialogIsOfKind(DialogKind.OpenFile), getNewDialog, getNewGraph, undefined);
 }
 
 // OpenFileDialogOpeningFileAction
@@ -175,14 +175,15 @@ function doOpenFileDialogOpeningFileAction(state: StoreState, action: OpenFileDi
   function getNewGraph(action: OpenFileDialogOpeningFileAction, graph: Graph): Graph | undefined {
     return new Graph();
   }
-  return doAction(state, action, getNewDialog, getNewGraph, undefined);
+  return doAction(state, action, dialogIsOfKind(DialogKind.OpenFile), getNewDialog, getNewGraph, undefined);
 }
 
 // Common: 
 
-function doAction<A>(state: StoreState, 
+function doAction<A, D extends FileDialog>(state: StoreState, 
   action: A & { dialogIndex?: number, syncID?: number },
-  getNewDialog?: (action: A, dialog: OpenFileDialog) => OpenFileDialog | undefined,
+  dialogKindTypeGuard: (dialog: Dialogs) => dialog is D,
+  getNewDialog?: (action: A, dialog: D) => D | undefined,
   getNewGraph?: (action: A, graph: Graph) => Graph | undefined,
   getNewSaGraphView?: (action: A, saGraphView: SaGraphView) => SaGraphView | undefined,
 ) {
@@ -190,7 +191,7 @@ function doAction<A>(state: StoreState,
     Log.error("Action has neither dialogIndex nor syncID, cannot find dialog: "+JSON.stringify(action));
     return state;
   }
-  const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogIsOfKind(DialogKind.OpenFile))
+  const dialogIndexed = filterDownArrayToIndexed(state.dialogs_.dialogs, dialogKindTypeGuard)
     .find((v) => ((action.dialogIndex == undefined) 
       ? v.value.syncID == action.syncID 
       : v.index == action.dialogIndex) );
