@@ -38,7 +38,7 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
       } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         // TODO use enum for directory/file
         if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
-          props.changeOpenFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
+          props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(currentNode.getValue(), FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
           tryToOpenFile(currentNode.getValue(), dialog.directoryPath, props, dialogIndex);
         }

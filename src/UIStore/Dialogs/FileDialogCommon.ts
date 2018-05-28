@@ -1,8 +1,149 @@
-import { FileDialog, Dialogs } from '../../Dialogs/Dialog';
+import { FileDialog, Dialogs, FileDialogStatus, Status as DialogStatus, DialogKind, isFileDialog } from '../../Dialogs/Dialog';
 import { StoreState } from '../Main';
 import { Graph } from '../../Graphs/Graph';
 import { SaGraphView } from '../Graphs';
-import { filterDownArrayToIndexed, getIndexedArray, Log, objectJoin, arrayImmutableSet } from '../../Common';
+import { filterDownArrayToIndexed, getIndexedArray, Log, objectJoin, arrayImmutableSet, arrayImmutableAppend } from '../../Common';
+import { StoreLib, Reducer } from '../../External';
+import { normalize } from 'path';
+import { ListDirectoryRequest } from '../../Server/Request';
+import { request } from '../../Server/Client';
+import { ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
+import { Triple } from '../../Graphs/Triple';
+import { FilesystemPredicates, DirectoryEntryKind } from '../../Entities/Filesystem';
+import { createDefaultGraphFilter } from '../GraphFilters';
+import { doCreateDialog } from '../Dialogs';
+
+export const createFileDialog = <AT>(type: AT) => (directoryPath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
+  directoryPath = normalize(directoryPath);
+  const action = createFileDialogAction({ type: type, directoryPath: directoryPath, originatingSaViewIndex: originatingSaViewIndex });
+  dispatch(action);
+  requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
+}
+
+export const changeFileDialogDirectory = (dialogIndex: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  directoryPath = normalize(directoryPath);
+  const action = createChangeFileDialogDirectoryAction({ directoryPath: directoryPath, dialogIndex: dialogIndex });
+  dispatch(action);
+  requestAndProcessDirectoryListing(action.syncID, directoryPath)(dispatch);
+}
+
+const requestAndProcessDirectoryListing = (syncID: number, directoryPath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+  const req = new ListDirectoryRequest();
+  req.dirPath = directoryPath;
+  const p1 = request(req, ResponseKind.ListDirectoryResponse)
+  .then((response) => {
+    if (responseIsOfKind(ResponseKind.ListDirectoryResponse)(response)) {
+      const graph = new Graph();
+      if (directoryPath != '.') {
+        graph.addTriple(new Triple('..', FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory));
+      }
+      response.listing.forEach((v) => { // TODO use a general JSON->Graph mapper
+        graph.addTriple(new Triple(v.name, FilesystemPredicates.DirectoryEntryKind, v.kind));
+      });
+      dispatch(createSetFileDialogDirectoryListingAction({ syncID: syncID, directoryPath: directoryPath, graph: graph }));
+    } else handleUnexpectedResponse(response);
+  }).catch(handleUnexpectedResponse);
+}
+
+export class FileDialogSyncID {
+  private static counter = 1;
+  public static getNext() { return FileDialogSyncID.counter++; }
+}
+
+const createGraphFilter = createDefaultGraphFilter;
+
+// CreateFileDialogAction
+export interface CreateFileDialogAction<AT> extends StoreLib.Action { type: AT
+  originatingSaViewIndex: number
+  directoryPath: string
+  syncID: number
+}
+function createFileDialogAction<AT>(partialAction: Partial<CreateFileDialogAction<AT>> & { type: AT }) {
+  return objectJoin(objectJoin<CreateFileDialogAction<AT>>({ type: partialAction.type,
+    originatingSaViewIndex: 0, 
+    directoryPath: '.',
+    syncID: 0,
+  }, partialAction), { syncID: FileDialogSyncID.getNext() });
+}
+export function doCreateFileDialogAction<AT>(dialogKind: DialogKind, state: StoreState, action: CreateFileDialogAction<AT>) {
+  const newGraph = new Graph();
+  const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
+  const newState = objectJoin<StoreState>(state, { 
+    graphs_: objectJoin(state.graphs_, { graphs: newGraphs })
+  });
+  const newGraphIndex = newGraphs.length - 1;
+
+  const dialog: FileDialog = { 
+    status: DialogStatus.Opened, 
+    kind: dialogKind,
+    fileDialogStatus: FileDialogStatus.LoadingDirectory,
+    directoryPath: action.directoryPath,
+    createdGraphIndex: newGraphIndex,
+    syncID: action.syncID,
+  };
+  
+  return doCreateDialog(newState, 
+    dialog, 
+    action.originatingSaViewIndex,
+    newGraphIndex,
+    createGraphFilter());
+}
+
+// ChangeFileDialogDirectoryAction
+export enum ActionType { ChangeFileDialogDirectory = 'ChangeFileDialogDirectory' }
+interface ChangeFileDialogDirectoryAction extends StoreLib.Action { type: ActionType.ChangeFileDialogDirectory
+  dialogIndex: number
+  directoryPath: string
+  syncID: number // this will be written, not used for searching
+}
+function createChangeFileDialogDirectoryAction(partialAction: Partial<ChangeFileDialogDirectoryAction>) { 
+  return objectJoin(objectJoin<ChangeFileDialogDirectoryAction>({ type: ActionType.ChangeFileDialogDirectory,
+    dialogIndex: 0,
+    directoryPath: '.',
+    syncID: 0,
+  }, partialAction), { syncID: FileDialogSyncID.getNext() });
+}
+function doChangeFileDialogDirectoryAction(state: StoreState, action: ChangeFileDialogDirectoryAction) {
+  function getNewDialog(action: ChangeFileDialogDirectoryAction, dialog: FileDialog): FileDialog | undefined {
+    return objectJoin(dialog, 
+      { fileDialogStatus: FileDialogStatus.LoadingDirectory, directoryPath: action.directoryPath, syncID: action.syncID });
+  }
+  function getNewGraph(action: ChangeFileDialogDirectoryAction, graph: Graph): Graph | undefined {
+    return new Graph();
+  }
+  function getNewSaGraphView(action: ChangeFileDialogDirectoryAction, saGraphView: SaGraphView): SaGraphView | undefined {
+    // Reseting dialog filter
+    return objectJoin(saGraphView, { filter: createGraphFilter() });
+  }
+  return doFileDialogAction(state, action, isFileDialog, getNewDialog, getNewGraph, getNewSaGraphView);
+}
+
+// SetFileDialogDirectoryListingAction
+export enum ActionType { SetFileDialogDirectoryListing = 'SetFileDialogDirectoryListing' }
+interface SetFileDialogDirectoryListingAction extends StoreLib.Action { type: ActionType.SetFileDialogDirectoryListing
+  directoryPath: string
+  graph: Graph
+  syncID: number
+}
+function createSetFileDialogDirectoryListingAction(partialAction: Partial<SetFileDialogDirectoryListingAction> & { syncID: number }) {
+  return objectJoin<SetFileDialogDirectoryListingAction>({ 
+    type: ActionType.SetFileDialogDirectoryListing,
+    directoryPath: '.',
+    graph: new Graph(),
+    syncID: partialAction.syncID
+  }, partialAction);
+}
+function doSetFileDialogDirectoryListingAction(state: StoreState, action: SetFileDialogDirectoryListingAction) {
+  function getNewDialog(action: SetFileDialogDirectoryListingAction, dialog: FileDialog): FileDialog | undefined {
+    return objectJoin(dialog, { fileDialogStatus: FileDialogStatus.LoadedDirectory });
+  }
+  function getNewGraph(action: SetFileDialogDirectoryListingAction, graph: Graph): Graph | undefined {
+    return action.graph.clone();
+  }
+  return doFileDialogAction(state, action, isFileDialog, getNewDialog, getNewGraph, undefined);
+}
+
+// Reducer helper
 
 export function doFileDialogAction<A, D extends FileDialog>(state: StoreState, 
   action: A & { dialogIndex?: number, syncID?: number },
@@ -74,4 +215,17 @@ export function doFileDialogAction<A, D extends FileDialog>(state: StoreState,
     }),
   });
   return newState;
+}
+
+// Reducer:
+
+export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
+  switch (action.type) {
+    case ActionType.SetFileDialogDirectoryListing:
+      return doSetFileDialogDirectoryListingAction(state, action as SetFileDialogDirectoryListingAction);
+    case ActionType.ChangeFileDialogDirectory:
+      return doChangeFileDialogDirectoryAction(state, action as ChangeFileDialogDirectoryAction);
+    default:
+      return state;
+  }
 }

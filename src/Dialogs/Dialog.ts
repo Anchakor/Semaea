@@ -70,12 +70,23 @@ export enum FileDialogStatus {
   ProcessingFile = 'ProcessingFile',
 }
 
+// File dialogs:
+
 export interface FileDialog extends Dialog {
   readonly createdGraphIndex: number
   readonly syncID: number
   readonly directoryPath: string
   readonly fileDialogStatus: FileDialogStatus
   readonly filePath?: string
+}
+
+export function isFileDialog(dialog: Dialog): dialog is FileDialog {
+  switch (dialog.kind) {
+    case DialogKind.OpenFile:
+      return true;
+    default:
+      return false;
+  }
 }
 
 export enum DialogKind {

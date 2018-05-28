@@ -5,6 +5,7 @@ import { StoreState } from './Main';
 import { State as SaViewsState } from './SaViews';
 import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './Graphs';
 import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
+import * as FileDialogCommon from './Dialogs/FileDialogCommon';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 import * as OpenFileDialog from './Dialogs/OpenFileDialog';
@@ -112,6 +113,8 @@ function doFinishDialogAction(state: StoreState, action: FinishDialogAction) {
 
 export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
   let newState = BasicGraphDialogs.reducer(state, action);
+  if (newState != state) { return newState; }
+  newState = FileDialogCommon.reducer(state, action);
   if (newState != state) { return newState; }
   newState = DialogMenuDialog.reducer(state, action);
   if (newState != state) { return newState; }
