@@ -1,6 +1,6 @@
 import * as Response from '../Server/Response';
 import { Request, requestIsOfKind, RequestKind } from '../Server/Request';
-import { listDirectory, readFileString, writeFileString } from '../Server/Filesystem';
+import { listDirectory, readFile, writeFile } from '../Server/Filesystem';
 
 export function handle(requestString: string): Promise<string> {
   try {
@@ -23,13 +23,13 @@ function handleRequest(request: Request) {
       return createResponseString(r);
     });
   } else if (requestIsOfKind(RequestKind.ReadFileRequest)(request)) {
-    return readFileString(request.filePath).then((content) => {
+    return readFile(request.filePath).then((content) => {
       const r = new Response.ReadFileResponse();
       r.content = content;
       return createResponseString(r);
     });
   } else if (requestIsOfKind(RequestKind.WriteFileRequest)(request)) {
-    return writeFileString(request.filePath, request.content).then(() => {
+    return writeFile(request.filePath, request.content).then(() => {
       const r = new Response.WriteFileResponse();
       return createResponseString(r);
     });

@@ -45,7 +45,7 @@ export class ListDirectoryResponse implements Response {
 export enum ResponseKind { ReadFileResponse = 'ReadFileResponse' }
 export class ReadFileResponse implements Response {
   readonly kind = ResponseKind.ReadFileResponse
-  content: string = ''
+  content: ArrayBuffer = new ArrayBuffer(0);
 }
 
 export enum ResponseKind { WriteFileResponse = 'WriteFileResponse' }

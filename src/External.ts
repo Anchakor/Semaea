@@ -8,6 +8,13 @@ import * as InfernoRedux from 'inferno-redux';
 export const $: (selector: string) => HTMLElement = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
 
+const textDecoder = new TextDecoder();
+const textEncoder = new TextEncoder();
+export const ArrayBufferTools = {
+  fromString: (x: string) => textEncoder.encode(x).buffer,
+  toString: textDecoder.decode,
+};
+
 export { Inferno as UILib };
 export { InfernoComponent as UIComponent };
 export type VNode = Inferno.VNode;

@@ -2,24 +2,22 @@ import fs = require('fs');
 import path = require('path');
 import { IDirectoryEntry, DirectoryEntryKind } from '../Entities/Filesystem';
 
-const fileEncoding = 'utf8';
-
-export function readFileString(filePath: string) {
-  return new Promise<string>((resolve, reject) => {
-    fs.readFile(filePath, fileEncoding, (err, data) => {
+export function readFile(filePath: string) {
+  return new Promise<ArrayBuffer>((resolve, reject) => {
+    fs.readFile(filePath, {}, (err, data: Buffer) => {
       if (err) {
         reject('Error reading file: '+filePath); return;
       }
-      resolve(data);
+      resolve(data.buffer);
     });
   });
 }
 
-export function writeFileString(filePath: string, data: string) {
+export function writeFile(filePath: string, data: ArrayBuffer) {
   return new Promise<undefined>((resolve, reject) => {
     mkdirp(path.dirname(filePath))
     .then(() => {
-      fs.writeFile(filePath, data, { encoding: fileEncoding, flag: 'w' }, (err) => {
+      fs.writeFile(filePath, data, { flag: 'w' }, (err) => {
         if (err) {
           reject('Error writing file: '+filePath); return;
         }

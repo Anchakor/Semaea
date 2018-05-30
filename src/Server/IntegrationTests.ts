@@ -3,6 +3,7 @@ import * as Request from '../Server/Request';
 import * as Response from '../Server/Response';
 import * as ServerClient from '../Server/Client';
 import { DirectoryEntryKind, IDirectoryEntry } from '../Entities/Filesystem';
+import { ArrayBufferTools } from '../External'
 
 export function runServerIntegrationTests() {
 
@@ -46,7 +47,7 @@ export function runServerIntegrationTests() {
     const p1 = ServerClient.request(req, Response.ResponseKind.ReadFileResponse)
     .then((response) => {
       const expected = new Response.ReadFileResponse();
-      { expected.content = 'tfile contents \n\nasdf'; }
+      { expected.content = ArrayBufferTools.fromString('tfile contents \n\nasdf'); }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ReadFileResponse.');
     });
 
@@ -64,7 +65,7 @@ export function runServerIntegrationTests() {
   Test.testAsync('Integration Filesystem WriteFileRequest-ReadFileRequest', function(assert, asyncDone) {
     const req = new Request.WriteFileRequest();
     { req.filePath = 'test/testWriteFile.txt';
-      req.content = 'asdf\n \n'+Math.random(); }
+      req.content = ArrayBufferTools.fromString('asdf\n \n'+Math.random()); }
     const p1 = ServerClient.request(req, Response.ResponseKind.WriteFileResponse)
     .then((response) => {
       const expected = new Response.WriteFileResponse();
