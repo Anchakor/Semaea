@@ -10,6 +10,7 @@ import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction
 import { createDeleteGraphAction } from '../UIStore/Graphs';
 import { createOpenFileDialog, openFileDialogOpenFile } from '../UIStore/Dialogs/OpenFileDialog';
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
+import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
 
 export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
@@ -18,8 +19,10 @@ export interface MainDispatchProps {
   showAlertModal: (originatingGraphIndex: number, message: string) => void
   createDialogMenuDialog: (originatingSaViewIndex: number) => void
   createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
+  createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => void
   openFileDialogOpenFile: (dialogIndex: number, filePath: string) => void
+  saveFileDialogSaveFile: (dialogIndex: number, filePath: string) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (originatingSaViewIndex: number) => void
   cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
@@ -47,12 +50,19 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       createOpenFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
       dispatch(createSetChangeFocusToGraphFilterAction());
     },
+    createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
+      createSaveFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
+      dispatch(createSetChangeFocusToGraphFilterAction());
+    },
     changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => {
       changeFileDialogDirectory(dialogIndex, directoryPath)(dispatch);
       dispatch(createSetChangeFocusToGraphFilterAction());
     },
     openFileDialogOpenFile: (dialogIndex: number, filePath: string) => {
       openFileDialogOpenFile(dialogIndex, filePath)(dispatch);
+    },
+    saveFileDialogSaveFile: (dialogIndex: number, filePath: string) => {
+      saveFileDialogSaveFile(dialogIndex, filePath)(dispatch);
     },
     showAlertModal: (originatingGraphIndex: number, message: string) => 
       dispatch(createShowAlertModalAction(originatingGraphIndex, message)),

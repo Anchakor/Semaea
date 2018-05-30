@@ -38,6 +38,7 @@ export type Dialogs = Dialog
   | AddTripleDialog
   | DialogMenuDialog
   | OpenFileDialog
+  | SaveFileDialog
 
 export enum DialogKind {
   DeleteGraph = 'DeleteGraph'
@@ -67,7 +68,7 @@ export interface DialogMenuDialog extends Dialog {
 export enum FileDialogStatus {
   LoadingDirectory = 'LoadingDirectory',
   LoadedDirectory = 'LoadedDirectory',
-  ProcessingFile = 'ProcessingFile',
+  ProcessingSubmit = 'ProcessingSubmit',
 }
 
 // File dialogs:
@@ -77,12 +78,12 @@ export interface FileDialog extends Dialog {
   readonly syncID: number
   readonly directoryPath: string
   readonly fileDialogStatus: FileDialogStatus
-  readonly filePath?: string
 }
 
 export function isFileDialog(dialog: Dialog): dialog is FileDialog {
   switch (dialog.kind) {
     case DialogKind.OpenFile:
+    case DialogKind.SaveFile:
       return true;
     default:
       return false;
@@ -94,4 +95,13 @@ export enum DialogKind {
 }
 export interface OpenFileDialog extends FileDialog {
   readonly kind: DialogKind.OpenFile
+  readonly filePath?: string
+}
+
+export enum DialogKind {
+  SaveFile = 'SaveFile'
+}
+export interface SaveFileDialog extends FileDialog {
+  readonly kind: DialogKind.SaveFile
+  readonly filePath?: string
 }

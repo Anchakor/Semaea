@@ -3,7 +3,8 @@ import { MainProps } from '../MainView';
 import { shouldDialogBeVisible, DialogKind } from '../../Dialogs/Dialog';
 import { dialogMenuDialogKeyHandler, dialogMenuDialogEntityMouseClickHandler } from './DialogMenuDialogView';
 import { openFileDialogKeyHandler } from './OpenFileDialogView';
-import { GraphNode } from 'Graphs/GraphNode';
+import { GraphNode } from '../../Graphs/GraphNode';
+import { saveFileDialogKeyHandler } from './SaveFileDialogView';
 
 /*
 Custom event handling callbacks for UI (HTML) elements, when a particular dialog is opened in the view.
@@ -18,6 +19,8 @@ export function dialogKeyHandler(props: MainProps, event: KeyboardEvent, options
       return dialogMenuDialogKeyHandler(props, event, options, type);
     case DialogKind.OpenFile:
       return openFileDialogKeyHandler(props, event, options, type);
+    case DialogKind.SaveFile:
+      return saveFileDialogKeyHandler(props, event, options, type);
     default:
       return false;
   }

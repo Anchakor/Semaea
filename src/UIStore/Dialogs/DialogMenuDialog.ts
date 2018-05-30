@@ -21,6 +21,7 @@ function doCreateDialogMenuDialogAction(state: StoreState, action: CreateDialogM
   newGraph.addTriple(new Triple("Add triple", "a", "DialogMenuOption"));
   newGraph.addTriple(new Triple("Delete graph", "a", "DialogMenuOption"));
   newGraph.addTriple(new Triple("Open file", "a", "DialogMenuOption"));
+  newGraph.addTriple(new Triple("Save file", "a", "DialogMenuOption"));
 
   const newGraphs = arrayImmutableAppend(state.graphs_.graphs, newGraph);
   const newState = objectJoin<StoreState>(state, { 

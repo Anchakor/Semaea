@@ -1,6 +1,6 @@
 import { h, hc } from '../../External';
 import { DialogProps } from '../DialogView';
-import { OpenFileDialog, dialogIsOfKind, DialogKind, FileDialogStatus } from '../../Dialogs/Dialog';
+import { SaveFileDialog, dialogIsOfKind, DialogKind, FileDialogStatus } from '../../Dialogs/Dialog';
 import { objectJoinExtend, Log } from '../../Common';
 import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
@@ -9,38 +9,39 @@ import { GraphNode } from '../../Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 import { extname, join } from 'path';
+import { Graph } from '../../Graphs/Graph';
 
-export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
+export function SaveFileDialogView(props: DialogProps<SaveFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
-    ' ', 
+    ' ', // TODO add a text field with its submit button for new files
     hc(DialogCancelButtonView, props)
   ]);
 }
 
-function getSummaryText(props: DialogProps<OpenFileDialog>) {
+function getSummaryText(props: DialogProps<SaveFileDialog>) {
   const statusText = (props.dialog.fileDialogStatus == FileDialogStatus.LoadingDirectory) 
     ? `loading directory: ${props.dialog.directoryPath}`
     : (props.dialog.fileDialogStatus == FileDialogStatus.ProcessingSubmit)
-    ? `loading file: ${props.dialog.filePath}`
+    ? `saving file: ${props.dialog.filePath}`
     : `current directory: ${props.dialog.directoryPath}`;
-  return `Opening a file (${statusText})`;
+  return `Saving a file (${statusText})`;
 }
 
-export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
       const currentNode = props.current.saGraphView.currentNode;
       const dialogIndex = props.current.dialogIndex;
       const dialog = props.current.dialog;
       const graph = props.current.graph
-      if (dialog && !dialogIsOfKind(DialogKind.OpenFile)(dialog)) {
-        Log.error("Calling openFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
+      if (dialog && !dialogIsOfKind(DialogKind.SaveFile)(dialog)) {
+        Log.error("Calling SaveFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
       } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         const fileName = currentNode.getValue();
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToOpenFile(fileName, dialog.directoryPath, props, dialogIndex);
+          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, graph);
         }
       }
       event.preventDefault();
@@ -52,17 +53,21 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number){
-  Log.debug(`${OpenFileDialogView.name} trying to open file: ${fileName}`);
+function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, graph: Graph){
+  Log.debug(`${SaveFileDialogView.name} trying to save file: ${fileName}`);
   const filePath = join(directoryPath, fileName);
-  if (!canOpenFile(fileName)) {
-    alert(`Cannot open file (unsupported extension): ${fileName}`); // TODO don't use 'alert()' for UI messages
+  if (!canSaveFile(fileName)) {
+    alert(`Cannot save file (unsupported extension): ${fileName}`); // TODO don't use 'alert()' for UI messages
     return;
   }
-  props.openFileDialogOpenFile(dialogIndex, filePath);
+  if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0
+    && !confirm(`File "${fileName}" exists. Overwrite?`)) {
+      return; // TODO have a state of current file of a view and don't ask for overwriting if it didn't change
+  }
+  props.saveFileDialogSaveFile(dialogIndex, filePath);
 }
 
-function canOpenFile(fileName: string): boolean {
+function canSaveFile(fileName: string): boolean {
   switch (extname(fileName)) {
     case '.jsonld':
       return true;

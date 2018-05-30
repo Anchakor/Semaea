@@ -44,7 +44,7 @@ const createOpenFileDialogOpeningFileAction = (partialAction: Partial<OpenFileDi
 }, partialAction);
 function doOpenFileDialogOpeningFileAction(state: StoreState, action: OpenFileDialogOpeningFileAction) {
   function getNewDialog(action: OpenFileDialogOpeningFileAction, dialog: OpenFileDialog): OpenFileDialog | undefined {
-    return objectJoin(dialog, { fileDialogStatus: FileDialogStatus.ProcessingFile, filePath: action.filePath });
+    return objectJoin(dialog, { fileDialogStatus: FileDialogStatus.ProcessingSubmit, filePath: action.filePath });
   }
   function getNewGraph(action: OpenFileDialogOpeningFileAction, graph: Graph): Graph | undefined {
     return new Graph();

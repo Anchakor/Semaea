@@ -9,6 +9,7 @@ import * as FileDialogCommon from './Dialogs/FileDialogCommon';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';
 import * as DialogMenuDialog from './Dialogs/DialogMenuDialog';
 import * as OpenFileDialog from './Dialogs/OpenFileDialog';
+import * as SaveFileDialog from './Dialogs/SaveFileDialog';
 import { GraphFilter, GraphFilterConditionKind, GraphFilterConditionSubjectContains, createDefaultGraphFilter, cloneGraphFilter } from './GraphFilters';
 import { GraphNode } from 'Graphs/GraphNode';
 
@@ -119,6 +120,8 @@ export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib
   newState = DialogMenuDialog.reducer(state, action);
   if (newState != state) { return newState; }
   newState = OpenFileDialog.reducer(state, action);
+  if (newState != state) { return newState; }
+  newState = SaveFileDialog.reducer(state, action);
   if (newState != state) { return newState; }
 
   switch (action.type) {    

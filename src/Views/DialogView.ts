@@ -2,7 +2,7 @@ import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
 import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
-import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog } from '../Dialogs/Dialog';
+import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog, SaveFileDialog } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
@@ -13,6 +13,7 @@ import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
 import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
 import { OpenFileDialogView } from './Dialogs/OpenFileDialogView';
+import { SaveFileDialogView } from './Dialogs/SaveFileDialogView';
 
 /** Factory function for getting the apropriate functional component of a dialog */
 function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
@@ -29,6 +30,8 @@ function getDialogView(props: Props, dialog: Dialog, dialogIndex: number) {
       return hc(AddTripleDialogView, dialogProps as DialogProps<AddTripleDialog>);
     case DialogKind.OpenFile:
       return hf(OpenFileDialogView, dialogProps as DialogProps<OpenFileDialog>);
+    case DialogKind.SaveFile:
+      return hf(SaveFileDialogView, dialogProps as DialogProps<SaveFileDialog>);
     default:
       Log.log('Warning: rendering a default view for a dialog: '+dialogProps.dialog.kind);
       return hf(DefaultDialogView, dialogProps as DialogProps<Dialog>);
