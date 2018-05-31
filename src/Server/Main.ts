@@ -4,17 +4,18 @@ import { Triple } from '../Graphs/Triple';
 import * as RequestHandler from '../Server/RequestHandler';
 import * as Response from '../Server/Response';
 import { portNumber, maxRequestBytes } from '../Server/Config';
+import { Log, concatArrayOfBuffers } from 'Common';
 
 export function run() {
   const triple = new Triple('s', 'p', 'o');
-  console.log(triple.toString());
+  Log.log(triple.toString());
 
   const options = {
     //key: fs.readFileSync('test/fixtures/keys/agent2-key.pem'),
     //cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem')
   };
 
-  console.log('Starting server at http://127.0.0.1:'+portNumber+'/');
+  Log.log('Starting server at http://127.0.0.1:'+portNumber+'/');
 
   http.createServer(/*options,*/ (req: http.IncomingMessage, res: http.ServerResponse) => {
     if (req.method == 'OPTIONS') {
@@ -24,36 +25,40 @@ export function run() {
       return;
     }
 
-    let requestString = '';
-    req.addListener('data', (chunk) => {
-      requestString += chunk;
-      if (requestString.length > maxRequestBytes) { 
-          // flood attach, kill connection
+    let requestBuffers = new Array<Buffer>();
+    req.addListener('data', (chunk: Buffer) => {
+      requestBuffers.push(chunk);
+      if (requestBuffers.map(x => x.length).reduce((p,c) => p+c) > maxRequestBytes) { 
+          // flood attack, kill connection
           req.connection.destroy();
       }
     });
 
     new Promise((resolve, reject) => req.addListener('end', resolve))
-    .then<string>(() => RequestHandler.handle(requestString))
+    .then<ArrayBuffer>(() => {
+      const buf = concatArrayOfBuffers(requestBuffers);
+      return RequestHandler.handle(buf.buffer)}
+    )
     .then((output) => { 
       if (output) sendOutput(output, res);
       else throw new Error('RequestHandler output null.');
     })
-    .catch((err) => sendOutput(RequestHandler.createResponseString(
-      Response.createErrorResponse(err)), res));
+    .catch((err) => { Log.error(err);
+      sendOutput(RequestHandler.createResponse(Response.createErrorResponse(err)), res)
+    });  
   }).listen(portNumber);
 }
 
-function sendOutput(output: string, res: http.ServerResponse) {
+function sendOutput(output: ArrayBuffer, res: http.ServerResponse) {
   setCORSHeaders(res);
-  res.setHeader('Content-type','application/json; charset=utf-8');
+  res.setHeader('Content-type','text/plain; charset=x-user-defined');
   if (!output) {
     res.writeHead(500);
     res.end();
     return;
   }
   res.writeHead(200);
-  res.write(output);
+  res.write(Buffer.from(output));
   res.end();
 }
 

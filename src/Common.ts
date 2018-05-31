@@ -73,3 +73,13 @@ export function getSequenceIndexByOffset(sequenceLength: number, sequenceIndex: 
   }
   return newIndex;
 }
+
+export function concatArrayOfBuffers(array: Uint8Array[]): Uint8Array {
+  const length = array.map((b) => b.byteLength).reduce((p,c) => p+c);
+  const buf = new Uint8Array(length);
+  let writtenBytes = 0;
+  array.forEach(b => {
+    buf.set(b, writtenBytes); writtenBytes += b.byteLength;
+  });
+  return buf;
+}

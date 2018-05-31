@@ -3,10 +3,11 @@ import { Request } from '../Server/Request';
 import * as RequestHandler from '../Server/RequestHandler';
 import * as Response from '../Server/Response';
 import { Log } from '../Common';
+import * as cbor from 'cbor-js';
 
 export function requestSimple(request: Request): Promise<Response.Response> {
   return send(request)
-  .then((responseString) => JSON.parse(responseString) as Response.Response)
+  .then((responseArrayBuffer) => cbor.decode(responseArrayBuffer) as Response.Response)
   .catch((err) => Response.createErrorResponse(err));
 }
 
@@ -18,35 +19,40 @@ export function request<T extends Response.Response>(request: Request, responseK
   });
 }
 
-/** Send request to get a response string. To get a Response object call request() */
-export function send(request: Request): Promise<string> {
+/** Send request to get a response ArrayBuffer. To get a Response object call request() */
+export function send(request: Request): Promise<ArrayBuffer> {
   Log.debug('Sending request: '+JSON.stringify(request));
-  return sendString(JSON.stringify(request));
+  return sendData(createRequest(request));
 }
 
-/** Send request string to get a response string. To get Response object call request() */
-export function sendString(request: string): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
+/** Send request ArrayBuffer to get a response ArrayBuffer. To get Response object call request() */
+export function sendData(request: ArrayBuffer): Promise<ArrayBuffer> {
+  return new Promise<ArrayBuffer>((resolve, reject) => {
     try {
       const url = 'http://127.0.0.1:'+portNumber+'/';
       const req = new XMLHttpRequest();
-      req.overrideMimeType('application/json');
+      req.overrideMimeType('text/plain; charset=x-user-defined');
       req.open('POST', url, true);
-      req.setRequestHeader('Content-type','application/json; charset=utf-8');
+      req.responseType = 'arraybuffer'
+      req.setRequestHeader('Content-type','text/plain; charset=x-user-defined');
 
       req.onload = (ev) => {
-        resolve(req.responseText);
+        resolve(req.response);
       };
       req.onabort = (ev) => {
-        reject(req.responseText);
+        reject(req.response);
       };
       req.onerror = (ev) => {
         reject(new Error('Error sending request to url: '+url));
       };
   
-      req.send(request);
+      req.send(request); // TODO send CBOR
     } catch(ex) {
       reject(ex);
     }
   });
+}
+
+function createRequest(request: Object) {
+  return cbor.encode(request);
 }

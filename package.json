@@ -2,6 +2,7 @@
   "name": "semaea",
   "version": "0.0.1",
   "dependencies": {
+    "cbor-js": "^0.1.0",
     "inferno": "^5.0.6",
     "inferno-component": "^5.0.6",
     "inferno-hyperscript": "^5.0.6",
