@@ -41,7 +41,7 @@ export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, graph);
+          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, dialog, graph);
         }
       }
       event.preventDefault();
@@ -53,7 +53,7 @@ export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, graph: Graph){
+function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, dialog: SaveFileDialog, graph: Graph){
   Log.debug(`${SaveFileDialogView.name} trying to save file: ${fileName}`);
   const filePath = join(directoryPath, fileName);
   if (!canSaveFile(fileName)) {
@@ -64,6 +64,12 @@ function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps
     && !confirm(`File "${fileName}" exists. Overwrite?`)) {
       return; // TODO have a state of current file of a view and don't ask for overwriting if it didn't change
   }
+  const origSaViewIndex = props.current.saView.originatingSaViewIndex;
+  if (origSaViewIndex == undefined) return;
+  const origSaView = props.saViews_.saViews[origSaViewIndex];
+  const origGraphView = props.graphs_.saGraphViews[origSaView.saGraphViewIndex];
+  const origGraph = props.graphs_.graphs[origGraphView.graphIndex];
+  if (!origGraph) return;
   props.saveFileDialogSaveFile(dialogIndex, filePath);
 }
 

@@ -1,6 +1,6 @@
 import { StoreLib, Reducer } from '../../External';
 import { normalize } from 'path';
-import { ReadFileRequest } from '../../Server/Request';
+import { WriteFileRequest } from '../../Server/Request';
 import { request } from '../../Server/Client';
 import { ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../Server/Response';
 import { CreateFileDialogAction, doCreateFileDialogAction, createFileDialog, doFileDialogAction } from '../Dialogs/FileDialogCommon';
@@ -8,17 +8,20 @@ import { StoreState } from '../Main';
 import { DialogKind, SaveFileDialog, FileDialogStatus, dialogIsOfKind } from '../../Dialogs/Dialog';
 import { objectJoin } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
+import * as cbor from 'cbor-js';
 
 
 export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
   filePath = normalize(filePath);
   dispatch(createSaveFileDialogSavingFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
-  const req = new ReadFileRequest(); // TODO write
+  const payload = cbor.encode('asd');
+  const req = new WriteFileRequest(); // TODO write
   req.filePath = filePath;
-  const p1 = request(req, ResponseKind.ReadFileResponse)
+  req.content = new Uint8Array(payload);
+  const p1 = request(req, ResponseKind.WriteFileResponse)
   .then((response) => {
-    if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
-      alert(`Saved file ${filePath}: `+response.content); // TODO save file, encoding to CBOR
+    if (responseIsOfKind(ResponseKind.WriteFileResponse)(response)) {
+      alert(`Saved file ${filePath}`); // TODO save file, encoding to CBOR
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }

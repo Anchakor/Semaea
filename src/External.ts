@@ -12,6 +12,7 @@ const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 export const ArrayBufferTools = {
   fromString: (x: string) => textEncoder.encode(x).buffer,
+  fromStringToUint8: (x: string) => textEncoder.encode(x),
   toString: textDecoder.decode,
 };
 

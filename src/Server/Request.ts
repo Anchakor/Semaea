@@ -33,7 +33,7 @@ export enum RequestKind { WriteFileRequest = 'WriteFileRequest' }
 export class WriteFileRequest implements Request {
   readonly kind = RequestKind.WriteFileRequest
   filePath: string = ''
-  content: ArrayBuffer = new ArrayBuffer(0);
+  content: Uint8Array = new Uint8Array(0);
 }
 
 

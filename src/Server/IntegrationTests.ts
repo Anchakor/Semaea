@@ -65,7 +65,7 @@ export function runServerIntegrationTests() {
   Test.testAsync('Integration Filesystem WriteFileRequest-ReadFileRequest', function(assert, asyncDone) {
     const req = new Request.WriteFileRequest();
     { req.filePath = 'test/testWriteFile.txt';
-      req.content = ArrayBufferTools.fromString('asdf\n \n'+Math.random()); }
+      req.content = ArrayBufferTools.fromStringToUint8('asdf\n \n'+Math.random()); }
     const p1 = ServerClient.request(req, Response.ResponseKind.WriteFileResponse)
     .then((response) => {
       const expected = new Response.WriteFileResponse();
@@ -77,7 +77,7 @@ export function runServerIntegrationTests() {
     })
     .then((response) => {
       const expected = new Response.ReadFileResponse();
-      { expected.content = req.content; }
+      { expected.content = req.content.buffer; }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ReadFileResponse.');
     });
 
