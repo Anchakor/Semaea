@@ -27,7 +27,7 @@ function handleRequest(request: Request) {
   } else if (requestIsOfKind(RequestKind.ReadFileRequest)(request)) {
     return readFile(request.filePath).then((content) => {
       const r = new Response.ReadFileResponse();
-      r.content = content;
+      r.content = new Uint8Array(content);
       return createResponse(r);
     });
   } else if (requestIsOfKind(RequestKind.WriteFileRequest)(request)) {

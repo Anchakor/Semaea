@@ -46,7 +46,7 @@ export function sendData(request: ArrayBuffer): Promise<ArrayBuffer> {
         reject(new Error('Error sending request to url: '+url));
       };
   
-      req.send(request); // TODO send CBOR
+      req.send(request);
     } catch(ex) {
       reject(ex);
     }

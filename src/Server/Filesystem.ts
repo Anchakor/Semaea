@@ -17,7 +17,7 @@ export function writeFile(filePath: string, data: Uint8Array) {
   return new Promise<undefined>((resolve, reject) => {
     mkdirp(path.dirname(filePath))
     .then(() => {
-      fs.writeFile(filePath, data, { flag: 'w' }, (err) => {
+      fs.writeFile(filePath, Buffer.from(data), { flag: 'w' }, (err) => {
         if (err) {
           reject('Error writing file: '+filePath); return;
         }

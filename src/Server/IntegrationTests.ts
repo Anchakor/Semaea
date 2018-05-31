@@ -47,7 +47,7 @@ export function runServerIntegrationTests() {
     const p1 = ServerClient.request(req, Response.ResponseKind.ReadFileResponse)
     .then((response) => {
       const expected = new Response.ReadFileResponse();
-      { expected.content = ArrayBufferTools.fromString('tfile contents \n\nasdf'); }
+      { expected.content = ArrayBufferTools.fromStringToUint8('tfile contents \n\nasdf'); }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ReadFileResponse.');
     });
 
@@ -77,7 +77,7 @@ export function runServerIntegrationTests() {
     })
     .then((response) => {
       const expected = new Response.ReadFileResponse();
-      { expected.content = req.content.buffer; }
+      { expected.content = req.content; }
       assert.serializedEqual(response, expected, 'When sending correct request, received correct ReadFileResponse.');
     });
 

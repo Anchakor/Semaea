@@ -15,7 +15,7 @@ export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string) =>
   filePath = normalize(filePath);
   dispatch(createSaveFileDialogSavingFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
   const payload = cbor.encode('asd');
-  const req = new WriteFileRequest(); // TODO write
+  const req = new WriteFileRequest();
   req.filePath = filePath;
   req.content = new Uint8Array(payload);
   const p1 = request(req, ResponseKind.WriteFileResponse)
