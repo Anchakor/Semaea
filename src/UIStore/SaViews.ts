@@ -43,7 +43,7 @@ export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: A
 }
 export const createChangeSaViewSaGraphViewAction = (saViewIndex: number, saGraphViewIndex: number): ChangeSaViewSaGraphViewAction => 
   ({ type: ActionType.ChangeSaViewSaGraphView, saViewIndex: saViewIndex, saGraphViewIndex: saGraphViewIndex });
-function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGraphViewAction): State {
+export function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGraphViewAction): State {
   return objectJoin(state, { 
     saViews: arrayImmutableSet(state.saViews, action.saViewIndex, 
       objectJoin(state.saViews[action.saViewIndex], { saGraphViewIndex: action.saGraphViewIndex })

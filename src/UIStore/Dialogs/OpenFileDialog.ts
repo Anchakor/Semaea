@@ -10,8 +10,8 @@ import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import { createFinishDialogAction } from '../Dialogs';
 import * as cbor from 'cbor-js';
-import { createOpenGraphAction } from '../Graphs';
-import { createChangeSaViewSaGraphViewAction } from '../SaViews';
+import { createOpenGraphAction, doOpenGraphAction } from '../Graphs';
+import { createChangeSaViewSaGraphViewAction, doChangeSaViewSaGraphViewAction } from '../SaViews';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -27,9 +27,7 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, or
         const graph = Graph.deserializeObject(graphPayload);
         alert(`Loaded file ${filePath}: `+JSON.stringify(graph)); // TODO non-alert message
         dispatch(createFinishDialogAction(dialogIndex));
-        dispatch(createOpenGraphAction({ graph: graph }));
-        //dispatch(createChangeSaViewSaGraphViewAction(originatingSaViewIndex, 0));
-        // TODO change SaView
+        dispatch(createOpenFileDialogOpenFileAction({ originatingSaViewIndex: 0, graph: graph }))
       } catch (error) {
         Log.error(`Failed to decode file ${filePath}: ${error}`);
       }
@@ -66,6 +64,26 @@ function doOpenFileDialogOpeningFileAction(state: StoreState, action: OpenFileDi
   return doFileDialogAction(state, action, dialogIsOfKind(DialogKind.OpenFile), getNewDialog, getNewGraph, undefined);
 }
 
+// OpenFileDialogOpenFileAction
+export enum ActionType { OpenFileDialogOpenFile = 'OpenFileDialogOpenFile' }
+export interface OpenFileDialogOpenFileAction extends StoreLib.Action { type: ActionType.OpenFileDialogOpenFile
+  originatingSaViewIndex: number,
+  graph: Graph,
+}
+export const createOpenFileDialogOpenFileAction = (partialAction: Partial<OpenFileDialogOpenFileAction>) => objectJoin<OpenFileDialogOpenFileAction>({ type: ActionType.OpenFileDialogOpenFile,
+  originatingSaViewIndex: 0,
+  graph: new Graph(),
+}, partialAction);
+function doOpenFileDialogOpenFileAction(state: StoreState, action: OpenFileDialogOpenFileAction) {
+  const newSaGraphViewIndex = state.graphs_.saGraphViews.length;
+  const openGraphAction = createOpenGraphAction({ graph: action.graph });
+  const changeSaViewSaGraphViewAction = createChangeSaViewSaGraphViewAction(action.originatingSaViewIndex, newSaGraphViewIndex);
+  return objectJoin<StoreState>(state, {
+    graphs_: doOpenGraphAction(state.graphs_, openGraphAction),
+    saViews_: doChangeSaViewSaGraphViewAction(state.saViews_, changeSaViewSaGraphViewAction),
+  });
+}
+
 // Reducer:
 
 export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib.Action) => {
@@ -74,6 +92,8 @@ export const reducer: Reducer<StoreState> = (state: StoreState, action: StoreLib
       return doCreateOpenFileDialogAction(state, action as CreateOpenFileDialogAction);
     case ActionType.OpenFileDialogOpeningFile:
       return doOpenFileDialogOpeningFileAction(state, action as OpenFileDialogOpeningFileAction);
+    case ActionType.OpenFileDialogOpenFile:
+      return doOpenFileDialogOpenFileAction(state, action as OpenFileDialogOpenFileAction);
     default:
       return state;
   }

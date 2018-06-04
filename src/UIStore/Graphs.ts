@@ -120,7 +120,7 @@ export interface OpenGraphAction extends StoreLib.Action { type: ActionType.Open
 export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) => objectJoin<OpenGraphAction>({ type: ActionType.OpenGraph,
   graph: new Graph(),
 }, partialAction);
-function doOpenGraphAction(state: State, action: OpenGraphAction) {
+export function doOpenGraphAction(state: State, action: OpenGraphAction) {
   const newGraphIndex = state.graphs.length;
   const newSaGraphView: SaGraphView = { graphIndex: newGraphIndex, 
     currentNode: new GraphNode(action.graph.getTripleAtIndex(0) as Triple, "s"),
