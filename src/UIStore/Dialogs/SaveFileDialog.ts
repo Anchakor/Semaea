@@ -9,19 +9,21 @@ import { DialogKind, SaveFileDialog, FileDialogStatus, dialogIsOfKind } from '..
 import { objectJoin } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import * as cbor from 'cbor-js';
+import { createFinishDialogAction } from '../Dialogs';
 
 
-export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string, graph: Graph) => (dispatch: (a: StoreLib.Action) => void) => {
   filePath = normalize(filePath);
   dispatch(createSaveFileDialogSavingFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
-  const payload = cbor.encode('asd');
+  const payload = cbor.encode(graph);
   const req = new WriteFileRequest();
   req.filePath = filePath;
   req.content = new Uint8Array(payload);
   const p1 = request(req, ResponseKind.WriteFileResponse)
   .then((response) => {
     if (responseIsOfKind(ResponseKind.WriteFileResponse)(response)) {
-      alert(`Saved file ${filePath}`); // TODO save file, encoding to CBOR
+      alert(`Saved file ${filePath}`); // TODO non-alert message
+      dispatch(createFinishDialogAction(dialogIndex));
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }

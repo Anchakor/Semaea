@@ -11,6 +11,7 @@ import { createDeleteGraphAction } from '../UIStore/Graphs';
 import { createOpenFileDialog, openFileDialogOpenFile } from '../UIStore/Dialogs/OpenFileDialog';
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
 import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
+import { Graph } from '../Graphs/Graph';
 
 export interface MainDispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
@@ -22,7 +23,7 @@ export interface MainDispatchProps {
   createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => void
   openFileDialogOpenFile: (dialogIndex: number, filePath: string) => void
-  saveFileDialogSaveFile: (dialogIndex: number, filePath: string) => void
+  saveFileDialogSaveFile: (dialogIndex: number, filePath: string, graph: Graph) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (originatingSaViewIndex: number) => void
   cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
@@ -61,8 +62,8 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     openFileDialogOpenFile: (dialogIndex: number, filePath: string) => {
       openFileDialogOpenFile(dialogIndex, filePath)(dispatch);
     },
-    saveFileDialogSaveFile: (dialogIndex: number, filePath: string) => {
-      saveFileDialogSaveFile(dialogIndex, filePath)(dispatch);
+    saveFileDialogSaveFile: (dialogIndex: number, filePath: string, graph: Graph) => {
+      saveFileDialogSaveFile(dialogIndex, filePath, graph)(dispatch);
     },
     showAlertModal: (originatingGraphIndex: number, message: string) => 
       dispatch(createShowAlertModalAction(originatingGraphIndex, message)),

@@ -1,4 +1,4 @@
-import { StoreLib, Reducer } from '../../External';
+import { StoreLib, Reducer, ArrayBufferTools } from '../../External';
 import { normalize } from 'path';
 import { ReadFileRequest } from '../../Server/Request';
 import { request } from '../../Server/Client';
@@ -6,8 +6,10 @@ import { ResponseKind, responseIsOfKind, handleUnexpectedResponse } from '../../
 import { CreateFileDialogAction, doCreateFileDialogAction, createFileDialog, doFileDialogAction } from '../Dialogs/FileDialogCommon';
 import { StoreState } from '../Main';
 import { DialogKind, OpenFileDialog, FileDialogStatus, dialogIsOfKind } from '../../Dialogs/Dialog';
-import { objectJoin } from '../../Common';
+import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
+import { createFinishDialogAction } from '../Dialogs';
+import * as cbor from 'cbor-js';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -18,7 +20,14 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) =>
   const p1 = request(req, ResponseKind.ReadFileResponse)
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
-      alert(`Loaded file ${filePath}: `+response.content); // TODO open file, decodig from CBOR
+      try {
+        const payload = cbor.decode(ArrayBufferTools.getArrayBuffer(response.content)) as Graph;
+        alert(`Loaded file ${filePath}: `+JSON.stringify(payload)); // TODO non-alert message
+        // TODO load graph
+        dispatch(createFinishDialogAction(dialogIndex));
+      } catch (error) {
+        Log.error(`Failed to decode file ${filePath}: ${error}`);
+      }
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }

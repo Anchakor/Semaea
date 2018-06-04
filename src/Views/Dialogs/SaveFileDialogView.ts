@@ -70,7 +70,7 @@ function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps
   const origGraphView = props.graphs_.saGraphViews[origSaView.saGraphViewIndex];
   const origGraph = props.graphs_.graphs[origGraphView.graphIndex];
   if (!origGraph) return;
-  props.saveFileDialogSaveFile(dialogIndex, filePath);
+  props.saveFileDialogSaveFile(dialogIndex, filePath, origGraph);
 }
 
 function canSaveFile(fileName: string): boolean {

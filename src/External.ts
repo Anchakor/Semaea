@@ -11,6 +11,7 @@ export const testlib: QUnitStatic = (<any>window).testlib;
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 export const ArrayBufferTools = {
+  getArrayBuffer: (array: Uint8Array) => array.buffer.slice(array.byteOffset, array.byteOffset+array.byteLength),
   fromString: (x: string) => textEncoder.encode(x).buffer,
   fromStringToUint8: (x: string) => textEncoder.encode(x),
   toString: textDecoder.decode,
