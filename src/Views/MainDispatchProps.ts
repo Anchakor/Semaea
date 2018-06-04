@@ -7,7 +7,7 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction } from '../UIStore/Focus';
-import { createDeleteGraphAction } from '../UIStore/Graphs';
+import { createDeleteGraphAction, createOpenGraphAction } from '../UIStore/Graphs';
 import { createOpenFileDialog, openFileDialogOpenFile } from '../UIStore/Dialogs/OpenFileDialog';
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
 import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
@@ -22,7 +22,7 @@ export interface MainDispatchProps {
   createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => void
-  openFileDialogOpenFile: (dialogIndex: number, filePath: string) => void
+  openFileDialogOpenFile: (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => void
   saveFileDialogSaveFile: (dialogIndex: number, filePath: string, graph: Graph) => void
   createDeleteGraphDialog: (graphIndex: number, originatingSaViewIndex: number) => void
   createAddTripleDialog: (originatingSaViewIndex: number) => void
@@ -59,8 +59,8 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
       changeFileDialogDirectory(dialogIndex, directoryPath)(dispatch);
       dispatch(createSetChangeFocusToGraphFilterAction());
     },
-    openFileDialogOpenFile: (dialogIndex: number, filePath: string) => {
-      openFileDialogOpenFile(dialogIndex, filePath)(dispatch);
+    openFileDialogOpenFile: (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => {
+      openFileDialogOpenFile(dialogIndex, filePath, originatingSaViewIndex)(dispatch);
     },
     saveFileDialogSaveFile: (dialogIndex: number, filePath: string, graph: Graph) => {
       saveFileDialogSaveFile(dialogIndex, filePath, graph)(dispatch);

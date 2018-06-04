@@ -10,9 +10,11 @@ import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import { createFinishDialogAction } from '../Dialogs';
 import * as cbor from 'cbor-js';
+import { createOpenGraphAction } from '../Graphs';
+import { createChangeSaViewSaGraphViewAction } from '../SaViews';
 
 
-export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) => (dispatch: (a: StoreLib.Action) => void) => {
+export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
   filePath = normalize(filePath);
   dispatch(createOpenFileDialogOpeningFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
   const req = new ReadFileRequest();
@@ -21,10 +23,13 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string) =>
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
       try {
-        const payload = cbor.decode(ArrayBufferTools.getArrayBuffer(response.content)) as Graph;
-        alert(`Loaded file ${filePath}: `+JSON.stringify(payload)); // TODO non-alert message
-        // TODO load graph
+        const graphPayload = cbor.decode(ArrayBufferTools.getArrayBuffer(response.content));
+        const graph = Graph.deserializeObject(graphPayload);
+        alert(`Loaded file ${filePath}: `+JSON.stringify(graph)); // TODO non-alert message
         dispatch(createFinishDialogAction(dialogIndex));
+        dispatch(createOpenGraphAction({ graph: graph }));
+        //dispatch(createChangeSaViewSaGraphViewAction(originatingSaViewIndex, 0));
+        // TODO change SaView
       } catch (error) {
         Log.error(`Failed to decode file ${filePath}: ${error}`);
       }

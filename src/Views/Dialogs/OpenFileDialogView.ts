@@ -59,7 +59,9 @@ function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps
     alert(`Cannot open file (unsupported extension): ${fileName}`); // TODO don't use 'alert()' for UI messages
     return;
   }
-  props.openFileDialogOpenFile(dialogIndex, filePath);
+  const origSaViewIndex = props.current.saView.originatingSaViewIndex;
+  if (origSaViewIndex == undefined) return;
+  props.openFileDialogOpenFile(dialogIndex, filePath, origSaViewIndex);
 }
 
 function canOpenFile(fileName: string): boolean {

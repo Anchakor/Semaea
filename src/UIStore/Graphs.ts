@@ -1,9 +1,9 @@
-import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
+import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
 import { StoreLib, UILib, UIStoreLib } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { SaView } from '../SaViews';
+import { SaView, getClosestVisibleSaViewIndex } from '../SaViews';
 import * as SaGraphViews from './Graphs/SaGraphViews';
 import * as GraphFilters from './GraphFilters';
 
@@ -112,6 +112,27 @@ function doDeleteGraphAction(state: State, action: DeleteGraphAction) {
   return objectJoin<State>(state, { graphs: newGraphs });
 }
 
+// OpenGraphAction
+export enum ActionType { OpenGraph = 'OpenGraph' }
+export interface OpenGraphAction extends StoreLib.Action { type: ActionType.OpenGraph
+  graph: Graph
+}
+export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) => objectJoin<OpenGraphAction>({ type: ActionType.OpenGraph,
+  graph: new Graph(),
+}, partialAction);
+function doOpenGraphAction(state: State, action: OpenGraphAction) {
+  const newGraphIndex = state.graphs.length;
+  const newSaGraphView: SaGraphView = { graphIndex: newGraphIndex, 
+    currentNode: new GraphNode(action.graph.getTripleAtIndex(0) as Triple, "s"),
+    filter: GraphFilters.createDefaultGraphFilter(),
+  };
+  const newSaGraphViews = arrayImmutableAppend(state.saGraphViews, newSaGraphView);
+  const newGraphs = arrayImmutableAppend(state.graphs, action.graph);
+  return objectJoin<State>(state, { graphs: newGraphs, saGraphViews: newSaGraphViews });
+}
+//-dispatch:
+//openGraph: (graph: Graph) => dispatch(createOpenGraphAction({ graph: graph }))
+
 // Reducer:
 
 export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
@@ -127,6 +148,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return doAddTripleAction(state, action as AddTripleAction);
     case ActionType.DeleteGraph:
       return doDeleteGraphAction(state, action as DeleteGraphAction);
+    case ActionType.OpenGraph:
+      return doOpenGraphAction(state, action as OpenGraphAction);
     default:
       return state;
   }
