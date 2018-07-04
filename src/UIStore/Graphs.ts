@@ -117,6 +117,7 @@ export enum ActionType { OpenGraph = 'OpenGraph' }
 export interface OpenGraphAction extends StoreLib.Action { type: ActionType.OpenGraph
   graph: Graph
 }
+/** Open graph with its new SaGraphView */
 export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) => objectJoin<OpenGraphAction>({ type: ActionType.OpenGraph,
   graph: new Graph(),
 }, partialAction);

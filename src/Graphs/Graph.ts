@@ -5,10 +5,10 @@ import { GraphNode } from '../Graphs/GraphNode';
 import { arrayClone } from 'Common';
 
 export class Graph {
-  protected _graph: Array<Triple>
+  protected triples: Array<Triple>
   
   constructor() {
-    this._graph = [];
+    this.triples = [];
   }
 
   static deserializeObject: IDeserializeObject<Graph> = (input: { _graph: Object[] }) => {
@@ -21,16 +21,16 @@ export class Graph {
 
   clone(): Graph {
     let clone = new Graph();
-    clone._graph = arrayClone(this._graph);
+    clone.triples = arrayClone(this.triples);
     return clone;
   }
   
   count(): number {
-    return this._graph.length;
+    return this.triples.length;
   }
   
   get(s?: string, p?: string, o?: string) {
-    return this._graph.filter(function (val, ix, array) {
+    return this.triples.filter(function (val, ix, array) {
       return !(typeof s == 'string' && val.s != s)
         && !(typeof p == 'string' && val.p != p)
         && !(typeof o == 'string' && val.o != o) 
@@ -38,33 +38,33 @@ export class Graph {
   }
 
   addTriple(triple: Triple) {
-    this._graph.push(triple);
+    this.triples.push(triple);
   }
 
   replaceNode(graphNode: GraphNode, replacement: string) {
     const node = graphNode.getValue();
-    for (let i = 0; i < this._graph.length; i++) {
-      if (this._graph[i].s == node) { this._graph[i].s = replacement; }
-      if (this._graph[i].p == node) { this._graph[i].p = replacement; }
-      if (this._graph[i].o == node) { this._graph[i].o = replacement; }
+    for (let i = 0; i < this.triples.length; i++) {
+      if (this.triples[i].s == node) { this.triples[i].s = replacement; }
+      if (this.triples[i].p == node) { this.triples[i].p = replacement; }
+      if (this.triples[i].o == node) { this.triples[i].o = replacement; }
     }
     graphNode.setValue(replacement);
   }
 
   removeTriple(triple: Triple) {
-    this._graph = this._graph.filter((value: Triple) => { return !value.equals(triple); });
+    this.triples = this.triples.filter((value: Triple) => { return !value.equals(triple); });
   }
 
   /**
    * Ideally not used. Note that there is getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph)
    */
   getTripleAtIndex(index: number): Triple | undefined {
-    return (index >= 0 && index < this._graph.length)
-      ? this._graph[index]
+    return (index >= 0 && index < this.triples.length)
+      ? this.triples[index]
       : undefined;
   }
 
   merge(graph: Graph){
-    this._graph = this._graph.concat(graph._graph);
+    this.triples = this.triples.concat(graph.triples);
   }
 }
