@@ -1,4 +1,4 @@
-import { StoreLib, Reducer } from '../../External';
+import { StoreLib, Reducer, ArrayBufferTools } from '../../External';
 import { normalize } from 'path';
 import { WriteFileRequest } from '../../Server/Request';
 import { request } from '../../Server/Client';
@@ -10,15 +10,16 @@ import { objectJoin } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import * as cbor from 'cbor-js';
 import { createFinishDialogAction } from '../Dialogs';
+import * as Serializer from '../../Serialization/Serializer';
 
 
 export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string, graph: Graph) => (dispatch: (a: StoreLib.Action) => void) => {
   filePath = normalize(filePath);
   dispatch(createSaveFileDialogSavingFileAction({ dialogIndex: dialogIndex, filePath: filePath }));
-  const payload = cbor.encode(graph);
+  const payload = Serializer.serialize(graph);
   const req = new WriteFileRequest();
   req.filePath = filePath;
-  req.content = new Uint8Array(payload);
+  req.content = ArrayBufferTools.fromStringToUint8(payload);
   const p1 = request(req, ResponseKind.WriteFileResponse)
   .then((response) => {
     if (responseIsOfKind(ResponseKind.WriteFileResponse)(response)) {

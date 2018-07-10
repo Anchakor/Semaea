@@ -9,9 +9,9 @@ import { DialogKind, OpenFileDialog, FileDialogStatus, dialogIsOfKind } from '..
 import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import { createFinishDialogAction } from '../Dialogs';
-import * as cbor from 'cbor-js';
 import { createOpenGraphAction, doOpenGraphAction } from '../Graphs';
 import { createChangeSaViewSaGraphViewAction, doChangeSaViewSaGraphViewAction } from '../SaViews';
+import * as Serializer from '../../Serialization/Serializer';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -23,9 +23,9 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, or
   .then((response) => {
     if (responseIsOfKind(ResponseKind.ReadFileResponse)(response)) {
       try {
-        const graphPayload = cbor.decode(ArrayBufferTools.getArrayBuffer(response.content));
-        const graph = Graph.deserializeObject(graphPayload);
-        alert(`Loaded file ${filePath}: `+JSON.stringify(graph)); // TODO non-alert message
+        const graphPayload = ArrayBufferTools.toString(response.content);
+        const graph = Serializer.deserialize(Graph.deserializeObject, graphPayload);
+        alert(`Loaded file ${filePath}: `+graphPayload); // TODO non-alert message
         dispatch(createFinishDialogAction(dialogIndex));
         dispatch(createOpenFileDialogOpenFileAction({ originatingSaViewIndex: 0, graph: graph }))
       } catch (error) {

@@ -8,13 +8,13 @@ import * as InfernoRedux from 'inferno-redux';
 export const $: (selector: string) => HTMLElement = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
 
-const textDecoder = new TextDecoder();
+const textDecoder = new TextDecoder('utf-8');
 const textEncoder = new TextEncoder();
 export const ArrayBufferTools = {
   getArrayBuffer: (array: Uint8Array) => array.buffer.slice(array.byteOffset, array.byteOffset+array.byteLength),
   fromString: (x: string) => textEncoder.encode(x).buffer,
   fromStringToUint8: (x: string) => textEncoder.encode(x),
-  toString: textDecoder.decode,
+  toString: (array: Uint8Array | ArrayBuffer) => textDecoder.decode(array),
 };
 
 export { Inferno as UILib };
