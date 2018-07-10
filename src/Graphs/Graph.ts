@@ -11,9 +11,9 @@ export class Graph {
     this.triples = [];
   }
 
-  static deserializeObject: IDeserializeObject<Graph> = (input: { _graph: Object[] }) => {
+  static deserializeObject: IDeserializeObject<Graph> = (input: { triples: Object[] }) => {
     const x = new Graph();
-    input._graph.forEach(t => {
+    input.triples.forEach(t => {
       x.addTriple(Triple.deserializeObject(t));
     });
     return x;
