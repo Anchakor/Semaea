@@ -30,6 +30,7 @@ function getSummaryText(props: DialogProps<SaveFileDialog>) {
 export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
+      const currentGraphIndex = props.current.saGraphView.graphIndex;
       const currentNode = props.current.saGraphView.currentNode;
       const dialogIndex = props.current.dialogIndex;
       const dialog = props.current.dialog;
@@ -41,7 +42,7 @@ export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, dialog, graph);
+          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, dialog, graph, currentGraphIndex);
         }
       }
       event.preventDefault();
@@ -53,7 +54,7 @@ export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, dialog: SaveFileDialog, graph: Graph){
+function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, dialog: SaveFileDialog, graph: Graph, currentGraphIndex: number){
   Log.debug(`${SaveFileDialogView.name} trying to save file: ${fileName}`);
   const filePath = join(directoryPath, fileName);
   if (!canSaveFile(fileName)) {
@@ -71,6 +72,7 @@ function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps
   const origGraph = props.graphs_.graphs[origGraphView.graphIndex];
   if (!origGraph) return;
   props.saveFileDialogSaveFile(dialogIndex, filePath, origGraph);
+  props.deleteGraph(currentGraphIndex);
 }
 
 function canSaveFile(fileName: string): boolean {

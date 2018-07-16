@@ -29,6 +29,7 @@ function getSummaryText(props: DialogProps<OpenFileDialog>) {
 export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
+      const currentGraphIndex = props.current.saGraphView.graphIndex;
       const currentNode = props.current.saGraphView.currentNode;
       const dialogIndex = props.current.dialogIndex;
       const dialog = props.current.dialog;
@@ -40,7 +41,7 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToOpenFile(fileName, dialog.directoryPath, props, dialogIndex);
+          tryToOpenFile(fileName, dialog.directoryPath, props, dialogIndex, currentGraphIndex);
         }
       }
       event.preventDefault();
@@ -52,7 +53,7 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number){
+function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, currentGraphIndex: number){
   Log.debug(`${OpenFileDialogView.name} trying to open file: ${fileName}`);
   const filePath = join(directoryPath, fileName);
   if (!canOpenFile(fileName)) {
@@ -62,6 +63,7 @@ function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps
   const origSaViewIndex = props.current.saView.originatingSaViewIndex;
   if (origSaViewIndex == undefined) return;
   props.openFileDialogOpenFile(dialogIndex, filePath, origSaViewIndex);
+  props.deleteGraph(currentGraphIndex);
 }
 
 function canOpenFile(fileName: string): boolean {
