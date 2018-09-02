@@ -24,6 +24,9 @@ export interface SaGraphView {
   readonly filter?: GraphFilters.GraphFilter
 }
 
+/** Default SaGraphView.currentNode in case there are no triples in the graph */
+export const currentNodeTripleDefault = new Triple('defaultSubject','defaultPredicate','defaultObject');
+
 export type Graphs = (Graph | undefined)[];
 
 export interface State {
@@ -123,8 +126,11 @@ export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) =
 }, partialAction);
 export function doOpenGraphAction(state: State, action: OpenGraphAction) {
   const newGraphIndex = state.graphs.length;
+  const newCurrentNodeTriple = (action.graph.getTripleAtIndex(0)) 
+    ? action.graph.getTripleAtIndex(0) as Triple
+    : currentNodeTripleDefault;
   const newSaGraphView: SaGraphView = { graphIndex: newGraphIndex, 
-    currentNode: new GraphNode(action.graph.getTripleAtIndex(0) as Triple, "s"),
+    currentNode: new GraphNode(newCurrentNodeTriple, "s"),
     filter: GraphFilters.createDefaultGraphFilter(),
   };
   const newSaGraphViews = arrayImmutableAppend(state.saGraphViews, newSaGraphView);
