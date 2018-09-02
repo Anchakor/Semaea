@@ -35,10 +35,11 @@ export const createCreateAddTripleDialogAction = (originatingSaViewIndex: number
   ({ type: ActionType.CreateAddTripleDialog, originatingSaViewIndex: originatingSaViewIndex });
 function doCreateAddTripleDialogAction(state: StoreState, action: CreateAddTripleDialogAction) {
   let triple = new Triple('', '', '');
-  const originatingSaView = state.graphs_.saGraphViews[action.originatingSaViewIndex];
-  if (!originatingSaView.currentNode) return state;
-  const sourceTriple = originatingSaView.currentNode.getTriple();
-  switch (originatingSaView.currentNode.position) {
+  const originatingSaView = state.saViews_.saViews[action.originatingSaViewIndex];
+  const originatingSaGraphView = state.graphs_.saGraphViews[originatingSaView.saGraphViewIndex];
+  if (!originatingSaGraphView.currentNode) return state;
+  const sourceTriple = originatingSaGraphView.currentNode.getTriple();
+  switch (originatingSaGraphView.currentNode.position) {
     case 'p':
       triple.s = sourceTriple.getNodeAtPosition('s');
       triple.p = sourceTriple.getNodeAtPosition('p');
