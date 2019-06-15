@@ -23,14 +23,15 @@ export type VNode = Inferno.VNode;
 
 //export { InfernoHyperscript as h };
 export const linkEvent = Inferno.linkEvent;
-export function h(_tag: string | VNode | (() => VNode), _props?: any, _children?: Inferno.InfernoChildren): VNode {
+export type InfernoChildren = string|number|VNode|Array<string|number|VNode>;
+export function h(_tag: string | VNode | (() => VNode), _props?: any, _children?: InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
 export type FunctionalUIComponent<P> = (props: P) => VNode;
-export function hf<P>(_tag: FunctionalUIComponent<P>, _props: P, _children?: Inferno.InfernoChildren): VNode {
+export function hf<P>(_tag: FunctionalUIComponent<P>, _props: P, _children?: InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
-export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, S>), _props?: Partial<P>, _children?: Inferno.InfernoChildren): VNode {
+export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, S>), _props?: Partial<P>, _children?: InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
 
