@@ -69,7 +69,7 @@ function renderConditionStringValueInputField(label: string, props: ConditionVie
   ]);
 }
 type ConditionStringValueInputFieldComponentProps<GCT extends GF.GraphFilterConditionStringValue> 
-  = ConditionViewProps<GCT> & { name?: string }
+  = ConditionViewProps<GCT> & { name: string }
 class ConditionStringValueInputFieldComponent<GCT extends GF.GraphFilterConditionStringValue> 
   extends FocusableComponent<ConditionStringValueInputFieldComponentProps<GCT>> {
   constructor(props: ConditionStringValueInputFieldComponentProps<GCT>, context?: any) { 
