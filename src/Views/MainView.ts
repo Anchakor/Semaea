@@ -14,7 +14,7 @@ export class MainView {
   static render(model: Model) {
     MainView.focusElemIdToFocus(model);
     
-    return hc(UIStoreLib.Provider, { store: store, children: undefined }, 
+    return hc(UIStoreLib.Provider, { store: store }, 
       h('div', {}, [
         hc(ModalsView.Component),
         hc(SaViewView.Component),

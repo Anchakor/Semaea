@@ -4,5 +4,5 @@ possibly update package.json for major upgrades
 	rm node_modules/typescript
 	npm update
 	npm install
-	npm	link typescript
+	npm link typescript
 try rebuild and if everything works
