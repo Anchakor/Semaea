@@ -7,6 +7,7 @@ import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from '../../Graphs/GraphNode';
+import { Graph } from 'Graphs/Graph';
 
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
@@ -49,15 +50,24 @@ function submitDialog(props: MainProps) {
 }
 
 function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {
+  function originatingSaGraphViewIndex(originatingSaViewIndex: number) { 
+    return props.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex; 
+  }
+  function originatingGraphIndex(originatingSaViewIndex: number) { 
+    return props.graphs_.saGraphViews[originatingSaGraphViewIndex(originatingSaViewIndex)].graphIndex; 
+  }
+  function originatingGraph(originatingSaViewIndex: number) { 
+    return props.graphs_.graphs[originatingGraphIndex(originatingSaViewIndex)];
+  }
   const mappings = [
     { node: 'Add triple', trigger: () => props.createAddTripleDialog(originatingSaViewIndex) },
-    { node: 'Delete graph', trigger: () => { 
-        const originatingSaGraphViewIndex = props.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex;
-        const originatingGraphIndex = props.graphs_.saGraphViews[originatingSaGraphViewIndex].graphIndex;
-        props.createDeleteGraphDialog(originatingGraphIndex, originatingSaViewIndex) 
-      } },
+    { node: 'Delete graph', trigger: () => 
+      props.createDeleteGraphDialog(originatingGraphIndex(originatingSaViewIndex), originatingSaViewIndex) },
     { node: 'Open file', trigger: () => props.createOpenFileDialog('.', originatingSaViewIndex) },
     { node: 'Save file', trigger: () => props.createSaveFileDialog('.', originatingSaViewIndex) },
+    { node: 'Open current view as a new graph', trigger: () => 
+      props.openCurrentViewAsNewGraph(originatingSaViewIndex, 
+        originatingGraph(originatingSaViewIndex)?.clone() ?? new Graph()) }
   ];
   const currentGraphIndex = props.current.saGraphView.graphIndex;
   const currentNodeValue = currentNode.getValue();

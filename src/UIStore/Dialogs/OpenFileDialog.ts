@@ -37,6 +37,11 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, or
   }).catch(handleUnexpectedResponse);
 }
 
+export const openCurrentViewAsNewGraph = (originatingSaViewIndex: number, graph: Graph) => (dispatch: (a: StoreLib.Action) => void) => {
+  dispatch(createOpenFileDialogOpenFileAction({ originatingSaViewIndex: originatingSaViewIndex, graph: graph }));
+  dispatch(createSetChangeFocusToGraphFilterAction());
+}
+
 // CreateOpenFileDialogAction
 export enum ActionType { CreateOpenFileDialog = 'CreateOpenFileDialog' }
 interface CreateOpenFileDialogAction extends CreateFileDialogAction<ActionType.CreateOpenFileDialog> {

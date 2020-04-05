@@ -7,8 +7,8 @@ import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction 
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { createSetChangeFocusToNoneAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction } from '../UIStore/Focus';
-import { createDeleteGraphAction, createOpenGraphAction } from '../UIStore/Graphs';
-import { createOpenFileDialog, openFileDialogOpenFile } from '../UIStore/Dialogs/OpenFileDialog';
+import { createDeleteGraphAction } from '../UIStore/Graphs';
+import { createOpenFileDialog, openFileDialogOpenFile, openCurrentViewAsNewGraph } from '../UIStore/Dialogs/OpenFileDialog';
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
 import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
 import { Graph } from '../Graphs/Graph';
@@ -21,6 +21,7 @@ export interface MainDispatchProps {
   createDialogMenuDialog: (originatingSaViewIndex: number) => void
   createOpenFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
   createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => void
+  openCurrentViewAsNewGraph: (originatingSaViewIndex: number, graph: Graph) => void
   changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => void
   openFileDialogOpenFile: (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => void
   saveFileDialogSaveFile: (dialogIndex: number, filePath: string, graph: Graph) => void
@@ -54,6 +55,9 @@ export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(ac
     createSaveFileDialog: (directoryPath: string, originatingSaViewIndex: number) => {
       createSaveFileDialog(directoryPath, originatingSaViewIndex)(dispatch);
       dispatch(createSetChangeFocusToGraphFilterAction());
+    },
+    openCurrentViewAsNewGraph: (originatingSaViewIndex: number, graph: Graph) => {
+      openCurrentViewAsNewGraph(originatingSaViewIndex, graph)(dispatch);
     },
     changeFileDialogDirectory: (dialogIndex: number, directoryPath: string) => {
       changeFileDialogDirectory(dialogIndex, directoryPath)(dispatch);
