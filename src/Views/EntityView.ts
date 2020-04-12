@@ -12,17 +12,9 @@ import { FocusableComponent } from './FocusableComponent';
 import { dialogEntityMouseClickHandler } from './Dialogs/DialogEventHandlers';
 
 interface Props extends GraphView.Props {
-  graphNode: GraphNode
-}
-
-function isCurrentGraphNode(props: Props): boolean {
-  if (!props.current.saGraphView.currentNode) return false;
-  return props.current.saGraphView.currentNode.equals(props.graphNode);
-}
-
-function isSomeOccurenceOfCurrentGraphNode(props: Props): boolean {
-  if (!props.current.saGraphView.currentNode) return false;
-  return props.current.saGraphView.currentNode.getValue() == props.graphNode.getValue();
+  graphNode: GraphNode,
+  isCurrentNode: boolean,
+  isOccurenceOfCurrentNode: boolean
 }
 
 /** Empty focusable element for all GraphView entities (GraphNodes) */
@@ -39,10 +31,10 @@ export function entityView(props: Props) {
     onclick: linkEvent(props, mouseHandler),
     oncontextmenu: linkEvent(props, mouseHandler),
   });
-  if (isCurrentGraphNode(props)) {
+  if (props.isCurrentNode) {
     spanProps.class = 'element-selected';
   }
-  else if (isSomeOccurenceOfCurrentGraphNode(props)) {
+  else if (props.isOccurenceOfCurrentNode) {
     spanProps.class = 'element-otherOccurence';
   }
   return h('span', spanProps, props.graphNode.getValue());

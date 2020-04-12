@@ -85,8 +85,20 @@ export class View extends UIComponent<Props, {}> {
 
 function renderLevelPosition(props: Props, graphNode: GraphNode) {
   return hf(EntityView.entityView, objectJoinExtend(props, { 
-    graphNode: graphNode
+    graphNode: graphNode,
+    isCurrentNode: isCurrentGraphNode(props, graphNode),
+    isOccurenceOfCurrentNode: isSomeOccurenceOfCurrentGraphNode(props, graphNode)
    })); 
+}
+
+function isCurrentGraphNode(props: Props, graphNode: GraphNode): boolean {
+  if (!props.current.saGraphView.currentNode) return false;
+  return props.current.saGraphView.currentNode.equals(graphNode);
+}
+
+function isSomeOccurenceOfCurrentGraphNode(props: Props, graphNode: GraphNode): boolean {
+  if (!props.current.saGraphView.currentNode) return false;
+  return props.current.saGraphView.currentNode.getValue() == graphNode.getValue();
 }
 
 // Component (container component):
