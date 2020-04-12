@@ -1,5 +1,4 @@
 import { $, h, UIStoreLib, hc } from '../External';
-import { Model } from '../Model';
 import { store, StoreState } from '../UIStore/Main';
 import * as SaViewView from './SaViewView';
 import * as DialogView from './DialogView';
@@ -11,9 +10,7 @@ import { CurrentProps } from './CurrentProps';
 export type MainProps = StoreState & MainDispatchProps & { current: CurrentProps }
 
 export class MainView {
-  static render(model: Model) {
-    MainView.focusElemIdToFocus(model);
-    
+  static render() {    
     return hc(UIStoreLib.Provider, { store: store }, 
       h('div', {}, [
         hc(ModalsView.Component),
@@ -22,14 +19,5 @@ export class MainView {
         hc(GraphView.Component),
         ])
       );
-  }
-
-  static focusElemIdToFocus(model: Model) {
-    setTimeout(() => {
-      if (model.elemIdToFocus && model.elemIdToFocus != '') {
-        const elem = $('#'+model.elemIdToFocus)
-        if (elem) { elem.focus(); }
-      }
-    }, 0);
   }
 }
