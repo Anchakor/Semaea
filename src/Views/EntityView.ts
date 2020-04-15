@@ -1,4 +1,4 @@
-import { h, UIComponent, hf, linkEvent } from '../External';
+import { h, UIComponent, hf, linkEvent, handleAsPure } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { SaGraphView } from '../UIStore/Graphs';
 import * as GraphView from './GraphView';
@@ -39,6 +39,7 @@ export function entityView(props: Props) {
   }
   return h('span', spanProps, props.graphNode.getValue());
 }
+handleAsPure(entityView);
 
 function mouseHandler(props: Props, event: MouseEvent) {
   const currentNode = props.current.saGraphView.currentNode;

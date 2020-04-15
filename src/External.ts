@@ -35,6 +35,13 @@ export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, 
   return InfernoHyperscript(_tag, _props, _children);
 }
 
+export function handleAsPure<P>(f: FunctionalUIComponent<P>) {
+  (f as any).defaultHooks = {
+    onComponentShouldUpdate(lastProps: P, nextProps: P) {
+        return nextProps != lastProps;
+    }
+  }
+}
 
 export { Redux as StoreLib };
 export { InfernoRedux as UIStoreLib };
