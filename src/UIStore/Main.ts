@@ -1,4 +1,4 @@
-import { StoreLib, $ } from '../External';
+import { StoreLib, $, StoreLibThunk } from '../External';
 import * as Graphs from './Graphs';
 import * as Modals from './Modals';
 import * as SaViews from './SaViews';
@@ -41,7 +41,8 @@ const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState,
 
 // Store initialization:
 
-export const store = StoreLib.createStore<StoreState, any, any, any>(reducer);
+export const store = StoreLib.createStore<StoreState, any, any, any>(reducer, 
+  StoreLib.applyMiddleware(StoreLibThunk.default));
 
 // Other:
 

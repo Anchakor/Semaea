@@ -1,5 +1,5 @@
 import { GraphNode } from '../Graphs/GraphNode';
-import { StoreLib } from '../External';
+import { StoreLib, StoreLibThunk, Dispatch } from '../External';
 import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeVerticallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
@@ -12,8 +12,10 @@ import { createOpenFileDialog, openFileDialogOpenFile, openCurrentViewAsNewGraph
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
 import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
 import { Graph } from '../Graphs/Graph';
+import { StoreState } from 'UIStore/Main';
 
 export interface MainDispatchProps {
+  dispatch: Dispatch<StoreState>
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
   changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void
@@ -36,8 +38,9 @@ export interface MainDispatchProps {
   deleteGraph: (graphIndex: number) => void
 }
 
-export function createMainDispatchProps(dispatch: <A extends StoreLib.Action>(action: A) => void): MainDispatchProps {
+export function createMainDispatchProps(dispatch: Dispatch<StoreState>): MainDispatchProps {
   return {
+    dispatch: dispatch,
     changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => 
       dispatch(createChangeCurrentNodeAction(saGraphViewIndex, graphNode)),
     changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => 

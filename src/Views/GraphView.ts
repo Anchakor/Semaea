@@ -1,5 +1,5 @@
 import { objectJoin, objectJoinExtend } from '../Common';
-import { connect, h, StoreLib, UIComponent, hc, hf } from '../External';
+import { connect, h, StoreLib, UIComponent, hc, hf, Dispatch } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
 import { Graph } from '../Graphs/Graph';
@@ -108,6 +108,6 @@ export const Component = connect(
   (state: StoreState) => {
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): MainDispatchProps => { 
+  (dispatch: Dispatch<StoreState>, ownProps?: {}): MainDispatchProps => { 
     return createMainDispatchProps(dispatch);
   });

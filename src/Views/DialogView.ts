@@ -1,6 +1,6 @@
 import { StoreState } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, hf, hc } from '../External';
+import { connect, h, StoreLib, UIComponent, hf, hc, Dispatch } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
 import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog, SaveFileDialog } from '../Dialogs/Dialog';
 import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
@@ -81,7 +81,7 @@ export const Component = connect(
     const dialogSaViewMappings = state.dialogs_.viewMappings;
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state), dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
+  (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
     return objectJoinExtend(createMainDispatchProps(dispatch), {
       addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
       deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))

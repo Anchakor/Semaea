@@ -46,6 +46,8 @@ export function handleAsPure<P>(f: FunctionalUIComponent<P>) {
 
 export { Redux as StoreLib };
 export { InfernoRedux as UIStoreLib };
+export { ReduxThunk as StoreLibThunk };
+export type Dispatch<SS> = <A extends Redux.Action>(action: A | ReduxThunk.ThunkAction<any, SS, any, A>) => void
 
 export type Reducer<S> = (state: S, action: Redux.Action) => S
 
@@ -62,7 +64,5 @@ export type Reducer<S> = (state: S, action: Redux.Action) => S
 export const connect = <OwnProps, StateProps, DispatchProps, State, Component extends InfernoComponent<OwnProps & StateProps & DispatchProps, State> >(
   component: new (props: OwnProps & StateProps & DispatchProps, context?: any) => Component, 
   mapStateToProps?: (state: any, ownProps: OwnProps) => StateProps, 
-  mapDispatchToProps?: (dispatch: <A extends Redux.Action>(action: A) => void, ownProps: OwnProps) => DispatchProps
-  ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component);
-
-export { ReduxThunk as StoreLibThunk };
+  mapDispatchToProps?: (dispatch: Dispatch<any>, ownProps: OwnProps) => DispatchProps
+  ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component); // TODO any for state?
