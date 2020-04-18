@@ -4,6 +4,7 @@ import { h as InfernoHyperscript } from 'inferno-hyperscript';
 import { Component as InfernoComponent } from 'inferno';
 import * as Redux from 'redux';
 import * as InfernoRedux from 'inferno-redux';
+import * as ReduxThunk from 'redux-thunk';
 
 export const $: (selector: string) => HTMLElement = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
@@ -63,3 +64,5 @@ export const connect = <OwnProps, StateProps, DispatchProps, State, Component ex
   mapStateToProps?: (state: any, ownProps: OwnProps) => StateProps, 
   mapDispatchToProps?: (dispatch: <A extends Redux.Action>(action: A) => void, ownProps: OwnProps) => DispatchProps
   ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component);
+
+export { ReduxThunk as StoreLibThunk };
