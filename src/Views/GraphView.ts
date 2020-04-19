@@ -11,8 +11,10 @@ import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
 import { CurrentProps, getCurrentProps } from './CurrentProps';
-import { ButtonKeyEventOptions } from './InputEventHandlers';
+import { ButtonKeyEventOptions, KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
+import { FocusableComponent } from './FocusableComponent';
+import { FocusTarget } from '../UIStore/Focus';
 
 // View (component):
 
@@ -71,7 +73,7 @@ export class View extends UIComponent<Props, {}> {
       return h('div', {}, 'Viewed graph is undefined');
     }
     const triples = getSaGraphViewFilteredTriples(this.props.current.saGraphView, this.props.current.graph);
-    return h('div', {}, [hc(EntityView.EntityFocusableView, this.props)]
+    return h('div', {}, [hc(FocusableGraphView, this.props)]
       .concat(triples.map((triple: Triple) => {
         return h('div', {}, [
           renderLevelPosition(this.props, new GraphNode(triple, 's')), ' ',
@@ -99,6 +101,13 @@ function isCurrentGraphNode(props: Props, graphNode: GraphNode): boolean {
 function isSomeOccurenceOfCurrentGraphNode(props: Props, graphNode: GraphNode): boolean {
   if (!props.current.saGraphView.currentNode) return false;
   return props.current.saGraphView.currentNode.getValue() == graphNode.getValue();
+}
+
+/** Empty focusable element for all GraphView entities (GraphNodes) */
+class FocusableGraphView extends FocusableComponent<Props> {
+  constructor(props: Props, context?: any) { super(props, context); }
+  focusTarget = FocusTarget.GraphView
+  innerComponent = (p: Props) => h('span', createFocusableElementProps(KeyEventOptions.Default, p, { tabindex: 0 }));
 }
 
 // Component (container component):

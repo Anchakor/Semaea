@@ -1,4 +1,4 @@
-import { StoreLib, $, StoreLibThunk } from '../External';
+import { StoreLib, $, StoreLibThunk, Dispatch } from '../External';
 import * as Graphs from './Graphs';
 import * as Modals from './Modals';
 import * as SaViews from './SaViews';
@@ -20,6 +20,10 @@ const defaultState: StoreState = {
   dialogs_: Dialogs.defaultState,
   focus_: Focus.defaultState
 };
+
+export type DispatchProps = {
+  dispatch: Dispatch<StoreState>
+} 
 
 // Reducer:
 
