@@ -12,10 +12,9 @@ import { createOpenFileDialog, openFileDialogOpenFile, openCurrentViewAsNewGraph
 import { changeFileDialogDirectory } from '../UIStore/Dialogs/FileDialogCommon';
 import { saveFileDialogSaveFile, createSaveFileDialog } from '../UIStore/Dialogs/SaveFileDialog';
 import { Graph } from '../Graphs/Graph';
-import { StoreState } from 'UIStore/Main';
+import { StoreState, DispatchProps } from 'UIStore/Main';
 
-export interface MainDispatchProps {
-  dispatch: Dispatch<StoreState>
+export interface MainDispatchProps extends DispatchProps {
   changeCurrentGraph: (saGraphViewIndex: number, graphIndex: number) => void
   changeCurrentSaGraphView: (saViewIndex: number, saGraphViewIndex: number) => void
   changeCurrentNode: (saGraphViewIndex: number, graphNode: GraphNode) => void

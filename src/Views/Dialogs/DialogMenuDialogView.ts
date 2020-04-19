@@ -27,7 +27,7 @@ export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
 export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      submitDialogOLD(props);
+      submitDialog(props.dispatch, () => props); // TODO thunkize
       event.preventDefault();
     } else {
       event.preventDefault();
@@ -56,15 +56,6 @@ function submitDialog(dispatch: Dispatch<StoreState>, getState: () => StoreState
   const dialogIndex = current.dialogIndex;
   if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
     handleMenuDialogSubmit(dispatch, getState, currentNode, originatingSaViewIndex, dialogIndex);
-  }
-}
-function submitDialogOLD(props: MainProps) {
-  const currentNode = props.current.saGraphView.currentNode;
-  const originatingSaViewIndex = props.current.saView.originatingSaViewIndex;
-  const dialogIndex = props.current.dialogIndex;
-  if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
-    Log.log("TODO handleMenuDialogSubmit")
-    //handleMenuDialogSubmit(props, currentNode, originatingSaViewIndex, dialogIndex);
   }
 }
 
