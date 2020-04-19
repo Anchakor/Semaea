@@ -1,11 +1,44 @@
 import { arrayImmutableSet, objectClone, objectJoin, getSequenceIndexByOffset } from '../../Common';
-import { StoreLib, UILib, UIStoreLib, Reducer } from '../../External';
+import { StoreLib, UILib, UIStoreLib, Reducer, StoreLibThunk } from '../../External';
 import { Graph } from '../../Graphs/Graph';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { SaView } from '../../SaViews';
 import { State, SaGraphView } from '../Graphs';
-import { getSaGraphViewFilteredTriples } from 'UIStore/GraphFilters';
+import { getSaGraphViewFilteredTriples } from '../GraphFilters';
+import { StoreState } from '../Main';
+import { getCurrentProps } from '../../Views/CurrentProps';
+import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToGraphFilterAction } from '../Focus';
+import { dialogEntityMouseClickHandler } from '../../Views/Dialogs/DialogEventHandlers';
+import { createCreateDialogMenuDialogAction } from '../Dialogs/DialogMenuDialog';
+import { createShowAlertModalAction } from '../Modals';
+
+
+export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode): 
+  StoreLibThunk.ThunkAction<void, StoreState, unknown, StoreLib.Action<string>> => 
+  (dispatch, getState) => {
+    const current = getCurrentProps(getState());
+    const currentNode = current.saGraphView.currentNode;
+    const alreadyIsCurrentNode = (currentNode && graphNode.equals(currentNode));
+    if (!alreadyIsCurrentNode) { 
+      dispatch(createChangeCurrentNodeAction(current.saGraphViewIndex, graphNode));
+    }
+    dispatch(createSetChangeFocusToGraphViewAction());
+
+    if (dialogEntityMouseClickHandler(dispatch, getState, event, graphNode)) return;
+  
+    if (event.button == 2) {
+      dispatch(createCreateDialogMenuDialogAction(current.saViewIndex));
+      dispatch(createSetChangeFocusToGraphFilterAction());
+      event.preventDefault();
+      return;
+    }
+  
+    if (alreadyIsCurrentNode) {
+      dispatch(createShowAlertModalAction(current.saGraphView.graphIndex, 
+        "Some message "+graphNode.toString()+"."));
+    }
+}
 
 // ChangeSaGraphViewGraphAction
 export enum ActionType { ChangeSaGraphViewGraph = 'ChangeSaGraphViewGraph' }

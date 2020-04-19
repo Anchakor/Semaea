@@ -1,4 +1,4 @@
-import { h, hc } from '../../External';
+import { h, hc, Dispatch } from '../../External';
 import { DialogProps } from '../DialogView';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DialogMenuDialog } from '../../Dialogs/Dialog';
@@ -7,7 +7,15 @@ import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from '../../Graphs/GraphNode';
-import { Graph } from 'Graphs/Graph';
+import { Graph } from '../../Graphs/Graph';
+import { CurrentProps, getCurrentProps } from '../CurrentProps';
+import { StoreState } from '../../UIStore/Main';
+import { createCreateAddTripleDialogAction, createCreateDeleteGraphDialogAction } from '../../UIStore/Dialogs/BasicGraphDialogs';
+import { createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction } from '../../UIStore/Focus';
+import { createOpenFileDialog, openCurrentViewAsNewGraph } from '../../UIStore/Dialogs/OpenFileDialog';
+import { createSaveFileDialog } from '../../UIStore/Dialogs/SaveFileDialog';
+import { createDeleteGraphAction } from '../../UIStore/Graphs';
+import { createFinishDialogAction } from '../../UIStore/Dialogs';
 
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
@@ -19,7 +27,7 @@ export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
 export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      submitDialog(props);
+      submitDialogOLD(props);
       event.preventDefault();
     } else {
       event.preventDefault();
@@ -29,52 +37,78 @@ export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEven
   return false;
 }
 
-export function dialogMenuDialogEntityMouseClickHandler(props: MainProps, event: MouseEvent, graphNode: GraphNode): boolean {
-  const currentNode = props.current.saGraphView.currentNode;
+export function dialogMenuDialogEntityMouseClickHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: MouseEvent, graphNode: GraphNode): boolean {
+  const current = getCurrentProps(getState());
+  const currentNode = current.saGraphView.currentNode;
   const alreadyIsCurrentNode = (currentNode && graphNode.equals(currentNode));
   if (alreadyIsCurrentNode) { 
-    submitDialog(props);
+    submitDialog(dispatch, getState);
     event.preventDefault();
     return true;
   }
   return false;
 }
 
-function submitDialog(props: MainProps) {
+function submitDialog(dispatch: Dispatch<StoreState>, getState: () => StoreState) {
+  const current = getCurrentProps(getState());
+  const currentNode = current.saGraphView.currentNode;
+  const originatingSaViewIndex = current.saView.originatingSaViewIndex;
+  const dialogIndex = current.dialogIndex;
+  if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
+    handleMenuDialogSubmit(dispatch, getState, currentNode, originatingSaViewIndex, dialogIndex);
+  }
+}
+function submitDialogOLD(props: MainProps) {
   const currentNode = props.current.saGraphView.currentNode;
   const originatingSaViewIndex = props.current.saView.originatingSaViewIndex;
   const dialogIndex = props.current.dialogIndex;
   if (currentNode && dialogIndex != undefined && originatingSaViewIndex != undefined) {
-    handleMenuDialogSubmit(props, currentNode, originatingSaViewIndex, dialogIndex);
+    Log.log("TODO handleMenuDialogSubmit")
+    //handleMenuDialogSubmit(props, currentNode, originatingSaViewIndex, dialogIndex);
   }
 }
 
-function handleMenuDialogSubmit(props: MainProps, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {
+function handleMenuDialogSubmit(dispatch: Dispatch<StoreState>, getState: () => StoreState, currentNode: GraphNode, originatingSaViewIndex: number, dialogIndex: number) {
+  const state = getState();
+  const current = getCurrentProps(state);
   function originatingSaGraphViewIndex(originatingSaViewIndex: number) { 
-    return props.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex; 
+    return state.saViews_.saViews[originatingSaViewIndex].saGraphViewIndex; 
   }
   function originatingGraphIndex(originatingSaViewIndex: number) { 
-    return props.graphs_.saGraphViews[originatingSaGraphViewIndex(originatingSaViewIndex)].graphIndex; 
+    return state.graphs_.saGraphViews[originatingSaGraphViewIndex(originatingSaViewIndex)].graphIndex; 
   }
   function originatingGraph(originatingSaViewIndex: number) { 
-    return props.graphs_.graphs[originatingGraphIndex(originatingSaViewIndex)];
+    return state.graphs_.graphs[originatingGraphIndex(originatingSaViewIndex)];
   }
   const mappings = [
-    { node: 'Add triple', trigger: () => props.createAddTripleDialog(originatingSaViewIndex) },
-    { node: 'Delete graph', trigger: () => 
-      props.createDeleteGraphDialog(originatingGraphIndex(originatingSaViewIndex), originatingSaViewIndex) },
-    { node: 'Open file', trigger: () => props.createOpenFileDialog('.', originatingSaViewIndex) },
-    { node: 'Save file', trigger: () => props.createSaveFileDialog('.', originatingSaViewIndex) },
-    { node: 'Open current view as a new graph', trigger: () => 
-      props.openCurrentViewAsNewGraph(originatingSaViewIndex, 
-        originatingGraph(originatingSaViewIndex)?.clone() ?? new Graph()) }
+    { node: 'Add triple', trigger: () => {
+      dispatch(createCreateAddTripleDialogAction(originatingSaViewIndex));
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+    } },
+    { node: 'Delete graph', trigger: () => {
+      dispatch(createCreateDeleteGraphDialogAction(originatingGraphIndex(originatingSaViewIndex), originatingSaViewIndex));
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+    } },
+    { node: 'Open file', trigger: () => {
+      createOpenFileDialog('.', originatingSaViewIndex)(dispatch);
+      dispatch(createSetChangeFocusToGraphFilterAction());
+    } },
+    { node: 'Save file', trigger: () => {
+      createSaveFileDialog('.', originatingSaViewIndex)(dispatch);
+      dispatch(createSetChangeFocusToGraphFilterAction());
+    } },
+    { node: 'Open current view as a new graph', trigger: () => {
+      openCurrentViewAsNewGraph(originatingSaViewIndex, 
+        originatingGraph(originatingSaViewIndex)?.clone() ?? new Graph())(dispatch);
+    } }
   ];
-  const currentGraphIndex = props.current.saGraphView.graphIndex;
+  const currentGraphIndex = current.saGraphView.graphIndex;
   const currentNodeValue = currentNode.getValue();
   const mapping = mappings.find((v) => v.node == currentNodeValue);
   if (mapping) {
-    props.deleteGraph(currentGraphIndex)
-    props.finishDialog(dialogIndex);
+    dispatch(createDeleteGraphAction(currentGraphIndex));
+    dispatch(createFinishDialogAction(dialogIndex));
+    dispatch(createSetChangeFocusToGraphViewAction());
     mapping.trigger();
   } else {
     Log.error("Submitted DialogMenuDialog for a node without a handler: "+currentNode.getValue());

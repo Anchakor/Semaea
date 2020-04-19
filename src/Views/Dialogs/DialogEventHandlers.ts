@@ -5,6 +5,9 @@ import { dialogMenuDialogKeyHandler, dialogMenuDialogEntityMouseClickHandler } f
 import { openFileDialogKeyHandler } from './OpenFileDialogView';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { saveFileDialogKeyHandler } from './SaveFileDialogView';
+import { CurrentProps, getCurrentProps } from '../CurrentProps';
+import { Dispatch } from '../../External';
+import { StoreState } from '../../UIStore/Main';
 
 /*
 Custom event handling callbacks for UI (HTML) elements, when a particular dialog is opened in the view.
@@ -29,21 +32,22 @@ export function dialogKeyHandler(props: MainProps, event: KeyboardEvent, options
 /**
  * @param graphNode The GraphNode which was clicked
  */
-export function dialogEntityMouseClickHandler(props: MainProps, event: MouseEvent, graphNode: GraphNode): boolean {
-  if (!props.current.dialog) return false;
-  if (!shouldDialogBeVisible(props.current.dialog)) return false;
+export function dialogEntityMouseClickHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: MouseEvent, graphNode: GraphNode): boolean {
+  const current = getCurrentProps(getState());
+  if (!current.dialog) return false;
+  if (!shouldDialogBeVisible(current.dialog)) return false;
 
   if (event.button == 2) {
-    switch (props.current.dialog.kind) {
+    switch (current.dialog.kind) {
       default:
         event.preventDefault();
         return true; // Preventing dialog menu triggering on dialog views
     }
   }
 
-  switch (props.current.dialog.kind) {
+  switch (current.dialog.kind) {
     case DialogKind.DialogMenu:
-      return dialogMenuDialogEntityMouseClickHandler(props, event, graphNode);
+      return dialogMenuDialogEntityMouseClickHandler(dispatch, getState, event, graphNode);
     default:
       return false;
   }
