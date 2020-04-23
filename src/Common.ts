@@ -83,3 +83,13 @@ export function concatArrayOfBuffers(array: Uint8Array[]): Uint8Array {
   });
   return buf;
 }
+
+export function memoize<K,V>(f: (k: K) => V): (k: K) => V {
+  return (k: K) => {
+    const cache = new Map<K,V>();
+    if (cache.has(k)) return cache.get(k) as V;
+    const v = f(k);
+    cache.set(k, v);
+    return v;
+  }
+}
