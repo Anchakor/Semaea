@@ -1,11 +1,10 @@
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
-import { MainProps } from '../MainView';
 import { shouldDialogBeVisible, DialogKind } from '../../Dialogs/Dialog';
 import { dialogMenuDialogKeyHandler, dialogMenuDialogEntityMouseClickHandler } from './DialogMenuDialogView';
 import { openFileDialogKeyHandler } from './OpenFileDialogView';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { saveFileDialogKeyHandler } from './SaveFileDialogView';
-import { CurrentProps, getCurrentProps } from '../CurrentProps';
+import { getCurrentProps } from '../CurrentProps';
 import { Dispatch } from '../../External';
 import { StoreState } from '../../UIStore/Main';
 
@@ -13,17 +12,18 @@ import { StoreState } from '../../UIStore/Main';
 Custom event handling callbacks for UI (HTML) elements, when a particular dialog is opened in the view.
 */
 
-export function dialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
-  if (!props.current.dialog) return false;
-  if (!shouldDialogBeVisible(props.current.dialog)) return false;
+export function dialogKeyHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+  const current = getCurrentProps(getState());
+  if (!current.dialog) return false;
+  if (!shouldDialogBeVisible(current.dialog)) return false;
 
-  switch (props.current.dialog.kind) {
+  switch (current.dialog.kind) {
     case DialogKind.DialogMenu:
-      return dialogMenuDialogKeyHandler(props, event, options, type);
+      return dialogMenuDialogKeyHandler(dispatch, getState, event, options, type);
     case DialogKind.OpenFile:
-      return openFileDialogKeyHandler(props, event, options, type);
+      return openFileDialogKeyHandler(dispatch, getState, event, options, type);
     case DialogKind.SaveFile:
-      return saveFileDialogKeyHandler(props, event, options, type);
+      return saveFileDialogKeyHandler(dispatch, getState, event, options, type);
     default:
       return false;
   }

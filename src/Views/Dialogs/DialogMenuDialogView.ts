@@ -2,13 +2,11 @@ import { h, hc, Dispatch } from '../../External';
 import { DialogProps } from '../DialogView';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DialogMenuDialog } from '../../Dialogs/Dialog';
-import { objectJoinExtend, Log } from '../../Common';
-import { MainProps } from '../MainView';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Graph } from '../../Graphs/Graph';
-import { CurrentProps, getCurrentProps } from '../CurrentProps';
+import { getCurrentProps } from '../CurrentProps';
 import { StoreState } from '../../UIStore/Main';
 import { createCreateAddTripleDialogAction, createCreateDeleteGraphDialogAction } from '../../UIStore/Dialogs/BasicGraphDialogs';
 import { createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction } from '../../UIStore/Focus';
@@ -16,6 +14,7 @@ import { createOpenFileDialog, openCurrentViewAsNewGraph } from '../../UIStore/D
 import { createSaveFileDialog } from '../../UIStore/Dialogs/SaveFileDialog';
 import { createDeleteGraphAction } from '../../UIStore/Graphs';
 import { createFinishDialogAction } from '../../UIStore/Dialogs';
+import { Log } from '../../Common';
 
 export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   return h('div', {}, [ 'Dialog type: ', props.dialog.kind, '; Status: ', props.dialog.status,
@@ -24,10 +23,10 @@ export function DialogMenuDialogView(props: DialogProps<DialogMenuDialog>) {
   ]);
 }
 
-export function dialogMenuDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+export function dialogMenuDialogKeyHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      submitDialog(props.dispatch, () => props); // TODO thunkize
+      submitDialog(dispatch, getState); // TODO thunkize
       event.preventDefault();
     } else {
       event.preventDefault();

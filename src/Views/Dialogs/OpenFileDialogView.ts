@@ -1,14 +1,18 @@
-import { h, hc } from '../../External';
+import { h, hc, Dispatch } from '../../External';
 import { DialogProps } from '../DialogView';
 import { OpenFileDialog, dialogIsOfKind, DialogKind, FileDialogStatus } from '../../Dialogs/Dialog';
-import { objectJoinExtend, Log } from '../../Common';
-import { MainProps } from '../MainView';
+import { Log } from '../../Common';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
-import { GraphNode } from '../../Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 import { extname, join } from 'path';
+import { getCurrentProps } from '../CurrentProps';
+import { StoreState } from '../../UIStore/Main';
+import { changeFileDialogDirectory } from '../../UIStore/Dialogs/FileDialogCommon';
+import { createSetChangeFocusToGraphFilterAction } from '../../UIStore/Focus';
+import { openFileDialogOpenFile } from '../../UIStore/Dialogs/OpenFileDialog';
+import { createDeleteGraphAction } from '../../UIStore/Graphs';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
@@ -26,22 +30,24 @@ function getSummaryText(props: DialogProps<OpenFileDialog>) {
   return `Opening a file (${statusText})`;
 }
 
-export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+export function openFileDialogKeyHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+  const current = getCurrentProps(getState());
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      const currentGraphIndex = props.current.saGraphView.graphIndex;
-      const currentNode = props.current.saGraphView.currentNode;
-      const dialogIndex = props.current.dialogIndex;
-      const dialog = props.current.dialog;
-      const graph = props.current.graph
+      const currentGraphIndex = current.saGraphView.graphIndex;
+      const currentNode = current.saGraphView.currentNode;
+      const dialogIndex = current.dialogIndex;
+      const dialog = current.dialog;
+      const graph = current.graph
       if (dialog && !dialogIsOfKind(DialogKind.OpenFile)(dialog)) {
         Log.error("Calling openFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
       } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         const fileName = currentNode.getValue();
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
-          props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
+          changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue())(dispatch);
+          dispatch(createSetChangeFocusToGraphFilterAction());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToOpenFile(fileName, dialog.directoryPath, props, dialogIndex, currentGraphIndex);
+          tryToOpenFile(dispatch, getState, fileName, dialog.directoryPath, dialogIndex, currentGraphIndex);
         }
       }
       event.preventDefault();
@@ -53,17 +59,18 @@ export function openFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToOpenFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, currentGraphIndex: number){
+function tryToOpenFile(dispatch: Dispatch<StoreState>, getState: () => StoreState, fileName: string, directoryPath: string, dialogIndex: number, currentGraphIndex: number) {
   Log.debug(`${OpenFileDialogView.name} trying to open file: ${fileName}`);
+  const current = getCurrentProps(getState());
   const filePath = join(directoryPath, fileName);
   if (!canOpenFile(fileName)) {
     alert(`Cannot open file (unsupported extension): ${fileName}`); // TODO don't use 'alert()' for UI messages
     return;
   }
-  const origSaViewIndex = props.current.saView.originatingSaViewIndex;
+  const origSaViewIndex = current.saView.originatingSaViewIndex;
   if (origSaViewIndex == undefined) return;
-  props.openFileDialogOpenFile(dialogIndex, filePath, origSaViewIndex);
-  props.deleteGraph(currentGraphIndex);
+  openFileDialogOpenFile(dialogIndex, filePath, origSaViewIndex)(dispatch);
+  dispatch(createDeleteGraphAction(currentGraphIndex));
 }
 
 function canOpenFile(fileName: string): boolean {

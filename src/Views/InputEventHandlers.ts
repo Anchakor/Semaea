@@ -1,10 +1,15 @@
-import { CurrentProps } from './CurrentProps';
-import { StoreState } from '../UIStore/Main';
+import { getCurrentProps } from './CurrentProps';
+import { StoreState, DispatchProps } from '../UIStore/Main';
 import * as Key from '../Key';
-import { MainDispatchProps } from './MainDispatchProps';
 import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dialog';
-import { MainProps } from './MainView';
 import { dialogKeyHandler } from './Dialogs/DialogEventHandlers';
+import { StoreLibThunk, StoreLib, Dispatch } from '../External';
+import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
+import { createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction } from '../UIStore/Focus';
+import { createDeleteGraphAction } from '../UIStore/Graphs';
+import { createCancelDialogAction } from '../UIStore/Dialogs';
+import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeVerticallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
+import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 
 /*
  Common event handling callbacks for UI (HTML) elements.
@@ -24,54 +29,79 @@ export enum KeyEventOptions {
 export const TextInputKeyEventOptions = KeyEventOptions.KeepSpacebar | KeyEventOptions.KeepTextInputKeys;
 export const ButtonKeyEventOptions = KeyEventOptions.KeepSpacebar;
 
-export function getKeyupHandler(options: KeyEventOptions) {
-  return (props: MainProps, event: KeyboardEvent) => {
-    if (dialogKeyHandler(props, event, options, KeyEventType.keyUp)) return;
-
-    if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
-      props.createDialogMenuDialog(props.current.saViewIndex);
-      event.preventDefault();
-    } else if (Key.isEscape(event)) {
-      cancelLinkedDialogs(props);
-    } else if (Key.isDownArrow(event)) {
-      props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, 1);
-      event.preventDefault();
-    } else if (Key.isUpArrow(event)) {
-      props.changeCurrentGraphNodeByOffset(props.current.saGraphViewIndex, -1);
-      event.preventDefault();
-    } else if (Key.isRightArrow(event)) {
-      props.changeCurrentGraphNodeVerticallyByOffset(props.current.saGraphViewIndex, 1);
-      event.preventDefault();
-    } else if (Key.isLeftArrow(event)) {
-      props.changeCurrentGraphNodeVerticallyByOffset(props.current.saGraphViewIndex, -1);
-      event.preventDefault();
-    } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
-      props.createDeleteGraphDialog(props.current.saGraphView.graphIndex, props.current.saViewIndex);
-    } else if (Key.isN(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
-      if (!props.current.saGraphView.currentNode) return;
-      props.createAddTripleDialog(props.current.saViewIndex);
-    }
+export const getKeyupHandler = (dispatch: Dispatch<StoreState>, options: KeyEventOptions) => {
+  return (props: DispatchProps, event: KeyboardEvent) => {
+    props.dispatch(thunkKeyupEvent(options, event))
   }
 }
 
-export function getKeydownHandler(options: KeyEventOptions) {
-  return (props: MainProps, event: KeyboardEvent) => {
-    if (dialogKeyHandler(props, event, options, KeyEventType.keyDown)) return;
+const thunkKeyupEvent = (options: KeyEventOptions, event: KeyboardEvent): 
+  StoreLibThunk.ThunkAction<void, StoreState, unknown, StoreLib.Action<string>> => 
+  (dispatch, getState) => {
+    if (dialogKeyHandler(dispatch, getState, event, options, KeyEventType.keyUp)) return;
+
+    const current = getCurrentProps(getState());
+    if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
+      dispatch(createCreateDialogMenuDialogAction(current.saViewIndex));
+      dispatch(createSetChangeFocusToGraphFilterAction());
+      event.preventDefault();
+    } else if (Key.isEscape(event)) {
+      cancelLinkedDialogs(dispatch, getState);
+    } else if (Key.isDownArrow(event)) {
+      dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, 1));
+      dispatch(createSetChangeFocusToGraphViewAction());
+      event.preventDefault();
+    } else if (Key.isUpArrow(event)) {
+      dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, -1));
+      dispatch(createSetChangeFocusToGraphViewAction());
+      event.preventDefault();
+    } else if (Key.isRightArrow(event)) {
+      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(current.saGraphViewIndex, 1));
+      dispatch(createSetChangeFocusToGraphViewAction());
+      event.preventDefault();
+    } else if (Key.isLeftArrow(event)) {
+      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(current.saGraphViewIndex, -1));
+      dispatch(createSetChangeFocusToGraphViewAction());
+      event.preventDefault();
+    } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
+      dispatch(createCreateDeleteGraphDialogAction(current.saGraphView.graphIndex, current.saViewIndex));
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+    } else if (Key.isN(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
+      if (!current.saGraphView.currentNode) return;
+      dispatch(createCreateAddTripleDialogAction(current.saViewIndex));
+      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+    }
+}
+
+export const getKeydownHandler = (dispatch: Dispatch<StoreState>, options: KeyEventOptions) => {
+  return (props: DispatchProps, event: KeyboardEvent) => {
+    props.dispatch(thunkKeydownEvent(options, event))
+  }
+}
+
+const thunkKeydownEvent = (options: KeyEventOptions, event: KeyboardEvent): 
+  StoreLibThunk.ThunkAction<void, StoreState, unknown, StoreLib.Action<string>> => 
+  (dispatch, getState) => {
+    if (dialogKeyHandler(dispatch, getState, event, options, KeyEventType.keyDown)) return;
 
     if ((Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar))
       || Key.isDownArrow(event)
       || Key.isUpArrow(event)) {
       event.preventDefault();
     }
-  }
 }
 
-function cancelLinkedDialogs(props: MainProps) {
-  const linkedDialogs = getDialogMappingsToSaView(props.current.saViewIndex, props.dialogs_.viewMappings);
+function cancelLinkedDialogs(dispatch: Dispatch<StoreState>, getState: () => StoreState) {
+  const current = getCurrentProps(getState());
+  const state = getState();
+  const linkedDialogs = getDialogMappingsToSaView(current.saViewIndex, state.dialogs_.viewMappings);
   if (linkedDialogs.length == 0) return;
   linkedDialogs.every((v, i, a) => {
-    const dialog = props.dialogs_.dialogs[v.dialogIndex];
+    const dialog = state.dialogs_.dialogs[v.dialogIndex];
     if (!dialog || !shouldDialogBeVisible(dialog)) return true;
-    props.cancelDialog(v.dialogIndex, dialog.createdGraphIndex); return true;
+    if (dialog.createdGraphIndex != undefined) { dispatch(createDeleteGraphAction(dialog.createdGraphIndex)); }
+    dispatch(createCancelDialogAction(v.dialogIndex));
+    dispatch(createSetChangeFocusToGraphViewAction());
+    return true;
   });
 }

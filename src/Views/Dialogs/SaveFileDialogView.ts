@@ -1,15 +1,19 @@
-import { h, hc } from '../../External';
+import { h, hc, Dispatch } from '../../External';
 import { DialogProps } from '../DialogView';
 import { SaveFileDialog, dialogIsOfKind, DialogKind, FileDialogStatus } from '../../Dialogs/Dialog';
-import { objectJoinExtend, Log } from '../../Common';
-import { MainProps } from '../MainView';
+import { Log } from '../../Common';
 import { KeyEventOptions, KeyEventType } from '../InputEventHandlers';
 import * as Key from '../../Key';
-import { GraphNode } from '../../Graphs/GraphNode';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { DirectoryEntryKind, FilesystemPredicates } from '../../Entities/Filesystem';
 import { extname, join } from 'path';
 import { Graph } from '../../Graphs/Graph';
+import { StoreState } from '../../UIStore/Main';
+import { getCurrentProps } from '../CurrentProps';
+import { changeFileDialogDirectory } from '../../UIStore/Dialogs/FileDialogCommon';
+import { createSetChangeFocusToGraphFilterAction } from '../../UIStore/Focus';
+import { saveFileDialogSaveFile } from '../../UIStore/Dialogs/SaveFileDialog';
+import { createDeleteGraphAction } from '../../UIStore/Graphs';
 
 export function SaveFileDialogView(props: DialogProps<SaveFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
@@ -27,22 +31,24 @@ function getSummaryText(props: DialogProps<SaveFileDialog>) {
   return `Saving a file (${statusText})`;
 }
 
-export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+export function saveFileDialogKeyHandler(dispatch: Dispatch<StoreState>, getState: () => StoreState, event: KeyboardEvent, options: KeyEventOptions, type: KeyEventType): boolean {
+  const current = getCurrentProps(getState());
   if ( Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
     if (type == KeyEventType.keyUp) {
-      const currentGraphIndex = props.current.saGraphView.graphIndex;
-      const currentNode = props.current.saGraphView.currentNode;
-      const dialogIndex = props.current.dialogIndex;
-      const dialog = props.current.dialog;
-      const graph = props.current.graph
+      const currentGraphIndex = current.saGraphView.graphIndex;
+      const currentNode = current.saGraphView.currentNode;
+      const dialogIndex = current.dialogIndex;
+      const dialog = current.dialog;
+      const graph = current.graph;
       if (dialog && !dialogIsOfKind(DialogKind.SaveFile)(dialog)) {
         Log.error("Calling SaveFileDialogKeyHandler from incorrect dialog: "+JSON.stringify(dialog));
       } else if (currentNode && dialogIndex != undefined && dialog && graph) {
         const fileName = currentNode.getValue();
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
-          props.changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue());
+          changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue())(dispatch);
+          dispatch(createSetChangeFocusToGraphFilterAction());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
-          tryToSaveFile(fileName, dialog.directoryPath, props, dialogIndex, dialog, graph, currentGraphIndex);
+          tryToSaveFile(dispatch, getState, fileName, dialog.directoryPath, dialogIndex, dialog, graph, currentGraphIndex);
         }
       }
       event.preventDefault();
@@ -54,7 +60,8 @@ export function saveFileDialogKeyHandler(props: MainProps, event: KeyboardEvent,
   return false;
 }
 
-function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps, dialogIndex: number, dialog: SaveFileDialog, graph: Graph, currentGraphIndex: number){
+function tryToSaveFile(dispatch: Dispatch<StoreState>, getState: () => StoreState, fileName: string, directoryPath: string, dialogIndex: number, dialog: SaveFileDialog, graph: Graph, currentGraphIndex: number) {
+  const current = getCurrentProps(getState());
   Log.debug(`${SaveFileDialogView.name} trying to save file: ${fileName}`);
   const filePath = join(directoryPath, fileName);
   if (!canSaveFile(fileName)) {
@@ -65,14 +72,15 @@ function tryToSaveFile(fileName: string, directoryPath: string, props: MainProps
     && !confirm(`File "${fileName}" exists. Overwrite?`)) {
       return; // TODO have a state of current file of a view and don't ask for overwriting if it didn't change
   }
-  const origSaViewIndex = props.current.saView.originatingSaViewIndex;
+  const origSaViewIndex = current.saView.originatingSaViewIndex;
   if (origSaViewIndex == undefined) return;
-  const origSaView = props.saViews_.saViews[origSaViewIndex];
-  const origGraphView = props.graphs_.saGraphViews[origSaView.saGraphViewIndex];
-  const origGraph = props.graphs_.graphs[origGraphView.graphIndex];
+  const state = getState();
+  const origSaView = state.saViews_.saViews[origSaViewIndex];
+  const origGraphView = state.graphs_.saGraphViews[origSaView.saGraphViewIndex];
+  const origGraph = state.graphs_.graphs[origGraphView.graphIndex];
   if (!origGraph) return;
-  props.saveFileDialogSaveFile(dialogIndex, filePath, origGraph);
-  props.deleteGraph(currentGraphIndex);
+  saveFileDialogSaveFile(dialogIndex, filePath, origGraph)(dispatch);
+  dispatch(createDeleteGraphAction(currentGraphIndex));
 }
 
 function canSaveFile(fileName: string): boolean {
