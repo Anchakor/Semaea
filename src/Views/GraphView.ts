@@ -107,6 +107,7 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props, graphNode: GraphNode): 
 class FocusableGraphView extends FocusableComponent<Props> {
   constructor(props: Props, context?: any) { super(props, context); }
   focusTarget = FocusTarget.GraphView
+  innerComponentName = "GraphView"
   innerComponent = (p: Props) => h('span', createFocusableElementProps(KeyEventOptions.Default, p, { tabindex: 0 }));
 }
 
