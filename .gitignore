@@ -1,10 +1,7 @@
 node_modules/*
 node_modules_rmd/*
-plastiq-master/*
 output/*
 semaea.js
-plastiq*
-build-plastiq.sh
 .vscode/settings.json
 .*.swp
 test/*

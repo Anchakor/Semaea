@@ -15,6 +15,6 @@ export function run(attachPoint: HTMLElement) {
 window.onload = (function(oldLoad: any){
   return function(){
     oldLoad && oldLoad();
-    run($('#plastiq'));
+    run($('#main-attach'));
   }
 })(window.onload)
