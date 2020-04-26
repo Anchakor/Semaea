@@ -55,11 +55,11 @@ const thunkKeyupEvent = (options: KeyEventOptions, event: KeyboardEvent):
       dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, -1));
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
-    } else if (Key.isRightArrow(event)) {
+    } else if (Key.isRightArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, 1));
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
-    } else if (Key.isLeftArrow(event)) {
+    } else if (Key.isLeftArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, -1));
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
