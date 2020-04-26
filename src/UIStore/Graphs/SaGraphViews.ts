@@ -115,15 +115,15 @@ function doChangeCurrentGraphNodeByOffsetAction(state: State, action: ChangeCurr
   });
 }
 
-// ChangeCurrentGraphNodeVerticallyByOffsetAction // TODO when graph view components are defined
-export enum ActionType { ChangeCurrentGraphNodeVerticallyByOffset = 'ChangeCurrentGraphNodeVerticallyByOffset' }
-export interface ChangeCurrentGraphNodeVerticallyByOffsetAction extends StoreLib.Action { type: ActionType.ChangeCurrentGraphNodeVerticallyByOffset
+// ChangeCurrentGraphNodeHorizontallyByOffsetAction // TODO when graph view components are defined
+export enum ActionType { ChangeCurrentGraphNodeHorizontallyByOffset = 'ChangeCurrentGraphNodeHorizontallyByOffset' }
+export interface ChangeCurrentGraphNodeHorizontallyByOffsetAction extends StoreLib.Action { type: ActionType.ChangeCurrentGraphNodeHorizontallyByOffset
   saGraphViewIndex: number
   offset: number
 }
-export const createChangeCurrentGraphNodeVerticallyByOffsetAction = (saGraphViewIndex: number, offset: number): ChangeCurrentGraphNodeVerticallyByOffsetAction => 
-  ({ type: ActionType.ChangeCurrentGraphNodeVerticallyByOffset, saGraphViewIndex: saGraphViewIndex, offset: offset });
-function doChangeCurrentGraphNodeVerticallyByOffsetAction(state: State, action: ChangeCurrentGraphNodeVerticallyByOffsetAction) {
+export const createChangeCurrentGraphNodeHorizontallyByOffsetAction = (saGraphViewIndex: number, offset: number): ChangeCurrentGraphNodeHorizontallyByOffsetAction => 
+  ({ type: ActionType.ChangeCurrentGraphNodeHorizontallyByOffset, saGraphViewIndex: saGraphViewIndex, offset: offset });
+function doChangeCurrentGraphNodeHorizontallyByOffsetAction(state: State, action: ChangeCurrentGraphNodeHorizontallyByOffsetAction) {
   const saGraphView = state.saGraphViews[action.saGraphViewIndex];
   const graphs = state.graphs;
   const currentNode = saGraphView.currentNode;
@@ -168,8 +168,8 @@ export const reducer: Reducer<State> = (state: State, action: StoreLib.Action) =
       return doChangeCurrentNodeAction(state, action as ChangeCurrentNodeAction);
     case ActionType.ChangeCurrentGraphNodeByOffset:
       return doChangeCurrentGraphNodeByOffsetAction(state, action as ChangeCurrentGraphNodeByOffsetAction);
-    case ActionType.ChangeCurrentGraphNodeVerticallyByOffset:
-      return doChangeCurrentGraphNodeVerticallyByOffsetAction(state, action as ChangeCurrentGraphNodeVerticallyByOffsetAction);
+    case ActionType.ChangeCurrentGraphNodeHorizontallyByOffset:
+      return doChangeCurrentGraphNodeHorizontallyByOffsetAction(state, action as ChangeCurrentGraphNodeHorizontallyByOffsetAction);
     default:
       return state;
   }

@@ -8,7 +8,7 @@ import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMen
 import { createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction } from '../UIStore/Focus';
 import { createDeleteGraphAction } from '../UIStore/Graphs';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
-import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeVerticallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
+import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeHorizontallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 
 /*
@@ -56,11 +56,11 @@ const thunkKeyupEvent = (options: KeyEventOptions, event: KeyboardEvent):
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
     } else if (Key.isRightArrow(event)) {
-      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(current.saGraphViewIndex, 1));
+      dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, 1));
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
     } else if (Key.isLeftArrow(event)) {
-      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(current.saGraphViewIndex, -1));
+      dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, -1));
       dispatch(createSetChangeFocusToGraphViewAction());
       event.preventDefault();
     } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {

@@ -1,6 +1,6 @@
 import { GraphNode } from '../Graphs/GraphNode';
 import { StoreLib, StoreLibThunk, Dispatch } from '../External';
-import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeVerticallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
+import { createChangeCurrentNodeAction, createChangeSaGraphViewGraphAction, createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeHorizontallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
 import { createShowAlertModalAction } from '../UIStore/Modals';
 import { createChangeSaViewSaGraphViewAction } from '../UIStore/SaViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
@@ -31,7 +31,7 @@ export interface MainDispatchProps extends DispatchProps {
   cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
   finishDialog: (dialogIndex: number) => void
   changeCurrentGraphNodeByOffset: (saGraphViewIndex: number, offset: number) => void
-  changeCurrentGraphNodeVerticallyByOffset: (saGraphViewIndex: number, offset: number) => void
+  changeCurrentGraphNodeHorizontallyByOffset: (saGraphViewIndex: number, offset: number) => void
   focusGraphView: () => void
   acknowledgeFocusChange: () => void
   deleteGraph: (graphIndex: number) => void
@@ -94,8 +94,8 @@ export function createMainDispatchProps(dispatch: Dispatch<StoreState>): MainDis
       dispatch(createChangeCurrentGraphNodeByOffsetAction(saGraphViewIndex, offset));
       dispatch(createSetChangeFocusToGraphViewAction());
     },
-    changeCurrentGraphNodeVerticallyByOffset: (saGraphViewIndex: number, offset: number) => {
-      dispatch(createChangeCurrentGraphNodeVerticallyByOffsetAction(saGraphViewIndex, offset));
+    changeCurrentGraphNodeHorizontallyByOffset: (saGraphViewIndex: number, offset: number) => {
+      dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(saGraphViewIndex, offset));
       dispatch(createSetChangeFocusToGraphViewAction());
     },
     focusGraphView: () => 
