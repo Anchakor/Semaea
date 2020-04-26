@@ -2,16 +2,16 @@ import { DialogProps } from '../DialogView';
 import { Dialog } from '../../Dialogs/Dialog';
 import { ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
-import { FocusableComponent } from '../FocusableComponent';
+import { withFocusable } from '../FocusableComponent';
 import { FocusTarget } from '../../UIStore/Focus';
 import { h, linkEvent } from '../../External';
 
 type DialogCancelButtonProps = DialogProps<Dialog>
-export class DialogCancelButtonView extends FocusableComponent<DialogCancelButtonProps> {
-  constructor(props: DialogCancelButtonProps, context?: any) { super(props, context); }
-  readonly innerComponent = DialogCancelButtonViewInner
-  readonly focusTarget = FocusTarget.DialogCancelButton
-}
+
+export const DialogCancelButtonView = withFocusable(
+  DialogCancelButtonViewInner,
+  FocusTarget.DialogCancelButton,
+)
 function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   return h('button', createFocusableElementProps(ButtonKeyEventOptions, dialogProps, { 
     onclick: linkEvent(dialogProps, cancelDialogButtonOnClickHandler),

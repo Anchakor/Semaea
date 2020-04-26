@@ -7,7 +7,7 @@ import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
 import { FocusTarget } from '../UIStore/Focus';
-import { FocusableComponent } from './FocusableComponent';
+import { withFocusable } from './FocusableComponent';
 
 function renderFilter(conditionView: VNode): VNode {
   return h('div', {}, [
@@ -70,22 +70,18 @@ function renderConditionStringValueInputField(label: string, props: ConditionVie
 }
 type ConditionStringValueInputFieldComponentProps<GCT extends GF.GraphFilterConditionStringValue> 
   = ConditionViewProps<GCT> & { name: string }
-class ConditionStringValueInputFieldComponent<GCT extends GF.GraphFilterConditionStringValue> 
-  extends FocusableComponent<ConditionStringValueInputFieldComponentProps<GCT>> {
-  constructor(props: ConditionStringValueInputFieldComponentProps<GCT>, context?: any) { 
-    super(props, context);
-    if (props.name) { this.innerComponentName = 'GraphFilterCondition '+props.name }
-  }
-  readonly focusTarget = FocusTarget.GraphFilter;
-  readonly innerComponent = (props: ConditionStringValueInputFieldComponentProps<GCT>) => h(
+const ConditionStringValueInputFieldComponent = withFocusable(
+  (props: ConditionStringValueInputFieldComponentProps<GF.GraphFilterConditionStringValue>) => h(
     'input', 
     createFocusableElementProps(TextInputKeyEventOptions, props, {
       type: 'text',
       oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.current.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
       value: props.condition.value
     })
-  )
-}
+  ),
+  FocusTarget.GraphFilter,
+  (props: ConditionStringValueInputFieldComponentProps<any>) => 'GraphFilterCondition '+props.name
+)
 
 function GraphFilterConditionSubjectBeginsWithView(props: ConditionViewProps<GF.GraphFilterConditionSubjectBeginsWith>) {
   if (props.condition.kind != GF.GraphFilterConditionKind.SubjectBeginsWith) return h('');

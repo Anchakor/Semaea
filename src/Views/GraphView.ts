@@ -13,7 +13,7 @@ import { GraphFilterComponent } from './GraphFilterView';
 import { CurrentProps, getCurrentProps } from './CurrentProps';
 import { ButtonKeyEventOptions, KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
-import { FocusableComponent } from './FocusableComponent';
+import { withFocusable } from './FocusableComponent';
 import { FocusTarget } from '../UIStore/Focus';
 
 // View (component):
@@ -104,12 +104,10 @@ function isSomeOccurenceOfCurrentGraphNode(props: Props, graphNode: GraphNode): 
 }
 
 /** Empty focusable element for all GraphView entities (GraphNodes) */
-class FocusableGraphView extends FocusableComponent<Props> {
-  constructor(props: Props, context?: any) { super(props, context); }
-  focusTarget = FocusTarget.GraphView
-  innerComponentName = "GraphView"
-  innerComponent = (p: Props) => h('span', createFocusableElementProps(KeyEventOptions.Default, p, { tabindex: 0 }));
-}
+const FocusableGraphView = withFocusable(
+  (p: Props) => h('span', createFocusableElementProps(KeyEventOptions.Default, p, { tabindex: 0 })),
+  FocusTarget.GraphView,
+  (p: Props) => "GraphView");
 
 // Component (container component):
 
