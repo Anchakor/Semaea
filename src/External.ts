@@ -32,7 +32,7 @@ export type FunctionalUIComponent<P> = (props: P) => VNode;
 export function hf<P>(_tag: FunctionalUIComponent<P>, _props: P, _children?: InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
-export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, S>), _props?: Partial<P>, _children?: InfernoChildren): VNode {
+export function hc<P,S>(_tag: (new (p: P, context?: any) => InfernoComponent<P, S>), _props?: P, _children?: InfernoChildren): VNode {
   return InfernoHyperscript(_tag, _props, _children);
 }
 
