@@ -23,7 +23,10 @@ const defaultState: StoreState = {
 
 export type DispatchProps = {
   dispatch: Dispatch<StoreState>
-} 
+}
+export type FocusProps = {
+  focus_: Focus.State
+}
 
 // Reducer:
 

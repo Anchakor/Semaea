@@ -1,8 +1,8 @@
-import { UIComponent, h, hc, connect, StoreLib, hf, VNode } from '../External';
+import { UIComponent, h, hc, connect, hf, VNode } from '../External';
 import { Props as GraphViewProps } from './GraphView';
 import * as GF from '../UIStore/GraphFilters';
 import { objectJoinExtend } from '../Common';
-import { StoreState } from '../UIStore/Main';
+import { StoreState, DispatchProps, FocusProps } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
@@ -17,7 +17,8 @@ function renderFilter(conditionView: VNode): VNode {
 }
 
 type Props = GraphViewProps & DispatchProps;
-type ConditionViewProps<GCT extends GF.GraphFilterCondition> = Props & { conditionIndex: number, condition: GCT }
+type ConditionViewProps<GCT extends GF.GraphFilterCondition> = DispatchProps & FocusProps &
+  { saGraphViewIndex: number, conditionIndex: number, condition: GCT }
 
 class GraphFilterView extends UIComponent<Props, {}> {
   constructor(props: Props, context: any) {
@@ -28,13 +29,19 @@ class GraphFilterView extends UIComponent<Props, {}> {
     if (!filter) return h('');
     const conditionIndex = filter.rootConditionIndex;
     const condition = filter.conditions[conditionIndex];
+    const propsBase = { 
+      focus_: this.props.focus_,
+      dispatch: this.props.dispatch, 
+      saGraphViewIndex: this.props.current.saGraphViewIndex, 
+      conditionIndex: conditionIndex, 
+    };
     // TODO don't focus conditions past the first one
     if (graphFilterConditionIsOfKind(GF.GraphFilterConditionKind.SubjectBeginsWith)(condition)) {
-      const conditionProps = objectJoinExtend(this.props, { condition: condition, conditionIndex: conditionIndex });
-      return renderFilter(hf(GraphFilterConditionSubjectBeginsWithView, conditionProps));
+      const conditionViewProps = objectJoinExtend(propsBase, { condition: condition });
+      return renderFilter(hf(GraphFilterConditionSubjectBeginsWithView, conditionViewProps));
     } else if (graphFilterConditionIsOfKind(GF.GraphFilterConditionKind.SubjectContains)(condition)) {
-      const conditionProps = objectJoinExtend(this.props, { condition: condition, conditionIndex: conditionIndex });
-      return renderFilter(hf(GraphFilterConditionSubjectContainsView, conditionProps));
+      const conditionViewProps = objectJoinExtend(propsBase, { condition: condition });
+      return renderFilter(hf(GraphFilterConditionSubjectContainsView, conditionViewProps));
     } else {
       return h('');
     }
@@ -44,21 +51,8 @@ export const GraphFilterComponent = connect(
   GraphFilterView,
   (state: StoreState, ownProps: GraphViewProps) => {
     return {};
-  },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps: GraphViewProps) => { 
-    return {
-      changeGraphFilterConditionStringValue: (saGraphViewIndex: number, conditionIndex: number, newValue: string) => {
-        const action: GF.ChangeGraphFilterConditionStringValueAction = { type: GF.ActionType.ChangeGraphFilterConditionStringValue,
-          saGraphViewIndex: saGraphViewIndex, conditionIndex: conditionIndex, newValue: newValue
-        }; dispatch(action); 
-      }
-    };
   }
 );
-
-type DispatchProps = {
-  changeGraphFilterConditionStringValue: (saGraphViewIndex: number, conditionIndex: number, newValue: string) => void
-}
 
 // GraphFilterConditionViews
 
@@ -75,7 +69,15 @@ const ConditionStringValueInputFieldComponent = withFocusable(
     'input', 
     createFocusableElementProps(TextInputKeyEventOptions, props, {
       type: 'text',
-      oninput: (e: Event) => props.changeGraphFilterConditionStringValue(props.current.saGraphViewIndex, props.conditionIndex, (e.target as HTMLInputElement).value),
+      oninput: (e: Event) => {
+        const action: GF.ChangeGraphFilterConditionStringValueAction = { 
+          type: GF.ActionType.ChangeGraphFilterConditionStringValue,
+          saGraphViewIndex: props.saGraphViewIndex, 
+          conditionIndex: props.conditionIndex, 
+          newValue: (e.target as HTMLInputElement).value
+        }; 
+        props.dispatch(action); 
+      },
       value: props.condition.value
     })
   ),
