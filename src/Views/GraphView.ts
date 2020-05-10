@@ -2,8 +2,7 @@ import { objectJoin, objectJoinExtend } from '../Common';
 import { connect, h, UIComponent, hc, hf, Dispatch } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { StoreState } from '../UIStore/Main';
-import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
+import { StoreState, DispatchProps } from '../UIStore/Main';
 import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
@@ -20,7 +19,7 @@ import { createChangeSaViewSaGraphViewAction } from 'UIStore/SaViews';
 export interface StateProps extends StoreState {
   current: CurrentProps
 }
-export type Props = StateProps & MainDispatchProps
+export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
   constructor(props: Props, context?: unknown) { super(props, context); }
@@ -115,6 +114,6 @@ export const Component = connect(
   (state: StoreState) => {
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
-  (dispatch: Dispatch<StoreState>, ownProps?: {}): MainDispatchProps => { 
-    return createMainDispatchProps(dispatch);
+  (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
+    return { dispatch: dispatch };
   });

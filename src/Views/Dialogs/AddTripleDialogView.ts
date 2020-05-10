@@ -3,12 +3,12 @@ import { DialogProps } from '../DialogView';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { AddTripleDialog } from '../../Dialogs/Dialog';
 import { Triple } from '../../Graphs/Triple';
-import { objectJoin } from '../../Common';
 import { StoreState } from '../../UIStore/Main';
 import { TextInputKeyEventOptions, ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
 import { createFinishDialogAction } from 'UIStore/Dialogs';
 import { createSetChangeFocusToGraphViewAction } from 'UIStore/Focus';
+import { createAddTripleAction } from 'UIStore/Graphs';
 
 interface State {
   s: string
@@ -46,14 +46,16 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
       })), ' ', 
       h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, {
         onclick: () => {
-          this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+          this.props.dispatch(createAddTripleAction(this.props.current.saGraphView.graphIndex, 
+            new Triple(this.state.s, this.state.p, this.state.o)));
           this.props.dispatch(createFinishDialogAction(this.props.dialogIndex));
           this.props.dispatch(createSetChangeFocusToGraphViewAction());
         },
       }), 'Add'), ' ', 
       h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, {
         onclick: () => {
-          this.props.addTriple(this.props.current.saGraphView.graphIndex, new Triple(this.state.s, this.state.p, this.state.o));
+          this.props.dispatch(createAddTripleAction(this.props.current.saGraphView.graphIndex, 
+            new Triple(this.state.s, this.state.p, this.state.o)));
         },
       }), 'Add without closing'), ' ', 
       hc(DialogCancelButtonView, this.props) ]);

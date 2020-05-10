@@ -1,11 +1,10 @@
-import { StoreState } from '../UIStore/Main';
+import { StoreState, DispatchProps } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, Dispatch } from '../External';
-import { objectJoin, objectJoinExtend } from '../Common';
-import { SaView, shouldSaViewBeVisible } from '../SaViews';
+import { connect, h, UIComponent, Dispatch } from '../External';
+import { objectJoin } from '../Common';
+import { shouldSaViewBeVisible } from '../SaViews';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
 import { ButtonKeyEventOptions } from './InputEventHandlers';
-import { MainDispatchProps, createMainDispatchProps } from './MainDispatchProps';
 import { createFocusableElementProps } from './FocusableElementProps';
 
 // View (component):
@@ -13,10 +12,6 @@ import { createFocusableElementProps } from './FocusableElementProps';
 export interface StateProps extends StoreState {
   current: CurrentProps
 }
-export interface DispatchPropsExtend {
-  changeCurrentSaView: (saViewIndex: number) => void
-}
-type DispatchProps = MainDispatchProps & DispatchPropsExtend
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
@@ -39,7 +34,7 @@ export class View extends UIComponent<Props, {}> {
           }
           return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
             class: tagClass,
-            onclick: () => this.props.changeCurrentSaView(saViewIndex),
+            onclick: () => this.props.dispatch(createChangeSaViewAction(saViewIndex)),
           }), saViewIndex.toString())
         })
       )
@@ -55,7 +50,5 @@ export const Component = connect(
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
   (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
-    return objectJoinExtend(createMainDispatchProps(dispatch), {
-      changeCurrentSaView: (saViewIndex: number) => dispatch(createChangeSaViewAction(saViewIndex))
-    });
+    return { dispatch: dispatch };
   });

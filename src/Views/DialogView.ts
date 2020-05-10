@@ -1,17 +1,12 @@
-import { StoreState } from '../UIStore/Main';
-import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, StoreLib, UIComponent, hf, hc, Dispatch } from '../External';
+import { StoreState, DispatchProps } from '../UIStore/Main';
+import { connect, h,  UIComponent, hf, hc, Dispatch } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
 import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog, SaveFileDialog } from '../Dialogs/Dialog';
-import { createCancelDialogAction, createFinishDialogAction } from '../UIStore/Dialogs';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
 import { DeleteGraphDialogView } from './Dialogs/DeleteGraphDialogView';
 import { Component as AddTripleDialogView } from './Dialogs/AddTripleDialogView';
-import { createAddTripleAction, createDeleteGraphAction } from '../UIStore/Graphs';
-import { Triple } from '../Graphs/Triple';
 import { DialogMenuDialogView } from './Dialogs/DialogMenuDialogView';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
-import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
 import { OpenFileDialogView } from './Dialogs/OpenFileDialogView';
 import { SaveFileDialogView } from './Dialogs/SaveFileDialogView';
 
@@ -50,11 +45,6 @@ export interface StateProps extends StoreState {
   dialogs: Dialog[]
   dialogSaViewMappings: DialogSaViewMapping[]
 }
-export interface DispatchExtendedProps {
-  addTriple: (graphIndex: number, triple: Triple) => void
-  deleteGraph: (graphIndex: number) => void
-}
-type DispatchProps = DispatchExtendedProps & MainDispatchProps
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
@@ -82,8 +72,5 @@ export const Component = connect(
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state), dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
   },
   (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
-    return objectJoinExtend(createMainDispatchProps(dispatch), {
-      addTriple: (graphIndex: number, triple: Triple) => dispatch(createAddTripleAction(graphIndex, triple)),
-      deleteGraph: (graphIndex: number) => dispatch(createDeleteGraphAction(graphIndex))
-    });
+    return { dispatch: dispatch };
   });
