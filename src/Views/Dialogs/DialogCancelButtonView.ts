@@ -3,8 +3,10 @@ import { Dialog } from '../../Dialogs/Dialog';
 import { ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
 import { withFocusable } from '../FocusableComponent';
-import { FocusTarget } from '../../UIStore/Focus';
+import { FocusTarget, createSetChangeFocusToGraphViewAction } from '../../UIStore/Focus';
 import { h, linkEvent } from '../../External';
+import { createDeleteGraphAction } from 'UIStore/Graphs';
+import { createCancelDialogAction } from 'UIStore/Dialogs';
 
 type DialogCancelButtonProps = DialogProps<Dialog>
 
@@ -18,5 +20,9 @@ function DialogCancelButtonViewInner(dialogProps: DialogCancelButtonProps) {
   }), 'Cancel')
 }
 function cancelDialogButtonOnClickHandler(dialogProps: DialogCancelButtonProps, event: Event) {
-  dialogProps.cancelDialog(dialogProps.dialogIndex, dialogProps.dialog.createdGraphIndex);
+  if (dialogProps.dialog.createdGraphIndex != undefined) { 
+    dialogProps.dispatch(createDeleteGraphAction(dialogProps.dialog.createdGraphIndex)); 
+  }
+  dialogProps.dispatch(createCancelDialogAction(dialogProps.dialogIndex));
+  dialogProps.dispatch(createSetChangeFocusToGraphViewAction());
 }

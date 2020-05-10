@@ -15,24 +15,10 @@ import { Graph } from '../Graphs/Graph';
 import { StoreState, DispatchProps } from 'UIStore/Main';
 
 export interface MainDispatchProps extends DispatchProps {
-  cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => void
-  finishDialog: (dialogIndex: number) => void
-  deleteGraph: (graphIndex: number) => void
 }
 
 export function createMainDispatchProps(dispatch: Dispatch<StoreState>): MainDispatchProps {
   return {
     dispatch: dispatch,
-    cancelDialog: (dialogIndex: number, createdGraphIndex?: number) => {
-      if (createdGraphIndex != undefined) { dispatch(createDeleteGraphAction(createdGraphIndex)); }
-      dispatch(createCancelDialogAction(dialogIndex));
-      dispatch(createSetChangeFocusToGraphViewAction());
-    },
-    finishDialog: (dialogIndex: number) => {
-      dispatch(createFinishDialogAction(dialogIndex));
-      dispatch(createSetChangeFocusToGraphViewAction());
-    },
-    deleteGraph: (graphIndex: number) => 
-      dispatch(createDeleteGraphAction(graphIndex)),
   };
 }
