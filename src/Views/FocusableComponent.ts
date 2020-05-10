@@ -1,6 +1,6 @@
 import { objectJoinExtend, Log } from '../Common';
-import { DispatchProps, FocusProps } from '../UIStore/Main';
-import { UIComponent, FunctionalUIComponent, hf } from '../External';
+import { DispatchProps, FocusProps, StoreState } from '../UIStore/Main';
+import { UIComponent, FunctionalUIComponent, hf, connect, Dispatch } from '../External';
 import { FocusTarget, createSetChangeFocusToNoneAction, State as FocusState } from '../UIStore/Focus';
 
 type Props = DispatchProps & FocusProps;
@@ -9,8 +9,9 @@ type Props = DispatchProps & FocusProps;
 export function withFocusable<InnerProps>(
   innerComponent: FunctionalUIComponent<InnerProps>, 
   focusTarget: FocusTarget,
-  innerComponentName?: (p: InnerProps) => string) {
-return class FocusableComponent extends UIComponent<InnerProps & Props, { elem: HTMLElement }> {
+  innerComponentName?: (p: InnerProps) => string)
+{
+  class FocusableComponent extends UIComponent<InnerProps & Props, { elem: HTMLElement }> {
     constructor(props: InnerProps & Props, context?: any) { super(props, context); }
     render() {
       let innerProps: InnerProps = objectJoinExtend(this.props, {
@@ -31,4 +32,14 @@ return class FocusableComponent extends UIComponent<InnerProps & Props, { elem: 
 
     private getInnerComponentName() { return (innerComponentName) ? innerComponentName(this.props) : innerComponent.name; }
   }
+  const Component = connect(
+    FocusableComponent,
+    (state: StoreState, ownProps: InnerProps) => {
+      return objectJoinExtend<InnerProps, FocusProps>(ownProps, { focus_: state.focus_ });
+    },
+    (dispatch: Dispatch<StoreState>, ownProps: InnerProps): DispatchProps => { 
+      return { dispatch: dispatch };
+    });
+
+  return Component;
 }

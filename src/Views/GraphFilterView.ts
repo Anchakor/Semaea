@@ -17,7 +17,7 @@ function renderFilter(conditionView: VNode): VNode {
 }
 
 type Props = GraphViewProps & DispatchProps;
-type ConditionViewProps<GCT extends GF.GraphFilterCondition> = DispatchProps & FocusProps &
+type ConditionViewProps<GCT extends GF.GraphFilterCondition> = DispatchProps &
   { saGraphViewIndex: number, conditionIndex: number, condition: GCT }
 
 class GraphFilterView extends UIComponent<Props, {}> {
@@ -30,7 +30,7 @@ class GraphFilterView extends UIComponent<Props, {}> {
     const conditionIndex = filter.rootConditionIndex;
     const condition = filter.conditions[conditionIndex];
     const propsBase = { 
-      focus_: this.props.focus_,
+      //focus_: this.props.focus_,
       dispatch: this.props.dispatch, 
       saGraphViewIndex: this.props.current.saGraphViewIndex, 
       conditionIndex: conditionIndex, 
