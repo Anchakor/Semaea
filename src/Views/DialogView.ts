@@ -58,7 +58,7 @@ type DispatchProps = DispatchExtendedProps & MainDispatchProps
 export type Props = StateProps & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
-  constructor(props: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: unknown) { super(props, context); }
   public render() {
     return h('div', {}, this.props.dialogSaViewMappings
       .filter((mapping, i, arr) => mapping.saViewIndex == this.props.current.saViewIndex

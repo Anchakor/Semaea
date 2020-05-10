@@ -21,7 +21,7 @@ type ConditionViewProps<GCT extends GF.GraphFilterCondition> = DispatchProps &
   { saGraphViewIndex: number, conditionIndex: number, condition: GCT }
 
 class GraphFilterView extends UIComponent<Props, {}> {
-  constructor(props: Props, context: any) {
+  constructor(props: Props, context: unknown) {
     super(props, context);
   }
   render() {
@@ -82,7 +82,7 @@ const ConditionStringValueInputFieldComponent = withFocusable(
     })
   ),
   FocusTarget.GraphFilter,
-  (props: ConditionStringValueInputFieldComponentProps<any>) => 'GraphFilterCondition '+props.name
+  (props: ConditionStringValueInputFieldComponentProps<GF.GraphFilterConditionStringValue>) => 'GraphFilterCondition '+props.name
 )
 
 function GraphFilterConditionSubjectBeginsWithView(props: ConditionViewProps<GF.GraphFilterConditionSubjectBeginsWith>) {

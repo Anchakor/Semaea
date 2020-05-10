@@ -1,6 +1,6 @@
 import { IDeserializeObject } from '../Serialization/IDeserializeObject';
 
-export function serialize(input: any): string {
+export function serialize(input: unknown): string {
   return JSON.stringify(input);
 }
 

@@ -12,7 +12,7 @@ export function withFocusable<InnerProps>(
   innerComponentName?: (p: InnerProps) => string)
 {
   class FocusableComponent extends UIComponent<InnerProps & Props, { elem: HTMLElement }> {
-    constructor(props: InnerProps & Props, context?: any) { super(props, context); }
+    constructor(props: InnerProps & Props, context?: unknown) { super(props, context); }
     render() {
       let innerProps: InnerProps = objectJoinExtend(this.props, {
         onComponentDidMount: (e: HTMLElement) => { 

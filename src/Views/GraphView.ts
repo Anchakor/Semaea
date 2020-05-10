@@ -24,7 +24,7 @@ export interface StateProps extends StoreState {
 export type Props = StateProps & MainDispatchProps
 
 export class View extends UIComponent<Props, {}> {
-  constructor(props: Props, context?: any) { super(props, context); }
+  constructor(props: Props, context?: unknown) { super(props, context); }
   public render() {
     return h('div', {}, [
       this.renderSaGraphViewSwitchingBar(),

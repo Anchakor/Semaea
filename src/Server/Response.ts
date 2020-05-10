@@ -1,14 +1,14 @@
 import { Log, checkKindFor } from '../Common';
 import { IDirectoryEntry } from '../Entities/Filesystem';
 
-export function createErrorResponse(err: any) {
+export function createErrorResponse(err: unknown) {
   const r = new ErrorResponse();
   if (err) {
     if (typeof err === 'string') {
       r.message = err
     } else if (typeof err === 'object') {
       if (JSON.stringify(err) !== '{}') r.message = JSON.stringify(err);
-      else r.message = err.toString();
+      else r.message = (err) ? err.toString() : 'null';
     }
   }
   return r;

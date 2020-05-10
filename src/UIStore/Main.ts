@@ -50,9 +50,3 @@ const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState,
 
 export const store = StoreLib.createStore<StoreState, any, any, any>(reducer, 
   StoreLib.applyMiddleware(StoreLibThunk.default));
-
-// Other:
-
-export function mapFullStateToProps(state: any) {
-  return state;
-}
