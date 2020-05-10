@@ -1,10 +1,7 @@
 import { objectJoin, objectJoinExtend } from '../Common';
-import { connect, h, StoreLib, UIComponent, hc, hf, Dispatch } from '../External';
+import { connect, h, UIComponent, hc, hf, Dispatch } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { Graph } from '../Graphs/Graph';
-import { SaView } from '../SaViews';
-import { SaGraphView } from '../UIStore/Graphs';
 import { StoreState } from '../UIStore/Main';
 import { createMainDispatchProps, MainDispatchProps } from './MainDispatchProps';
 import * as EntityView from './EntityView';
@@ -15,6 +12,8 @@ import { ButtonKeyEventOptions, KeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { withFocusable } from './FocusableComponent';
 import { FocusTarget } from '../UIStore/Focus';
+import { createChangeSaGraphViewGraphAction } from 'UIStore/Graphs/SaGraphViews';
+import { createChangeSaViewSaGraphViewAction } from 'UIStore/SaViews';
 
 // View (component):
 
@@ -45,7 +44,7 @@ export class View extends UIComponent<Props, {}> {
       }
       return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentSaGraphView(this.props.current.saViewIndex, i)
+        onclick: () => this.props.dispatch(createChangeSaViewSaGraphViewAction(this.props.current.saViewIndex, i))
       }), i.toString())
     })));
   }
@@ -63,7 +62,7 @@ export class View extends UIComponent<Props, {}> {
       }
       return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
         class: tagClass,
-        onclick: () => this.props.changeCurrentGraph(this.props.current.saGraphViewIndex, graphIndex)
+        onclick: () => this.props.dispatch(createChangeSaGraphViewGraphAction(this.props.current.saGraphViewIndex, graphIndex))
       }), graphIndex.toString())
     })));
   }
