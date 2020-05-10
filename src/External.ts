@@ -65,4 +65,4 @@ export const connect = <OwnProps, StateProps, DispatchProps, State, Component ex
   component: new (props: OwnProps & StateProps & DispatchProps, context?: any) => Component, 
   mapStateToProps?: (state: any, ownProps: OwnProps) => StateProps, 
   mapDispatchToProps?: (dispatch: Dispatch<any>, ownProps: OwnProps) => DispatchProps
-  ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component); // TODO any for state?
+  ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component) as new (props: OwnProps, context?: any) => Component; // TODO any for state?
