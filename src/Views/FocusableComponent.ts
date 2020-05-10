@@ -1,7 +1,7 @@
 import { objectJoinExtend, Log } from '../Common';
-import { DispatchProps, FocusProps, StoreState } from '../UIStore/Main';
-import { UIComponent, FunctionalUIComponent, hf, connect, Dispatch } from '../External';
-import { FocusTarget, createSetChangeFocusToNoneAction, State as FocusState } from '../UIStore/Focus';
+import { DispatchProps, FocusProps, StoreState, getDispatchProps } from '../UIStore/Main';
+import { UIComponent, FunctionalUIComponent, hf, connect } from '../External';
+import { FocusTarget, createSetChangeFocusToNoneAction } from '../UIStore/Focus';
 
 type Props = DispatchProps & FocusProps;
 
@@ -37,9 +37,7 @@ export function withFocusable<InnerProps>(
     (state: StoreState, ownProps: InnerProps) => {
       return objectJoinExtend<InnerProps, FocusProps>(ownProps, { focus_: state.focus_ });
     },
-    (dispatch: Dispatch<StoreState>, ownProps: InnerProps): DispatchProps => { 
-      return { dispatch: dispatch };
-    });
+    getDispatchProps);
 
   return Component;
 }

@@ -1,9 +1,9 @@
-import { h, UIComponent, connect, StoreLib, hc } from '../../External';
+import { h, UIComponent, connect, hc } from '../../External';
 import { DialogProps } from '../DialogView';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { AddTripleDialog } from '../../Dialogs/Dialog';
 import { Triple } from '../../Graphs/Triple';
-import { StoreState } from '../../UIStore/Main';
+import { StoreState, getDispatchProps } from '../../UIStore/Main';
 import { TextInputKeyEventOptions, ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
 import { createFinishDialogAction } from 'UIStore/Dialogs';
@@ -70,6 +70,4 @@ export const Component = connect(
   (state: StoreState, ownProps?: DialogProps<AddTripleDialog>) => {
     return {};
   },
-  (dispatch: <A extends StoreLib.Action>(action: A) => void) => { 
-    return {};
-  });
+  getDispatchProps);

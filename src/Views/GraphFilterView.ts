@@ -2,7 +2,7 @@ import { UIComponent, h, hc, connect, hf, VNode } from '../External';
 import { Props as GraphViewProps } from './GraphView';
 import * as GF from '../UIStore/GraphFilters';
 import { objectJoinExtend } from '../Common';
-import { StoreState, DispatchProps, FocusProps } from '../UIStore/Main';
+import { StoreState, DispatchProps, getDispatchProps } from '../UIStore/Main';
 import { TextInputKeyEventOptions } from './InputEventHandlers';
 import { createFocusableElementProps } from './FocusableElementProps';
 import { graphFilterConditionIsOfKind } from '../UIStore/GraphFilters';
@@ -51,8 +51,8 @@ export const GraphFilterComponent = connect(
   GraphFilterView,
   (state: StoreState, ownProps: GraphViewProps) => {
     return {};
-  }
-);
+  },
+  getDispatchProps);
 
 // GraphFilterConditionViews
 

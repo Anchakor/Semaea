@@ -1,6 +1,6 @@
-import { IComponent, objectJoin, objectJoinExtend } from '../Common';
-import { connect, h, StoreLib, UIComponent } from '../External';
-import { StoreState } from '../UIStore/Main';
+import { objectJoinExtend } from '../Common';
+import { connect, h, UIComponent } from '../External';
+import { StoreState, getDispatchProps, DispatchProps } from '../UIStore/Main';
 import * as Modals from '../UIStore/Modals';
 import { AlertModalView } from "../Views/Modals/AlertModalView";
 
@@ -25,12 +25,7 @@ export interface ModalProp<M extends Modals.Modal> extends Props {
 
 // View (component):
 
-export interface StateProps extends StoreState {
-}
-export interface DispatchProps {
-  closeModal: (modalIndex: number) => void
-}
-export type Props = StateProps & DispatchProps
+export type Props = StoreState & DispatchProps
 
 export class View extends UIComponent<Props, {}> {
   constructor(props: Props, context?: unknown) { super(props, context); }
@@ -42,7 +37,7 @@ export class View extends UIComponent<Props, {}> {
         getModalView(this.props, modal, i),
         h('span', {
           style: 'border: 1px dotted; padding: 0.3em;',
-          onclick: () => this.props.closeModal(i)
+          onclick: () => this.props.dispatch(Modals.createCloseModalAction(i))
         }, 'X')
       ]); // TODO
     });
@@ -58,8 +53,4 @@ export class View extends UIComponent<Props, {}> {
 export const Component = connect(
   View,
   (state: StoreState) => state,
-  (dispatch: <A extends StoreLib.Action>(action: A) => void, ownProps?: {}): DispatchProps => { 
-    return {
-      closeModal: (modalIndex: number) => dispatch(Modals.createCloseModalAction(modalIndex)),
-    };
-  });
+  getDispatchProps);

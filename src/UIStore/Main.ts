@@ -28,6 +28,10 @@ export type FocusProps = {
   focus_: Focus.State
 }
 
+export function getDispatchProps(dispatch: Dispatch<StoreState>): DispatchProps { 
+  return { dispatch: dispatch } 
+}
+
 // Reducer:
 
 const reducer: StoreLib.Reducer<StoreState> = (state: StoreState = defaultState, action: StoreLib.Action) => {

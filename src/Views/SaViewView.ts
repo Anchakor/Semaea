@@ -1,6 +1,6 @@
-import { StoreState, DispatchProps } from '../UIStore/Main';
+import { StoreState, DispatchProps, getDispatchProps } from '../UIStore/Main';
 import { createChangeSaViewAction } from '../UIStore/SaViews';
-import { connect, h, UIComponent, Dispatch } from '../External';
+import { connect, h, UIComponent } from '../External';
 import { objectJoin } from '../Common';
 import { shouldSaViewBeVisible } from '../SaViews';
 import { getCurrentProps, CurrentProps } from './CurrentProps';
@@ -49,6 +49,4 @@ export const Component = connect(
   (state: StoreState) => {
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
-  (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
-    return { dispatch: dispatch };
-  });
+  getDispatchProps);

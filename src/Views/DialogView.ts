@@ -1,5 +1,5 @@
-import { StoreState, DispatchProps } from '../UIStore/Main';
-import { connect, h,  UIComponent, hf, hc, Dispatch } from '../External';
+import { StoreState, DispatchProps, getDispatchProps } from '../UIStore/Main';
+import { connect, h,  UIComponent, hf, hc } from '../External';
 import { objectJoin, objectJoinExtend, assert, Log } from '../Common';
 import { DialogKind, Dialog, DeleteGraphDialog, shouldDialogBeVisible, AddTripleDialog, DialogMenuDialog, DialogSaViewMapping, OpenFileDialog, SaveFileDialog } from '../Dialogs/Dialog';
 import { DefaultDialogView } from './Dialogs/DefaultDialogView';
@@ -71,6 +71,4 @@ export const Component = connect(
     const dialogSaViewMappings = state.dialogs_.viewMappings;
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state), dialogs: dialogs, dialogSaViewMappings: dialogSaViewMappings });
   },
-  (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
-    return { dispatch: dispatch };
-  });
+  getDispatchProps);

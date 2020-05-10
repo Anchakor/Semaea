@@ -2,7 +2,7 @@ import { objectJoin, objectJoinExtend } from '../Common';
 import { connect, h, UIComponent, hc, hf, Dispatch } from '../External';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
-import { StoreState, DispatchProps } from '../UIStore/Main';
+import { StoreState, DispatchProps, getDispatchProps } from '../UIStore/Main';
 import * as EntityView from './EntityView';
 import { getSaGraphViewFilteredTriples } from '../UIStore/GraphFilters';
 import { GraphFilterComponent } from './GraphFilterView';
@@ -114,6 +114,4 @@ export const Component = connect(
   (state: StoreState) => {
     return objectJoin<StateProps>(state as StateProps, { current: getCurrentProps(state) });
   },
-  (dispatch: Dispatch<StoreState>, ownProps?: {}): DispatchProps => { 
-    return { dispatch: dispatch };
-  });
+  getDispatchProps);
