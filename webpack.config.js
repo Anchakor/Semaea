@@ -23,7 +23,9 @@ module.exports = {
         ],
 
         // Add '.ts' and '.tsx' as resolvable extensions.
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+        
+        fallback: { "path": require.resolve("path-browserify") }
     },
     module: {
         rules: [
