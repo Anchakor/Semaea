@@ -2,6 +2,7 @@
   "name": "semaea",
   "version": "0.0.1",
   "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
     "cbor-js": "^0.1.0",
     "inferno": "^7.4.6",
     "inferno-component": "^7.4.6",
