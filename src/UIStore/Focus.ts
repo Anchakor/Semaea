@@ -1,4 +1,4 @@
-import { StoreLib } from "External";
+import { StoreLib, UIStoreTools } from "External";
 import { objectJoin } from "Common";
 
 /* Focus changing
@@ -20,33 +20,33 @@ export const defaultState: State = {
   // TODO previous focus & action for returning focus (or focus per view?)
 };
 
-// Actions:
-
-// SetChangeFocusToAction
-export enum ActionType { SetChangeFocusTo = 'SetChangeFocusTo' }
-export interface SetChangeFocusToAction extends StoreLib.Action { type: ActionType.SetChangeFocusTo
-  changeFocusTo?: FocusTarget
-}
-export const createSetChangeFocusToAction = (partialAction: Partial<SetChangeFocusToAction>) => objectJoin<SetChangeFocusToAction>({ type: ActionType.SetChangeFocusTo,
-  changeFocusTo: undefined
-}, partialAction);
-export const createSetChangeFocusToGraphViewAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.GraphView });
-export const createSetChangeFocusToDialogCancelButtonAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.DialogCancelButton });
-export const createSetChangeFocusToGraphFilterAction = () => createSetChangeFocusToAction({ changeFocusTo: FocusTarget.GraphFilter });
-export const createSetChangeFocusToNoneAction = () => createSetChangeFocusToAction({ changeFocusTo: undefined });
-function doSetChangeFocusToAction(state: State, action: SetChangeFocusToAction) {
-  const newState: State = { changeFocusTo: action.changeFocusTo };
-  return objectJoin<State>(state, newState);
-}
-
-// Reducer:
-
-export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
-  switch (action.type) {
-    case ActionType.SetChangeFocusTo:
-      return doSetChangeFocusToAction(state, action as SetChangeFocusToAction);
-    default:
-      return state;
+const slice = UIStoreTools.createSlice({
+  name: 'Focus',
+  initialState: defaultState,
+  reducers: {
+    setChangeFocusTo: (state, action: UIStoreTools.PayloadAction<FocusTarget>) => {
+      state.changeFocusTo = action.payload;
+    },
+    setChangeFocusToGraphView: (state) => {
+      state.changeFocusTo = FocusTarget.GraphView;
+    },
+    setChangeFocusToDialogCancelButton: (state) => {
+      state.changeFocusTo = FocusTarget.DialogCancelButton;
+    },
+    setChangeFocusToGraphFilter: (state) => {
+      state.changeFocusTo = FocusTarget.GraphFilter;
+    },
+    setChangeFocusToNone: (state) => {
+      state.changeFocusTo = undefined;
+    }
   }
-}
+})
 
+export const { setChangeFocusTo,
+  setChangeFocusToDialogCancelButton,
+  setChangeFocusToGraphFilter,
+  setChangeFocusToGraphView,
+  setChangeFocusToNone
+} = slice.actions;
+
+export const reducer = slice.reducer;

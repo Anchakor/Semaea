@@ -12,7 +12,7 @@ import { createFinishDialogAction } from '../Dialogs';
 import { createOpenGraphAction, doOpenGraphAction } from '../Graphs';
 import { createChangeSaViewSaGraphViewAction, doChangeSaViewSaGraphViewAction } from '../SaViews';
 import * as Serializer from '../../Serialization/Serializer';
-import { createSetChangeFocusToGraphFilterAction } from '../Focus';
+import { setChangeFocusToGraphFilter } from '../Focus';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -29,7 +29,7 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, or
         alert(`Loaded file ${filePath}: `+graphPayload); // TODO non-alert message
         dispatch(createFinishDialogAction(dialogIndex));
         dispatch(createOpenFileDialogOpenFileAction({ originatingSaViewIndex: originatingSaViewIndex, graph: graph }));
-        dispatch(createSetChangeFocusToGraphFilterAction());
+        dispatch(setChangeFocusToGraphFilter());
       } catch (error) {
         Log.error(`Failed to decode file ${filePath}: ${error}`);
       }
@@ -39,7 +39,7 @@ export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, or
 
 export const openCurrentViewAsNewGraph = (originatingSaViewIndex: number, graph: Graph) => (dispatch: (a: StoreLib.Action) => void) => {
   dispatch(createOpenFileDialogOpenFileAction({ originatingSaViewIndex: originatingSaViewIndex, graph: graph }));
-  dispatch(createSetChangeFocusToGraphFilterAction());
+  dispatch(setChangeFocusToGraphFilter());
 }
 
 // CreateOpenFileDialogAction

@@ -5,7 +5,7 @@ import { getDialogMappingsToSaView, shouldDialogBeVisible } from '../Dialogs/Dia
 import { dialogKeyHandler } from './Dialogs/DialogEventHandlers';
 import { StoreLibThunk, StoreLib, Dispatch } from '../External';
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
-import { createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction, createSetChangeFocusToDialogCancelButtonAction } from '../UIStore/Focus';
+import { setChangeFocusToGraphFilter, setChangeFocusToGraphView, setChangeFocusToDialogCancelButton } from '../UIStore/Focus';
 import { createDeleteGraphAction } from '../UIStore/Graphs';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
 import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeHorizontallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
@@ -43,33 +43,33 @@ const thunkKeyupEvent = (options: KeyEventOptions, event: KeyboardEvent):
     const current = getCurrentProps(getState());
     if (Key.isSpacebar(event) && !(options & KeyEventOptions.KeepSpacebar)) {
       dispatch(createCreateDialogMenuDialogAction(current.saViewIndex));
-      dispatch(createSetChangeFocusToGraphFilterAction());
+      dispatch(setChangeFocusToGraphFilter());
       event.preventDefault();
     } else if (Key.isEscape(event)) {
       cancelLinkedDialogs(dispatch, getState);
     } else if (Key.isDownArrow(event)) {
       dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, 1));
-      dispatch(createSetChangeFocusToGraphViewAction());
+      dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isUpArrow(event)) {
       dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, -1));
-      dispatch(createSetChangeFocusToGraphViewAction());
+      dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isRightArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, 1));
-      dispatch(createSetChangeFocusToGraphViewAction());
+      dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isLeftArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, -1));
-      dispatch(createSetChangeFocusToGraphViewAction());
+      dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       dispatch(createCreateDeleteGraphDialogAction(current.saGraphView.graphIndex, current.saViewIndex));
-      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+      dispatch(setChangeFocusToDialogCancelButton());
     } else if (Key.isN(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
       if (!current.saGraphView.currentNode) return;
       dispatch(createCreateAddTripleDialogAction(current.saViewIndex));
-      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+      dispatch(setChangeFocusToDialogCancelButton());
     }
 }
 
@@ -101,7 +101,7 @@ function cancelLinkedDialogs(dispatch: Dispatch<StoreState>, getState: () => Sto
     if (!dialog || !shouldDialogBeVisible(dialog)) return true;
     if (dialog.createdGraphIndex != undefined) { dispatch(createDeleteGraphAction(dialog.createdGraphIndex)); }
     dispatch(createCancelDialogAction(v.dialogIndex));
-    dispatch(createSetChangeFocusToGraphViewAction());
+    dispatch(setChangeFocusToGraphView());
     return true;
   });
 }

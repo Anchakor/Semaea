@@ -5,6 +5,7 @@ import { Component as InfernoComponent } from 'inferno';
 import * as Redux from 'redux';
 import * as InfernoRedux from 'inferno-redux';
 import * as ReduxThunk from 'redux-thunk';
+import * as RTK from '@reduxjs/toolkit';
 
 export const $: (selector: string) => HTMLElement = (<any>window).$;
 export const testlib: QUnitStatic = (<any>window).testlib;
@@ -66,3 +67,5 @@ export const connect = <OwnProps, StateProps, DispatchProps, State, Component ex
   mapStateToProps?: (state: any, ownProps: OwnProps) => StateProps, 
   mapDispatchToProps?: (dispatch: Dispatch<any>, ownProps: OwnProps) => DispatchProps
   ) => InfernoRedux.connect(mapStateToProps, mapDispatchToProps)(component) as new (props: OwnProps, context?: any) => Component; // TODO any for state?
+
+export { RTK as UIStoreTools }

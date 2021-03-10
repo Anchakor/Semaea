@@ -9,7 +9,7 @@ import { Graph } from '../../Graphs/Graph';
 import { getCurrentProps } from '../CurrentProps';
 import { StoreState } from '../../UIStore/Main';
 import { createCreateAddTripleDialogAction, createCreateDeleteGraphDialogAction } from '../../UIStore/Dialogs/BasicGraphDialogs';
-import { createSetChangeFocusToDialogCancelButtonAction, createSetChangeFocusToGraphFilterAction, createSetChangeFocusToGraphViewAction } from '../../UIStore/Focus';
+import { setChangeFocusToDialogCancelButton, setChangeFocusToGraphFilter, setChangeFocusToGraphView } from '../../UIStore/Focus';
 import { createOpenFileDialog, openCurrentViewAsNewGraph } from '../../UIStore/Dialogs/OpenFileDialog';
 import { createSaveFileDialog } from '../../UIStore/Dialogs/SaveFileDialog';
 import { createDeleteGraphAction } from '../../UIStore/Graphs';
@@ -73,19 +73,19 @@ function handleMenuDialogSubmit(dispatch: Dispatch<StoreState>, getState: () => 
   const mappings = [
     { node: 'Add triple', trigger: () => {
       dispatch(createCreateAddTripleDialogAction(originatingSaViewIndex));
-      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+      dispatch(setChangeFocusToDialogCancelButton());
     } },
     { node: 'Delete graph', trigger: () => {
       dispatch(createCreateDeleteGraphDialogAction(originatingGraphIndex(originatingSaViewIndex), originatingSaViewIndex));
-      dispatch(createSetChangeFocusToDialogCancelButtonAction());
+      dispatch(setChangeFocusToDialogCancelButton());
     } },
     { node: 'Open file', trigger: () => {
       createOpenFileDialog('.', originatingSaViewIndex)(dispatch);
-      dispatch(createSetChangeFocusToGraphFilterAction());
+      dispatch(setChangeFocusToGraphFilter());
     } },
     { node: 'Save file', trigger: () => {
       createSaveFileDialog('.', originatingSaViewIndex)(dispatch);
-      dispatch(createSetChangeFocusToGraphFilterAction());
+      dispatch(setChangeFocusToGraphFilter());
     } },
     { node: 'Open current view as a new graph', trigger: () => {
       openCurrentViewAsNewGraph(originatingSaViewIndex, 
@@ -98,7 +98,7 @@ function handleMenuDialogSubmit(dispatch: Dispatch<StoreState>, getState: () => 
   if (mapping) {
     dispatch(createDeleteGraphAction(currentGraphIndex));
     dispatch(createFinishDialogAction(dialogIndex));
-    dispatch(createSetChangeFocusToGraphViewAction());
+    dispatch(setChangeFocusToGraphView());
     mapping.trigger();
   } else {
     Log.error("Submitted DialogMenuDialog for a node without a handler: "+currentNode.getValue());

@@ -8,7 +8,7 @@ import { State, SaGraphView } from '../Graphs';
 import { getSaGraphViewFilteredTriples } from '../GraphFilters';
 import { StoreState } from '../Main';
 import { getCurrentProps } from '../../Views/CurrentProps';
-import { createSetChangeFocusToGraphViewAction, createSetChangeFocusToGraphFilterAction } from '../Focus';
+import { setChangeFocusToGraphFilter, setChangeFocusToGraphView } from '../Focus';
 import { dialogEntityMouseClickHandler } from '../../Views/Dialogs/DialogEventHandlers';
 import { createCreateDialogMenuDialogAction } from '../Dialogs/DialogMenuDialog';
 import { createShowAlertModalAction } from '../Modals';
@@ -23,13 +23,13 @@ export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode):
     if (!alreadyIsCurrentNode) { 
       dispatch(createChangeCurrentNodeAction(current.saGraphViewIndex, graphNode));
     }
-    dispatch(createSetChangeFocusToGraphViewAction());
+    dispatch(setChangeFocusToGraphView());
 
     if (dialogEntityMouseClickHandler(dispatch, getState, event, graphNode)) return;
   
     if (event.button == 2) {
       dispatch(createCreateDialogMenuDialogAction(current.saViewIndex));
-      dispatch(createSetChangeFocusToGraphFilterAction());
+      dispatch(setChangeFocusToGraphFilter());
       event.preventDefault();
       return;
     }

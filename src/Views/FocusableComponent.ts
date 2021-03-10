@@ -1,7 +1,7 @@
 import { objectJoinExtend, Log } from '../Common';
 import { DispatchProps, FocusProps, StoreState, getDispatchProps } from '../UIStore/Main';
 import { UIComponent, FunctionalUIComponent, hf, connect } from '../External';
-import { FocusTarget, createSetChangeFocusToNoneAction } from '../UIStore/Focus';
+import { FocusTarget, setChangeFocusToNone } from '../UIStore/Focus';
 
 type Props = DispatchProps & FocusProps;
 
@@ -23,7 +23,7 @@ export function withFocusable<InnerProps>(
               Log.debug("Focusing FocusableComponent: "+this.getInnerComponentName());
               // Look for the debug logging between non-empty SetChangeFocusTo action and the empty one (acknowledge)
               this.state.elem.focus();
-              nextProps.dispatch(createSetChangeFocusToNoneAction());
+              nextProps.dispatch(setChangeFocusToNone());
           }
         }
       });

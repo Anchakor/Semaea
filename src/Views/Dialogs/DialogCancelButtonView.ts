@@ -3,7 +3,7 @@ import { Dialog } from '../../Dialogs/Dialog';
 import { ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
 import { withFocusable } from '../FocusableComponent';
-import { FocusTarget, createSetChangeFocusToGraphViewAction } from '../../UIStore/Focus';
+import { FocusTarget, setChangeFocusToGraphView } from '../../UIStore/Focus';
 import { h, linkEvent } from '../../External';
 import { createDeleteGraphAction } from 'UIStore/Graphs';
 import { createCancelDialogAction } from 'UIStore/Dialogs';
@@ -24,5 +24,5 @@ function cancelDialogButtonOnClickHandler(dialogProps: DialogCancelButtonProps, 
     dialogProps.dispatch(createDeleteGraphAction(dialogProps.dialog.createdGraphIndex)); 
   }
   dialogProps.dispatch(createCancelDialogAction(dialogProps.dialogIndex));
-  dialogProps.dispatch(createSetChangeFocusToGraphViewAction());
+  dialogProps.dispatch(setChangeFocusToGraphView());
 }

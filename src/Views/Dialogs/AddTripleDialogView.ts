@@ -7,7 +7,7 @@ import { StoreState, getDispatchProps } from '../../UIStore/Main';
 import { TextInputKeyEventOptions, ButtonKeyEventOptions } from '../InputEventHandlers';
 import { createFocusableElementProps } from '../FocusableElementProps';
 import { createFinishDialogAction } from 'UIStore/Dialogs';
-import { createSetChangeFocusToGraphViewAction } from 'UIStore/Focus';
+import { setChangeFocusToGraphView } from 'UIStore/Focus';
 import { createAddTripleAction } from 'UIStore/Graphs';
 
 interface State {
@@ -49,7 +49,7 @@ export class View extends UIComponent<DialogProps<AddTripleDialog>, State> {
           this.props.dispatch(createAddTripleAction(this.props.current.saGraphView.graphIndex, 
             new Triple(this.state.s, this.state.p, this.state.o)));
           this.props.dispatch(createFinishDialogAction(this.props.dialogIndex));
-          this.props.dispatch(createSetChangeFocusToGraphViewAction());
+          this.props.dispatch(setChangeFocusToGraphView());
         },
       }), 'Add'), ' ', 
       h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, {

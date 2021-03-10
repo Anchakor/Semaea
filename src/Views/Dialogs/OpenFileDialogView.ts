@@ -10,7 +10,7 @@ import { extname, join } from 'path';
 import { getCurrentProps } from '../CurrentProps';
 import { StoreState } from '../../UIStore/Main';
 import { changeFileDialogDirectory } from '../../UIStore/Dialogs/FileDialogCommon';
-import { createSetChangeFocusToGraphFilterAction } from '../../UIStore/Focus';
+import { setChangeFocusToGraphFilter } from '../../UIStore/Focus';
 import { openFileDialogOpenFile } from '../../UIStore/Dialogs/OpenFileDialog';
 import { createDeleteGraphAction } from '../../UIStore/Graphs';
 
@@ -45,7 +45,7 @@ export function openFileDialogKeyHandler(dispatch: Dispatch<StoreState>, getStat
         const fileName = currentNode.getValue();
         if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.Directory).length > 0) {
           changeFileDialogDirectory(dialogIndex, dialog.directoryPath+'/'+currentNode.getValue())(dispatch);
-          dispatch(createSetChangeFocusToGraphFilterAction());
+          dispatch(setChangeFocusToGraphFilter());
         } else if (graph.get(fileName, FilesystemPredicates.DirectoryEntryKind, DirectoryEntryKind.File).length > 0) {
           tryToOpenFile(dispatch, getState, fileName, dialog.directoryPath, dialogIndex, currentGraphIndex);
         }

@@ -11,7 +11,7 @@ import { Graph } from '../../Graphs/Graph';
 import * as cbor from 'cbor-js';
 import { createFinishDialogAction } from '../Dialogs';
 import * as Serializer from '../../Serialization/Serializer';
-import { createSetChangeFocusToGraphFilterAction } from '../Focus';
+import { setChangeFocusToGraphFilter } from '../Focus';
 
 
 export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string, graph: Graph) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -26,7 +26,7 @@ export const saveFileDialogSaveFile = (dialogIndex: number, filePath: string, gr
     if (responseIsOfKind(ResponseKind.WriteFileResponse)(response)) {
       alert(`Saved file ${filePath}`); // TODO non-alert message
       dispatch(createFinishDialogAction(dialogIndex));
-      dispatch(createSetChangeFocusToGraphFilterAction());
+      dispatch(setChangeFocusToGraphFilter());
     } else handleUnexpectedResponse(response);
   }).catch(handleUnexpectedResponse);
 }
