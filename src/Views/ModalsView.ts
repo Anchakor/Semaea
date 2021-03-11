@@ -37,7 +37,7 @@ export class View extends UIComponent<Props, {}> {
         getModalView(this.props, modal, i),
         h('span', {
           style: 'border: 1px dotted; padding: 0.3em;',
-          onclick: () => this.props.dispatch(Modals.createCloseModalAction(i))
+          onclick: () => this.props.dispatch(Modals.closeModalByIndex(i))
         }, 'X')
       ]); // TODO
     });

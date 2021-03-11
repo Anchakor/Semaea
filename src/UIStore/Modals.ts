@@ -1,5 +1,5 @@
 import { arrayImmutableSet, objectJoin } from '../Common';
-import { StoreLib } from '../External';
+import { StoreLib, UIStoreTools } from '../External';
 
 export interface Modal {
   type: ModalType
@@ -18,6 +18,31 @@ export const defaultState: State = {
   modals: []
 }
 
+const slice = UIStoreTools.createSlice({
+  name: 'Modals',
+  initialState: defaultState,
+  reducers: {
+    showAlertModal: (state, a: UIStoreTools.PayloadAction<{originatingGraphIndex: number, message: string}>) => {
+      const modal: AlertModal = { 
+        type: ModalType.AlertModal,
+        originatingGraphIndex: a.payload.originatingGraphIndex,
+        message: a.payload.message 
+      };
+      state.modals.push(modal);
+    },
+    closeModalByIndex: (state, a: UIStoreTools.PayloadAction<number>) => {
+      state.modals.splice(a.payload, 1);
+    }
+  }
+});
+
+export const {
+  showAlertModal,
+  closeModalByIndex
+} = slice.actions;
+
+export const reducer = slice.reducer;
+/*
 // Actions:
 
 export enum ActionType { ShowAlertModal = 'ShowAlertModal' }
@@ -64,4 +89,4 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return state;
   }
 }
-
+*/

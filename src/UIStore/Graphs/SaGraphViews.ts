@@ -11,7 +11,7 @@ import { getCurrentProps } from '../../Views/CurrentProps';
 import { setChangeFocusToGraphFilter, setChangeFocusToGraphView } from '../Focus';
 import { dialogEntityMouseClickHandler } from '../../Views/Dialogs/DialogEventHandlers';
 import { createCreateDialogMenuDialogAction } from '../Dialogs/DialogMenuDialog';
-import { createShowAlertModalAction } from '../Modals';
+import { showAlertModal } from '../Modals';
 
 
 export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode): 
@@ -35,8 +35,10 @@ export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode):
     }
   
     if (alreadyIsCurrentNode) {
-      dispatch(createShowAlertModalAction(current.saGraphView.graphIndex, 
-        "Some message "+graphNode.toString()+"."));
+      dispatch(showAlertModal({
+        originatingGraphIndex: current.saGraphView.graphIndex,
+        message: "Some message "+graphNode.toString()+"."
+      }));
     }
 }
 
