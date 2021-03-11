@@ -8,7 +8,7 @@ import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMen
 import { setChangeFocusToGraphFilter, setChangeFocusToGraphView, setChangeFocusToDialogCancelButton } from '../UIStore/Focus';
 import { deleteGraphByIndex } from '../UIStore/Graphs';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
-import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeHorizontallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
+import { changeCurrentGraphNodeByOffset, changeCurrentGraphNodeHorizontallyByOffset } from '../UIStore/Graphs/SaGraphViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
 
 /*
@@ -48,19 +48,31 @@ const thunkKeyupEvent = (options: KeyEventOptions, event: KeyboardEvent):
     } else if (Key.isEscape(event)) {
       cancelLinkedDialogs(dispatch, getState);
     } else if (Key.isDownArrow(event)) {
-      dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, 1));
+      dispatch(changeCurrentGraphNodeByOffset({
+        saGraphViewIndex: current.saGraphViewIndex,
+        offset: 1
+      }));
       dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isUpArrow(event)) {
-      dispatch(createChangeCurrentGraphNodeByOffsetAction(current.saGraphViewIndex, -1));
+      dispatch(changeCurrentGraphNodeByOffset({
+        saGraphViewIndex: current.saGraphViewIndex,
+        offset: -1
+      }));
       dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isRightArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
-      dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, 1));
+      dispatch(changeCurrentGraphNodeHorizontallyByOffset({
+        saGraphViewIndex: current.saGraphViewIndex,
+        offset: 1
+      }));
       dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isLeftArrow(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {
-      dispatch(createChangeCurrentGraphNodeHorizontallyByOffsetAction(current.saGraphViewIndex, -1));
+      dispatch(changeCurrentGraphNodeHorizontallyByOffset({
+        saGraphViewIndex: current.saGraphViewIndex,
+        offset: -1
+      }));
       dispatch(setChangeFocusToGraphView());
       event.preventDefault();
     } else if (Key.isM(event) && !(options & KeyEventOptions.KeepTextInputKeys)) {

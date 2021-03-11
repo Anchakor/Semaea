@@ -1,10 +1,10 @@
 import { arrayImmutableSet, objectClone, objectJoin, getSequenceIndexByOffset } from '../../Common';
-import { StoreLib, UILib, UIStoreLib, Reducer, StoreLibThunk } from '../../External';
+import { StoreLib, UILib, UIStoreLib, Reducer, StoreLibThunk, UIStoreTools } from '../../External';
 import { Graph } from '../../Graphs/Graph';
 import { GraphNode } from '../../Graphs/GraphNode';
 import { Triple } from '../../Graphs/Triple';
 import { SaView } from '../../SaViews';
-import { State, SaGraphView } from '../Graphs';
+import { State, SaGraphView, defaultState } from '../Graphs';
 import { getSaGraphViewFilteredTriples } from '../GraphFilters';
 import { StoreState } from '../Main';
 import { getCurrentProps } from '../../Views/CurrentProps';
@@ -12,7 +12,7 @@ import { setChangeFocusToGraphFilter, setChangeFocusToGraphView } from '../Focus
 import { dialogEntityMouseClickHandler } from '../../Views/Dialogs/DialogEventHandlers';
 import { createCreateDialogMenuDialogAction } from '../Dialogs/DialogMenuDialog';
 import { showAlertModal } from '../Modals';
-
+import { createSlice } from '@reduxjs/toolkit';
 
 export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode): 
   StoreLibThunk.ThunkAction<void, StoreState, unknown, StoreLib.Action<string>> => 
@@ -21,7 +21,10 @@ export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode):
     const currentNode = current.saGraphView.currentNode;
     const alreadyIsCurrentNode = (currentNode && graphNode.equals(currentNode));
     if (!alreadyIsCurrentNode) { 
-      dispatch(createChangeCurrentNodeAction(current.saGraphViewIndex, graphNode));
+      dispatch(changeCurrentNode({
+        saGraphViewIndex: current.saGraphViewIndex,
+        graphNode: graphNode
+      }));
     }
     dispatch(setChangeFocusToGraphView());
 
@@ -42,6 +45,102 @@ export const thunkEntityMouseEvent = (event: MouseEvent, graphNode: GraphNode):
     }
 }
 
+const slice = createSlice({
+  name: 'SaGraphViews',
+  initialState: defaultState,
+  reducers: {
+    changeSaGraphViewGraph: (state, a: UIStoreTools.PayloadAction<{
+      saGraphViewIndex: number
+      graphIndex: number
+    }>) => {
+      state.saGraphViews[a.payload.saGraphViewIndex].graphIndex = a.payload.graphIndex;
+    },
+    
+    changeCurrentNode: (state, a: UIStoreTools.PayloadAction<{
+      saGraphViewIndex: number
+      graphNode: GraphNode
+    }>) => {
+      const saGraphView = state.saGraphViews[a.payload.saGraphViewIndex];
+      if (saGraphView.currentNode) {
+        if (saGraphView.currentNode.getValue() != a.payload.graphNode.getValue()) {
+          saGraphView.previousNode = saGraphView.currentNode;
+          if (saGraphView.previousNode.position != 'p') {
+            saGraphView.previousNodeNonPredicate = saGraphView.previousNode;
+          } else {
+            saGraphView.previousNodePredicate = saGraphView.previousNode;
+          }
+        }
+      }
+      saGraphView.currentNode = a.payload.graphNode;
+    },
+
+    changeCurrentGraphNodeByOffset: (state, a: UIStoreTools.PayloadAction<{
+      saGraphViewIndex: number
+      offset: number
+    }>) => {
+      const saGraphView = state.saGraphViews[a.payload.saGraphViewIndex];
+      const graphs = state.graphs;
+      const currentNode = saGraphView.currentNode;
+      if (!currentNode) return;
+      const graph = graphs[saGraphView.graphIndex];
+      if (!graph) return;
+      const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
+      if (triples.length < 1) return;
+      
+      const tripleIndex = triples.findIndex((triple) => currentNode.getTriple().equals(triple));
+      let newTripleIndex = getSequenceIndexByOffset(triples.length, tripleIndex, a.payload.offset);
+      const newTriple = triples[newTripleIndex];
+      if (!newTriple) return;
+      
+      saGraphView.currentNode = new GraphNode(newTriple, currentNode.position);
+    },
+
+    changeCurrentGraphNodeHorizontallyByOffset: (state, a: UIStoreTools.PayloadAction<{
+      saGraphViewIndex: number
+      offset: number
+    }>) => {
+      const saGraphView = state.saGraphViews[a.payload.saGraphViewIndex];
+      const graphs = state.graphs;
+      const currentNode = saGraphView.currentNode;
+      if (!currentNode) return;
+      const graph = graphs[saGraphView.graphIndex];
+      if (!graph) return;
+      const triples = getSaGraphViewFilteredTriples(saGraphView, graph);
+      if (triples.length < 1) return;
+      
+      const sequences = triples.map((t) => [new GraphNode(t, 's'), new GraphNode(t, 'p'), new GraphNode(t, 'o')]);
+      const currentSequenceIndex = sequences.findIndex((s) => s.some((gn) => currentNode.equals(gn)));
+      const currentSequence = sequences[currentSequenceIndex];
+      const inCurrentSequenceIndex = currentSequence.findIndex((gn) => currentNode.equals(gn));
+
+      function getNewCurrentNode(sequences: GraphNode[][], sequenceIndex: number, offset: number, inSequenceIndex?: number): GraphNode {
+        const currentSequence = sequences[sequenceIndex];
+        if (inSequenceIndex == undefined) inSequenceIndex = (offset < 0) ? currentSequence.length : 0;
+        const newInSequenceIndex = (inSequenceIndex + offset);
+        if (newInSequenceIndex < 0) {
+          return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences.length, sequenceIndex, -1), newInSequenceIndex);
+        } else if (newInSequenceIndex >= currentSequence.length) {
+          return getNewCurrentNode(sequences, getSequenceIndexByOffset(sequences.length, sequenceIndex, 1), newInSequenceIndex - currentSequence.length);
+        }
+        return currentSequence[newInSequenceIndex];
+      }
+
+      const newCurrentNode = getNewCurrentNode(sequences, currentSequenceIndex, a.payload.offset, inCurrentSequenceIndex);
+      saGraphView.currentNode = newCurrentNode;
+    }
+  }
+});
+
+export const {
+  changeSaGraphViewGraph,
+  changeCurrentNode,
+  changeCurrentGraphNodeByOffset,
+  changeCurrentGraphNodeHorizontallyByOffset
+} = slice.actions;
+
+export const reducer = slice.reducer;
+
+/*
 // ChangeSaGraphViewGraphAction
 export enum ActionType { ChangeSaGraphViewGraph = 'ChangeSaGraphViewGraph' }
 export interface ChangeSaGraphViewGraphAction extends StoreLib.Action { type: ActionType.ChangeSaGraphViewGraph
@@ -175,4 +274,4 @@ export const reducer: Reducer<State> = (state: State, action: StoreLib.Action) =
     default:
       return state;
   }
-}
+}*/

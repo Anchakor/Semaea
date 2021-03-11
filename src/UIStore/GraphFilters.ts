@@ -22,13 +22,13 @@ export interface GraphFilterCondition {
 
 export const graphFilterConditionIsOfKind = checkKindFor<GraphFilterConditionKinds>();
 
-export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView, graph: Graph): Triple[] {
+export function getSaGraphViewFilteredTriples(saGraphView: SaGraphView | UIStoreTools.Draft<SaGraphView>, graph: Graph | UIStoreTools.Draft<Graph>): Triple[] {
   return (saGraphView.filter)
   ? applyGraphFilterCondition(graph, saGraphView.filter.conditions[saGraphView.filter.rootConditionIndex])
   : graph.get();
 }
 
-function applyGraphFilterCondition(graph: Graph, condition: GraphFilterCondition): Triple[] {
+function applyGraphFilterCondition(graph: Graph | UIStoreTools.Draft<Graph>, condition: GraphFilterCondition): Triple[] {
   let stringValue: string;
   switch (condition.kind) {
     case GraphFilterConditionKind.SubjectBeginsWith:
