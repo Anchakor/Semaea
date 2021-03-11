@@ -3,7 +3,7 @@ import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from
 import { StoreLib, Reducer } from '../External';
 import { StoreState } from './Main';
 import { State as SaViewsState } from './SaViews';
-import { State as GraphsState, SaGraphView, setCurrentNodeToFirstNode } from './Graphs';
+import { State as GraphsState, SaGraphView } from './Graphs';
 import { SaView, getOriginatingOrClosestSaViewIndex } from '../SaViews';
 import * as FileDialogCommon from './Dialogs/FileDialogCommon';
 import * as BasicGraphDialogs from './Dialogs/BasicGraphDialogs';

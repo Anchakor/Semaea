@@ -1,6 +1,9 @@
 import { Triple, TriplePosition } from '../Graphs/Triple';
+import { immerable } from 'immer';
 
 export class GraphNode {
+  [immerable] = true
+
   protected _triple: Triple
   protected _position: TriplePosition
   

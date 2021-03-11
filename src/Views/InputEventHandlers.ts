@@ -6,7 +6,7 @@ import { dialogKeyHandler } from './Dialogs/DialogEventHandlers';
 import { StoreLibThunk, StoreLib, Dispatch } from '../External';
 import { createCreateDialogMenuDialogAction } from '../UIStore/Dialogs/DialogMenuDialog';
 import { setChangeFocusToGraphFilter, setChangeFocusToGraphView, setChangeFocusToDialogCancelButton } from '../UIStore/Focus';
-import { createDeleteGraphAction } from '../UIStore/Graphs';
+import { deleteGraphByIndex } from '../UIStore/Graphs';
 import { createCancelDialogAction } from '../UIStore/Dialogs';
 import { createChangeCurrentGraphNodeByOffsetAction, createChangeCurrentGraphNodeHorizontallyByOffsetAction } from '../UIStore/Graphs/SaGraphViews';
 import { createCreateDeleteGraphDialogAction, createCreateAddTripleDialogAction } from '../UIStore/Dialogs/BasicGraphDialogs';
@@ -99,7 +99,7 @@ function cancelLinkedDialogs(dispatch: Dispatch<StoreState>, getState: () => Sto
   linkedDialogs.every((v, i, a) => {
     const dialog = state.dialogs_.dialogs[v.dialogIndex];
     if (!dialog || !shouldDialogBeVisible(dialog)) return true;
-    if (dialog.createdGraphIndex != undefined) { dispatch(createDeleteGraphAction(dialog.createdGraphIndex)); }
+    if (dialog.createdGraphIndex != undefined) { dispatch(deleteGraphByIndex(dialog.createdGraphIndex)); }
     dispatch(createCancelDialogAction(v.dialogIndex));
     dispatch(setChangeFocusToGraphView());
     return true;

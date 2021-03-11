@@ -9,10 +9,10 @@ import { DialogKind, OpenFileDialog, FileDialogStatus, dialogIsOfKind } from '..
 import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import { createFinishDialogAction } from '../Dialogs';
-import { createOpenGraphAction, doOpenGraphAction } from '../Graphs';
+import { openGraph, reducer as graphsReducer } from '../Graphs';
 import * as Serializer from '../../Serialization/Serializer';
 import { setChangeFocusToGraphFilter } from '../Focus';
-import { produce } from 'immer';
+import { changeSaViewSaGraphView, reducer as saViewsReducer } from '../SaViews';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -83,12 +83,12 @@ export const createOpenFileDialogOpenFileAction = (partialAction: Partial<OpenFi
 }, partialAction);
 function doOpenFileDialogOpenFileAction(state: StoreState, action: OpenFileDialogOpenFileAction) {
   const newSaGraphViewIndex = state.graphs_.saGraphViews.length;
-  const openGraphAction = createOpenGraphAction({ graph: action.graph });
   return objectJoin<StoreState>(state, {
-    graphs_: doOpenGraphAction(state.graphs_, openGraphAction),
-    saViews_: produce(state.saViews_, (draft) => { 
-      draft.saViews[action.originatingSaViewIndex].saGraphViewIndex = newSaGraphViewIndex;
-    })
+    graphs_: graphsReducer(state.graphs_, openGraph(action.graph)),
+    saViews_: saViewsReducer(state.saViews_, changeSaViewSaGraphView({
+      saViewIndex: action.originatingSaViewIndex,
+      saGraphViewIndex: newSaGraphViewIndex
+    }))
   });
 }
 

@@ -13,7 +13,7 @@ import { getCurrentProps } from '../CurrentProps';
 import { changeFileDialogDirectory } from '../../UIStore/Dialogs/FileDialogCommon';
 import { setChangeFocusToGraphFilter } from '../../UIStore/Focus';
 import { saveFileDialogSaveFile } from '../../UIStore/Dialogs/SaveFileDialog';
-import { createDeleteGraphAction } from '../../UIStore/Graphs';
+import { deleteGraphByIndex } from '../../UIStore/Graphs';
 
 export function SaveFileDialogView(props: DialogProps<SaveFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
@@ -80,7 +80,7 @@ function tryToSaveFile(dispatch: Dispatch<StoreState>, getState: () => StoreStat
   const origGraph = state.graphs_.graphs[origGraphView.graphIndex];
   if (!origGraph) return;
   saveFileDialogSaveFile(dialogIndex, filePath, origGraph)(dispatch);
-  dispatch(createDeleteGraphAction(currentGraphIndex));
+  dispatch(deleteGraphByIndex(currentGraphIndex));
 }
 
 function canSaveFile(fileName: string): boolean {

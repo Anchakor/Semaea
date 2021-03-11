@@ -1,8 +1,11 @@
 import { IDeserializeObject } from '../Serialization/IDeserializeObject';
+import { immerable } from 'immer';
 
 export type TriplePosition = 's' | 'p' | 'o';
 
 export class Triple {
+  [immerable] = true
+
   s: string
   p: string
   o: string

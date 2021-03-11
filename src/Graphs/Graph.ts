@@ -3,8 +3,11 @@ import { deserialize } from '../Serialization/Serializer';
 import { Triple } from '../Graphs/Triple';
 import { GraphNode } from '../Graphs/GraphNode';
 import { arrayClone } from 'Common';
+import { immerable } from 'immer';
 
 export class Graph {
+  [immerable] = true
+  
   protected triples: Array<Triple>
   
   constructor() {

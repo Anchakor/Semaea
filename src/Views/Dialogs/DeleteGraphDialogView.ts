@@ -6,13 +6,13 @@ import { createFocusableElementProps } from '../FocusableElementProps';
 import { DialogCancelButtonView } from './DialogCancelButtonView';
 import { createFinishDialogAction } from 'UIStore/Dialogs';
 import { setChangeFocusToGraphView } from 'UIStore/Focus';
-import { createDeleteGraphAction } from 'UIStore/Graphs';
+import { deleteGraphByIndex } from 'UIStore/Graphs';
 
 export function DeleteGraphDialogView(props: DialogProps<DeleteGraphDialog>) {
   return h('div', {}, [ 'Delete graph at index: ', props.dialog.graphToDeleteIndex, ' ',
     h('button', createFocusableElementProps(ButtonKeyEventOptions, props, {
       onclick: () => {
-        props.dispatch(createDeleteGraphAction(props.dialog.graphToDeleteIndex));
+        props.dispatch(deleteGraphByIndex(props.dialog.graphToDeleteIndex));
         props.dispatch(createFinishDialogAction(props.dialogIndex));
         props.dispatch(setChangeFocusToGraphView());
       },

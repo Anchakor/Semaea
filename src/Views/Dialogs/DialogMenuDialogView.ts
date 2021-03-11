@@ -12,7 +12,7 @@ import { createCreateAddTripleDialogAction, createCreateDeleteGraphDialogAction 
 import { setChangeFocusToDialogCancelButton, setChangeFocusToGraphFilter, setChangeFocusToGraphView } from '../../UIStore/Focus';
 import { createOpenFileDialog, openCurrentViewAsNewGraph } from '../../UIStore/Dialogs/OpenFileDialog';
 import { createSaveFileDialog } from '../../UIStore/Dialogs/SaveFileDialog';
-import { createDeleteGraphAction } from '../../UIStore/Graphs';
+import { deleteGraphByIndex } from '../../UIStore/Graphs';
 import { createFinishDialogAction } from '../../UIStore/Dialogs';
 import { Log } from '../../Common';
 
@@ -96,7 +96,7 @@ function handleMenuDialogSubmit(dispatch: Dispatch<StoreState>, getState: () => 
   const currentNodeValue = currentNode.getValue();
   const mapping = mappings.find((v) => v.node == currentNodeValue);
   if (mapping) {
-    dispatch(createDeleteGraphAction(currentGraphIndex));
+    dispatch(deleteGraphByIndex(currentGraphIndex));
     dispatch(createFinishDialogAction(dialogIndex));
     dispatch(setChangeFocusToGraphView());
     mapping.trigger();

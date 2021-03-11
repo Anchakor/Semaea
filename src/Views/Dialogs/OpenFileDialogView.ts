@@ -12,7 +12,7 @@ import { StoreState } from '../../UIStore/Main';
 import { changeFileDialogDirectory } from '../../UIStore/Dialogs/FileDialogCommon';
 import { setChangeFocusToGraphFilter } from '../../UIStore/Focus';
 import { openFileDialogOpenFile } from '../../UIStore/Dialogs/OpenFileDialog';
-import { createDeleteGraphAction } from '../../UIStore/Graphs';
+import { deleteGraphByIndex } from '../../UIStore/Graphs';
 
 export function OpenFileDialogView(props: DialogProps<OpenFileDialog>) {
   return h('div', {}, [ getSummaryText(props),
@@ -70,7 +70,7 @@ function tryToOpenFile(dispatch: Dispatch<StoreState>, getState: () => StoreStat
   const origSaViewIndex = current.saView.originatingSaViewIndex;
   if (origSaViewIndex == undefined) return;
   openFileDialogOpenFile(dialogIndex, filePath, origSaViewIndex)(dispatch);
-  dispatch(createDeleteGraphAction(currentGraphIndex));
+  dispatch(deleteGraphByIndex(currentGraphIndex));
 }
 
 function canOpenFile(fileName: string): boolean {

@@ -6,7 +6,7 @@ export function runUIStoreTests() {
   Test.test('Reducer state equality', function(assert) {
     // Arrange
     const state = Graphs.defaultState;
-    const actionToProcess = Graphs.createDeleteGraphAction(0);
+    const actionToProcess = Graphs.deleteGraphByIndex(0);
     const actionToReject = Dialogs.createCancelDialogAction(0);
 
     // Act

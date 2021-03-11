@@ -1,5 +1,5 @@
 import { arrayImmutableSet, objectClone, objectJoin, arrayImmutableAppend } from '../Common';
-import { StoreLib, UILib, UIStoreLib } from '../External';
+import { StoreLib, UILib, UIStoreLib, UIStoreTools } from '../External';
 import { Graph } from '../Graphs/Graph';
 import { GraphNode } from '../Graphs/GraphNode';
 import { Triple } from '../Graphs/Triple';
@@ -33,31 +33,89 @@ export interface State {
   readonly graphs: Graphs
   readonly saGraphViews: SaGraphView[]
 }
+
+const defaultSaGraphView = { 
+  graphIndex: 0,
+  currentNode: undefined,
+  previousNode: undefined,
+  previousNodeNonPredicate: undefined,
+  previousNodePredicate: undefined,
+  filter: undefined
+};
 export let defaultState: State = { 
   graphs: [new Graph()],
-  saGraphViews: [{ 
-    graphIndex: 0,
-    currentNode: undefined,
-    previousNode: undefined,
-    previousNodeNonPredicate: undefined,
-    previousNodePredicate: undefined,
-    filter: undefined
-  }],
+  saGraphViews: [defaultSaGraphView],
 };
-defaultState = doInitializeTestGraphAction(defaultState);
+{
+  const graph = new Graph();
+  graph.addTriple(new Triple('testS', 'testP', 'testO'));
+  graph.addTriple(new Triple('testS', 'testP2', 'testO'));
+  graph.addTriple(new Triple('testO', 'testP3', 'testO3'));
 
-export function setCurrentNodeToFirstNode(saGraphView: SaGraphView, graphsState: State) {
-  const graph = graphsState.graphs[saGraphView.graphIndex];
-  if (!graph) return saGraphView;
-  const triples = GraphFilters.getSaGraphViewFilteredTriples(saGraphView, graph);
-  if (triples.length < 1) return saGraphView;
-  const triple = triples[0];
-  if (!triple) return saGraphView;
-  return objectJoin<SaGraphView>(saGraphView, { currentNode: new GraphNode(triple, "s") });
+  const graph2 = new Graph();
+  graph2.addTriple(new Triple('testS', 'testP', 'testO'));
+
+  defaultState = {
+    graphs: [ graph, graph2 ],
+    saGraphViews: [{
+      ...defaultSaGraphView,
+      graphIndex: 0,
+      currentNode: new GraphNode(graph.getTripleAtIndex(0) as Triple, "s"),
+      // TODO undo hardcoded filter
+      filter: { conditions: [{ kind: GraphFilters.GraphFilterConditionKind.SubjectBeginsWith, value: "testS" } as GraphFilters.GraphFilterConditionSubjectBeginsWith], rootConditionIndex: 0 } as GraphFilters.GraphFilter
+    },
+    {
+      ...defaultSaGraphView,
+      graphIndex: 1, 
+      currentNode: new GraphNode(graph2.getTripleAtIndex(0) as Triple, "s")
+    }]
+  };
 }
 
-// Actions:
+const slice = UIStoreTools.createSlice({
+  name: 'Graphs',
+  initialState: defaultState,
+  reducers: {
+    addTriple: (state, a: UIStoreTools.PayloadAction<{graphIndex: number, triple: Triple}>) => {
+      const graph = state.graphs[a.payload.graphIndex];
+      graph?.addTriple(a.payload.triple);
+    },
+    deleteGraphByIndex: (state, a: UIStoreTools.PayloadAction<number>) => {
+      state.graphs[a.payload] = undefined;
+    },
+    openGraph: (state, a: UIStoreTools.PayloadAction<Graph>) => {
+      const newGraphIndex = state.graphs.length;
+      const newCurrentNodeTriple = (a.payload.getTripleAtIndex(0)) 
+        ? a.payload.getTripleAtIndex(0) as Triple
+        : currentNodeTripleDefault;
+      const newSaGraphView: SaGraphView = { graphIndex: newGraphIndex, 
+        currentNode: new GraphNode(newCurrentNodeTriple, "s"),
+        filter: GraphFilters.createDefaultGraphFilter(),
+      };
+      state.graphs.push(a.payload);
+      state.saGraphViews.push(newSaGraphView);
+    }
+  }
+});
 
+export const {
+  addTriple,
+  deleteGraphByIndex,
+  openGraph
+} = slice.actions;
+
+export const reducer = (state: State = defaultState, action: StoreLib.Action) => {
+  let newState = SaGraphViews.reducer(state, action);
+  if (newState != state) { return newState; }
+  
+  newState = GraphFilters.reducer(state, action);
+  if (newState != state) { return newState; }
+
+  return slice.reducer(state, action);
+};
+
+// Actions:
+/*
 // InitializeTestGraphAction
 export enum ActionType { InitializeTestGraph = 'InitializeTestGraph' }
 export interface InitializeTestGraphAction extends StoreLib.Action { type: ActionType.InitializeTestGraph
@@ -84,8 +142,8 @@ function doInitializeTestGraphAction(state: State): State {
     ];
 
   return objectJoin(state, { graphs: newGraphs, saGraphViews: newSaGraphViews });
-}
-
+}*/
+/*
 // AddTripleAction
 export enum ActionType { AddTriple = 'AddTriple' }
 export interface AddTripleAction extends StoreLib.Action { type: ActionType.AddTriple
@@ -121,7 +179,7 @@ export interface OpenGraphAction extends StoreLib.Action { type: ActionType.Open
   graph: Graph
 }
 /** Open graph with its new SaGraphView */
-export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) => objectJoin<OpenGraphAction>({ type: ActionType.OpenGraph,
+/*export const createOpenGraphAction = (partialAction: Partial<OpenGraphAction>) => objectJoin<OpenGraphAction>({ type: ActionType.OpenGraph,
   graph: new Graph(),
 }, partialAction);
 export function doOpenGraphAction(state: State, action: OpenGraphAction) {
@@ -149,8 +207,8 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
   if (newState != state) { return newState; }
 
   switch (action.type) {
-    case ActionType.InitializeTestGraph:
-      return doInitializeTestGraphAction(state);
+    //case ActionType.InitializeTestGraph:
+    //  return doInitializeTestGraphAction(state);
     case ActionType.AddTriple:
       return doAddTripleAction(state, action as AddTripleAction);
     case ActionType.DeleteGraph:
@@ -161,3 +219,4 @@ export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, ac
       return state;
   }
 }
+*/
