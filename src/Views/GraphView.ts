@@ -12,7 +12,7 @@ import { createFocusableElementProps } from './FocusableElementProps';
 import { withFocusable } from './FocusableComponent';
 import { FocusTarget } from '../UIStore/Focus';
 import { createChangeSaGraphViewGraphAction } from 'UIStore/Graphs/SaGraphViews';
-import { createChangeSaViewSaGraphViewAction } from 'UIStore/SaViews';
+import { changeSaViewSaGraphView } from 'UIStore/SaViews';
 
 // View (component):
 
@@ -43,7 +43,10 @@ export class View extends UIComponent<Props, {}> {
       }
       return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
         class: tagClass,
-        onclick: () => this.props.dispatch(createChangeSaViewSaGraphViewAction(this.props.current.saViewIndex, i))
+        onclick: () => this.props.dispatch(changeSaViewSaGraphView({
+          saViewIndex: this.props.current.saViewIndex,
+          saGraphViewIndex: i
+        }))
       }), i.toString())
     })));
   }

@@ -1,6 +1,6 @@
 import { SaGraphView } from './Graphs';
 import { arrayImmutableSet, objectClone, objectJoin } from '../Common';
-import { StoreLib } from '../External';
+import { StoreLib, UIStoreTools } from '../External';
 import { SaView } from '../SaViews';
 
 /* SaViews
@@ -20,45 +20,25 @@ export const defaultState: State = {
   currentSaViewIndex: 0
 };
 
-// Actions:
-
-// ChangeSaViewAction
-export enum ActionType { ChangeSaView = 'ChangeSaView' }
-export interface ChangeSaViewAction extends StoreLib.Action { type: ActionType.ChangeSaView
-  saViewIndex: number
-}
-export const createChangeSaViewAction = (saViewIndex: number): ChangeSaViewAction => 
-  ({ type: ActionType.ChangeSaView, saViewIndex: saViewIndex });
-function doChangeSaViewAction(state: State, action: ChangeSaViewAction) {
-  return objectJoin<State>(state, { currentSaViewIndex: action.saViewIndex });
-}
-//-dispatch:
-//ChangeSaView: (saViewIndex: number) => dispatch(createChangeSaViewAction(saViewIndex))
-
-// ChangeSaViewSaGraphViewAction
-export enum ActionType { ChangeSaViewSaGraphView = 'ChangeSaViewSaGraphView' }
-export interface ChangeSaViewSaGraphViewAction extends StoreLib.Action { type: ActionType.ChangeSaViewSaGraphView
-  saViewIndex: number
-  saGraphViewIndex: number
-}
-export const createChangeSaViewSaGraphViewAction = (saViewIndex: number, saGraphViewIndex: number): ChangeSaViewSaGraphViewAction => 
-  ({ type: ActionType.ChangeSaViewSaGraphView, saViewIndex: saViewIndex, saGraphViewIndex: saGraphViewIndex });
-export function doChangeSaViewSaGraphViewAction(state: State, action: ChangeSaViewSaGraphViewAction): State {
-  return objectJoin(state, { 
-    saViews: arrayImmutableSet(state.saViews, action.saViewIndex, 
-      objectJoin(state.saViews[action.saViewIndex], { saGraphViewIndex: action.saGraphViewIndex })
-    )});
-}
-
-// Reducer:
-
-export const reducer: StoreLib.Reducer<State> = (state: State = defaultState, action: StoreLib.Action) => {
-  switch (action.type) {
-    case ActionType.ChangeSaView:
-      return doChangeSaViewAction(state, action as ChangeSaViewAction);
-    case ActionType.ChangeSaViewSaGraphView:
-      return doChangeSaViewSaGraphViewAction(state, action as ChangeSaViewSaGraphViewAction);
-    default:
-      return state;
+const slice = UIStoreTools.createSlice({
+  name: 'SaViews',
+  initialState: defaultState,
+  reducers: {
+    changeSaViewToIndex: (state, a: UIStoreTools.PayloadAction<number>) => {
+      state.currentSaViewIndex = a.payload;
+    },
+    changeSaViewSaGraphView: (state, a: UIStoreTools.PayloadAction<{
+      saViewIndex: number
+      saGraphViewIndex: number
+    }>) => {
+      state.saViews[a.payload.saViewIndex].saGraphViewIndex = a.payload.saGraphViewIndex;
+    },
   }
-}
+});
+
+export const {
+  changeSaViewSaGraphView,
+  changeSaViewToIndex
+} = slice.actions;
+
+export const reducer = slice.reducer;

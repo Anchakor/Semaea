@@ -1,5 +1,5 @@
 import { StoreState, DispatchProps, getDispatchProps } from '../UIStore/Main';
-import { createChangeSaViewAction } from '../UIStore/SaViews';
+import { changeSaViewToIndex } from '../UIStore/SaViews';
 import { connect, h, UIComponent } from '../External';
 import { objectJoin } from '../Common';
 import { shouldSaViewBeVisible } from '../SaViews';
@@ -34,7 +34,7 @@ export class View extends UIComponent<Props, {}> {
           }
           return h('button', createFocusableElementProps(ButtonKeyEventOptions, this.props, { 
             class: tagClass,
-            onclick: () => this.props.dispatch(createChangeSaViewAction(saViewIndex)),
+            onclick: () => this.props.dispatch(changeSaViewToIndex(saViewIndex)),
           }), saViewIndex.toString())
         })
       )

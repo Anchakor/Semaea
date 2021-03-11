@@ -10,9 +10,9 @@ import { objectJoin, Log } from '../../Common';
 import { Graph } from '../../Graphs/Graph';
 import { createFinishDialogAction } from '../Dialogs';
 import { createOpenGraphAction, doOpenGraphAction } from '../Graphs';
-import { createChangeSaViewSaGraphViewAction, doChangeSaViewSaGraphViewAction } from '../SaViews';
 import * as Serializer from '../../Serialization/Serializer';
 import { setChangeFocusToGraphFilter } from '../Focus';
+import { produce } from 'immer';
 
 
 export const openFileDialogOpenFile = (dialogIndex: number, filePath: string, originatingSaViewIndex: number) => (dispatch: (a: StoreLib.Action) => void) => {
@@ -84,10 +84,11 @@ export const createOpenFileDialogOpenFileAction = (partialAction: Partial<OpenFi
 function doOpenFileDialogOpenFileAction(state: StoreState, action: OpenFileDialogOpenFileAction) {
   const newSaGraphViewIndex = state.graphs_.saGraphViews.length;
   const openGraphAction = createOpenGraphAction({ graph: action.graph });
-  const changeSaViewSaGraphViewAction = createChangeSaViewSaGraphViewAction(action.originatingSaViewIndex, newSaGraphViewIndex);
   return objectJoin<StoreState>(state, {
     graphs_: doOpenGraphAction(state.graphs_, openGraphAction),
-    saViews_: doChangeSaViewSaGraphViewAction(state.saViews_, changeSaViewSaGraphViewAction),
+    saViews_: produce(state.saViews_, (draft) => { 
+      draft.saViews[action.originatingSaViewIndex].saGraphViewIndex = newSaGraphViewIndex;
+    })
   });
 }
 
