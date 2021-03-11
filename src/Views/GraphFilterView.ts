@@ -70,13 +70,11 @@ const ConditionStringValueInputFieldComponent = withFocusable(
     createFocusableElementProps(TextInputKeyEventOptions, props, {
       type: 'text',
       oninput: (e: Event) => {
-        const action: GF.ChangeGraphFilterConditionStringValueAction = { 
-          type: GF.ActionType.ChangeGraphFilterConditionStringValue,
+        props.dispatch(GF.changeGraphFilterConditionStringValue({
           saGraphViewIndex: props.saGraphViewIndex, 
           conditionIndex: props.conditionIndex, 
           newValue: (e.target as HTMLInputElement).value
-        }; 
-        props.dispatch(action); 
+        })); 
       },
       value: props.condition.value
     })

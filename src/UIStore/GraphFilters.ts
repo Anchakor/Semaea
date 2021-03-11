@@ -1,8 +1,9 @@
 import { Graph } from '../Graphs/Graph';
 import { Triple } from '../Graphs/Triple';
-import { SaGraphView, State } from './Graphs';
-import { StoreLib, Reducer } from '../External';
-import { objectJoin, arrayImmutableSet, checkKindFor, objectClone } from '../Common';
+import { SaGraphView, defaultState } from './Graphs';
+import { UIStoreTools } from '../External';
+import { checkKindFor, objectClone } from '../Common';
+import { createSlice } from '@reduxjs/toolkit';
 
 /*
 GraphFilters and GraphFilterConditions
@@ -64,7 +65,7 @@ type GraphFilterConditionKinds = GraphFilterCondition
   | GraphFilterConditionSubjectContains
 
 export interface GraphFilterConditionStringValue extends GraphFilterCondition {
-  readonly value: string
+  value: string
 }
 function isStringValueCondition(condition: GraphFilterCondition): condition is GraphFilterConditionStringValue {
   return (condition.kind === GraphFilterConditionKind.SubjectBeginsWith
@@ -87,6 +88,27 @@ export interface GraphFilterConditionSubjectContains extends GraphFilterConditio
 
 // TODO container conditions (AND, OR)
 
+const slice = createSlice({
+  name: 'GraphFilters',
+  initialState: defaultState,
+  reducers: {
+    changeGraphFilterConditionStringValue: (state, a: UIStoreTools.PayloadAction<{
+      saGraphViewIndex: number
+      conditionIndex: number
+      newValue: string
+    }>) => {
+      const condition = state.saGraphViews[a.payload.saGraphViewIndex].filter?.conditions[a.payload.conditionIndex];
+      if (!condition || !isStringValueCondition(condition)) return;
+      condition.value = a.payload.newValue;
+    }
+  }
+});
+
+export const { changeGraphFilterConditionStringValue } = slice.actions;
+
+export const reducer = slice.reducer;
+
+/*
 // Actions:
 
 // ChangeGraphFilterConditionStringValueAction
@@ -119,3 +141,4 @@ export const reducer: Reducer<State> = (state: State, action: StoreLib.Action) =
       return state;
   }
 }
+*/
